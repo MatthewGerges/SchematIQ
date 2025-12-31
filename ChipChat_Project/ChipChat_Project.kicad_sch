@@ -1,0 +1,36 @@
+
+(kicad_sch
+	(version 20250114)
+	(generator "ChipChat_Gemini")
+	(uuid "d2a372a8-12e2-4c28-9c16-2e8a6352c286")
+	(paper "A4")
+	(lib_symbols)
+	(sheet
+		(at 30.48 30.48)
+		(size 40.64 20.32)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0)
+		)
+		(uuid "a1b2c3d4-5678-90ab-cdef-1234567890ab")
+		(property "Sheetname" "BME280_Sheet"
+			(at 30.48 29.8 0)
+			(effects (font (size 1.27 1.27)) (justify left bottom))
+		)
+		(property "Sheetfile" "BME280_Sheet.kicad_sch"
+			(at 30.48 51.0 0)
+			(effects (font (size 1.27 1.27)) (justify left top))
+		)
+	)
+	(sheet_instances
+		(path "/" (page "1"))
+	)
+)

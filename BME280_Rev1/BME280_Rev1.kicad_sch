@@ -1,0 +1,182 @@
+(kicad_sch
+	(version 20250114)
+	(generator "eeschema")
+	(generator_version "9.0")
+	(uuid "89ea6638-6b46-4b49-be9b-7286d6e34cbf")
+	(paper "A4")
+	(lib_symbols)
+	(sheet
+		(at 30.48 74.93)
+		(size 40.64 7.62)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "53f4915e-ba4c-4373-b466-4541764ab5fb")
+		(property "Sheetname" "BME280_Sensor"
+			(at 30.48 74.2184 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "BME280_Sensor.kicad_sch"
+			(at 30.48 83.1346 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "BME280_Rev1"
+				(path "/89ea6638-6b46-4b49-be9b-7286d6e34cbf"
+					(page "5")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 30.48 24.13)
+		(size 40.64 7.62)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "806c45df-6b05-4d2e-b5da-d333a87f07ca")
+		(property "Sheetname" "USBC"
+			(at 30.48 23.4184 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "USBC.kicad_sch"
+			(at 30.48 32.3346 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "BME280_Rev1"
+				(path "/89ea6638-6b46-4b49-be9b-7286d6e34cbf"
+					(page "2")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 30.48 40.64)
+		(size 40.64 7.62)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "a0c0ed5a-8e78-43da-b884-03ae4494d9dc")
+		(property "Sheetname" "Buck_Converter"
+			(at 30.48 39.9284 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "Buck_Converter.kicad_sch"
+			(at 30.48 48.8446 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "BME280_Rev1"
+				(path "/89ea6638-6b46-4b49-be9b-7286d6e34cbf"
+					(page "3")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 30.48 55.88)
+		(size 40.64 7.62)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "a1af9931-d78d-4f9d-a585-5f83ca0a6b01")
+		(property "Sheetname" "USB_To_I2C"
+			(at 30.48 55.1684 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "USB_To_I2C.kicad_sch"
+			(at 30.48 64.0846 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "BME280_Rev1"
+				(path "/89ea6638-6b46-4b49-be9b-7286d6e34cbf"
+					(page "4")
+				)
+			)
+		)
+	)
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+	)
+	(embedded_fonts no)
+)

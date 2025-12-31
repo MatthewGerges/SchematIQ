@@ -54,7 +54,7 @@ def main():
         symbol_name="BME280",
         reference="U1",
         value="BME280",
-        footprint_name="BME280.kicad_mod",
+        footprint_name="Footprint_Library:BME280",
         output_filename="BME280_Sensor.kicad_sch"
     )
 
@@ -63,7 +63,7 @@ def main():
         symbol_name="MCP2210-I_SO",
         reference="U1",
         value="MCP2210-I/SO",
-        footprint_name="MCP2210-I_SO.kicad_mod",
+        footprint_name="Footprint_Library:MCP2210-I_SO",
         output_filename="MCP2210_USB_TO_SPI.kicad_sch"
     )
 

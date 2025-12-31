@@ -1,4 +1,3 @@
-
 (kicad_sch
 	(version 20250114)
 	(generator "ChipChat_Gemini")
@@ -8,25 +7,26 @@
 	(sheet
 		(at 30.48 30.48)
 		(size 40.64 20.32)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(stroke
-			(width 0.1524)
-			(type solid)
-		)
-		(fill
-			(color 0 0 0 0.0)
-		)
 		(uuid "a1b2c3d4-5678-90ab-cdef-1234567890ab")
-		(property "Sheetname" "BME280_Sheet"
+		(property "Sheetname" "BME280_Sensor"
 			(at 30.48 29.8 0)
 			(effects (font (size 1.27 1.27)) (justify left bottom))
 		)
-		(property "Sheetfile" "BME280_Sheet.kicad_sch"
+		(property "Sheetfile" "BME280_Sensor.kicad_sch"
 			(at 30.48 51.0 0)
+			(effects (font (size 1.27 1.27)) (justify left top))
+		)
+	)
+    (sheet
+		(at 30.48 60.96)
+		(size 40.64 20.32)
+		(uuid "e5f6a7b8-9012-34cd-ef01-2345678901ab")
+		(property "Sheetname" "MCP2210_USB_TO_SPI"
+			(at 30.48 59.6 0)
+			(effects (font (size 1.27 1.27)) (justify left bottom))
+		)
+		(property "Sheetfile" "MCP2210_USB_TO_SPI.kicad_sch"
+			(at 30.48 81.5 0)
 			(effects (font (size 1.27 1.27)) (justify left top))
 		)
 	)

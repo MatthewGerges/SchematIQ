@@ -1,4 +1,3 @@
-
 import uuid
 import os
 
@@ -21,36 +20,22 @@ def _extract_symbol_from_lib(lib_content):
     A simple, non-robust parser to extract the main (symbol...) block
     from a .kicad_sym file.
     """
-    # Find the first opening parenthesis of the symbol definition
     start = lib_content.find("(symbol")
-    if start == -1:
-        return None, None # Symbol not found
-
-    # Find the matching closing parenthesis
+    if start == -1: return None, None
     balance = 0
     end = -1
     for i in range(start, len(lib_content)):
-        if lib_content[i] == '(': 
-            balance += 1
-        elif lib_content[i] == ')':
-            balance -= 1
-        
+        if lib_content[i] == '(' : balance += 1
+        elif lib_content[i] == ')': balance -= 1
         if balance == 0:
             end = i + 1
             break
-    
-    if end == -1:
-        return None, None # Malformed symbol file
-
+    if end == -1: return None, None
     symbol_def = lib_content[start:end]
-    
-    # Extract the lib_id
     id_start = symbol_def.find('"') + 1
     id_end = symbol_def.find('"', id_start)
     lib_id = symbol_def[id_start:id_end]
-
     return lib_id, symbol_def
-
 
 def embed_symbol_from_file(schematic_data, symbol_name, library_path=None):
     """
@@ -60,18 +45,14 @@ def embed_symbol_from_file(schematic_data, symbol_name, library_path=None):
     """
     if library_path is None:
         library_path = DEFAULT_SYMBOL_PATH
-
     symbol_filepath = os.path.join(library_path, f"{symbol_name}.kicad_sym")
-
     try:
         with open(symbol_filepath, 'r', encoding='utf-8') as f:
             content = f.read()
     except FileNotFoundError:
         print(f"Error: Symbol file not found at {symbol_filepath}")
         return None
-
     lib_id, symbol_definition = _extract_symbol_from_lib(content)
-
     if lib_id and symbol_definition:
         schematic_data["lib_symbols"].append(symbol_definition)
         print(f"Embedded symbol '{lib_id}' from {symbol_filepath}")
@@ -80,35 +61,37 @@ def embed_symbol_from_file(schematic_data, symbol_name, library_path=None):
         print(f"Error: Could not extract symbol from {symbol_filepath}")
         return None
 
-
-def place_component(schematic_data, lib_id, reference, value, position, angle=0):
+def place_component(schematic_data, lib_id, reference, value, position, angle=0, footprint=""):
     """Adds a component instance to the schematic data."""
     component = {
         "type": "symbol",
         "lib_id": lib_id,
         "at": (position[0], position[1], angle),
         "uuid": str(uuid.uuid4()),
-        "properties": { "Reference": reference, "Value": value }
+        "properties": { 
+            "Reference": reference, 
+            "Value": value,
+            "Footprint": footprint
+        }
     }
     schematic_data["items"].append(component)
-    print(f"Placed {reference} ({lib_id}) at {position}")
+    print(f"Placed {reference} ({lib_id}) at {position} with footprint '{footprint}'")
     return schematic_data
 
 def _format_properties(properties, parent_at):
     """Formats the properties block for a symbol."""
     prop_text = ""
-    ref_at_x = parent_at[0]
     ref_at_y = parent_at[1] + 2.54 
-    val_at_x = parent_at[0]
     val_at_y = parent_at[1] - 2.54
     
     if "Reference" in properties:
-        prop_text += f'\n\t\t(property "Reference" "{properties["Reference"]}" (at {ref_at_x} {ref_at_y} 0) (effects (font (size 1.27 1.27))))'
+        prop_text += f'\n\t\t(property "Reference" "{properties["Reference"]}" (at {parent_at[0]} {ref_at_y} 0) (effects (font (size 1.27 1.27))))'
     if "Value" in properties:
-        prop_text += f'\n\t\t(property "Value" "{properties["Value"]}" (at {val_at_x} {val_at_y} 0) (effects (font (size 1.27 1.27))))'
-
-    prop_text += '\n\t\t(property "Footprint" "" (at {} {} 0) (effects (font (size 1.27 1.27)) (hide yes)))'.format(parent_at[0], parent_at[1])
-    prop_text += '\n\t\t(property "Datasheet" "" (at {} {} 0) (effects (font (size 1.27 1.27)) (hide yes)))'
+        prop_text += f'\n\t\t(property "Value" "{properties["Value"]}" (at {parent_at[0]} {val_at_y} 0) (effects (font (size 1.27 1.27))))'
+    
+    footprint = properties.get("Footprint", "")
+    prop_text += f'\n\t\t(property "Footprint" "{footprint}" (at {parent_at[0]} {parent_at[1]} 0) (effects (font (size 1.27 1.27)) (hide yes)))'
+    prop_text += f'\n\t\t(property "Datasheet" "" (at {parent_at[0]} {parent_at[1]} 0) (effects (font (size 1.27 1.27)) (hide yes)))'
     return prop_text
 
 def generate_schematic_text(schematic_data):
@@ -130,7 +113,7 @@ def generate_schematic_text(schematic_data):
             text += f'\t\t(at {item["at"][0]} {item["at"][1]} {item["at"][2]})\n'
             text += f'\t\t(uuid "{item["uuid"]}")'
             text += _format_properties(item["properties"], item["at"])
-            text += "\n\t)\n"
+            text += "\n\t)\n'
             
     text += ")\n"
     return text

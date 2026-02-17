@@ -1,5 +1,5 @@
 (kicad_sch (version 20250114) (generator "ChipChat_Gemini")
-	(uuid "7d77e074-552b-4eb7-8a5b-a7d983f4d261")
+	(uuid "e8c424e0-9872-4e3c-bdd1-82f15c6df6ab")
 	(paper "A4")
 
 	(lib_symbols
@@ -52,11 +52,7 @@
     (property "AVAILABILITY" "Good" (id 16) (at 0 0 0)
       (effects (font (size 1.27 1.27)) (justify bottom) hide)
     )
-    (property "Description" "
-                        
-                            Board Mount Humidity Sensors MEMS humidity, pressure and temperature sensor
-                        
-" (id 17) (at 0 0 0)
+    (property "Description" "\n                        \n                            Board Mount Humidity Sensors MEMS humidity, pressure and temperature sensor\n                        \n" (id 17) (at 0 0 0)
       (effects (font (size 1.27 1.27)) (justify bottom) hide)
     )
     (symbol "BME280_0_0"
@@ -134,7 +130,7 @@
 	(symbol
 		(lib_id "BME280")
 		(at 148.5 105.0 0)
-		(uuid "d469c2b2-3a99-4cff-b91a-d496e6e8a108")
+		(uuid "682101e8-2012-4567-81e0-f09b010e484c")
 		(property "Reference" "U1" (at 148.5 107.54 0) (effects (font (size 1.27 1.27))))
 		(property "Value" "BME280" (at 148.5 102.46 0) (effects (font (size 1.27 1.27))))
 		(property "Footprint" "Footprint_Library:BME280" (at 148.5 105.0 0) (effects (font (size 1.27 1.27)) (hide yes)))

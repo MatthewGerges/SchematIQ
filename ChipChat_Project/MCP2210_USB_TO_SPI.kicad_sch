@@ -1,5 +1,5 @@
 (kicad_sch (version 20250114) (generator "ChipChat_Gemini")
-	(uuid "75c3a9d5-e90c-4030-a856-c3838a296933")
+	(uuid "18209fae-f563-41ea-938b-a5a0e5df2383")
 	(paper "A4")
 
 	(lib_symbols
@@ -40,11 +40,7 @@
     (property "MP" "MCP2210-I/SO" (id 12) (at 0 0 0)
       (effects (font (size 1.27 1.27)) (justify bottom) hide)
     )
-    (property "Description" "
-                        
-                            Microchip MCP2210-I/SO, USB to SPI Bridge, SPI/ USB 1-TRX, 12Mbit/s, 20-Pin SOIC | Microchip Technology Inc. MCP2210-I/SO
-                        
-" (id 13) (at 0 0 0)
+    (property "Description" "\n                        \n                            Microchip MCP2210-I/SO, USB to SPI Bridge, SPI/ USB 1-TRX, 12Mbit/s, 20-Pin SOIC | Microchip Technology Inc. MCP2210-I/SO\n                        \n" (id 13) (at 0 0 0)
       (effects (font (size 1.27 1.27)) (justify bottom) hide)
     )
     (property "MANUFACTURER" "Microchip" (id 14) (at 0 0 0)
@@ -227,7 +223,7 @@
 	(symbol
 		(lib_id "MCP2210-I_SO")
 		(at 148.5 105.0 0)
-		(uuid "7f1a29d7-e343-4495-a022-6f1fc6ada2ce")
+		(uuid "9191c471-3e1a-44ae-bdaf-161ae7c840ed")
 		(property "Reference" "U1" (at 148.5 107.54 0) (effects (font (size 1.27 1.27))))
 		(property "Value" "MCP2210-I/SO" (at 148.5 102.46 0) (effects (font (size 1.27 1.27))))
 		(property "Footprint" "Footprint_Library:MCP2210-I_SO" (at 148.5 105.0 0) (effects (font (size 1.27 1.27)) (hide yes)))

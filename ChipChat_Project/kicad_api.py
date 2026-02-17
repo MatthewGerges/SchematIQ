@@ -121,7 +121,6 @@ def generate_schematic_text(schematic_data):
 def save_schematic(schematic_data, file_path):
     """Generates the text and saves it to a file."""
     content = generate_schematic_text(schematic_data)
-    content = content.replace("\\n", "\n")
     with open(file_path, "w", encoding="utf-8") as f:
         f.write(content)
     print(f"Schematic saved to {file_path}")

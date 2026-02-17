@@ -1,5 +1,7 @@
 import uuid
 import kicad_api
+import project_helper
+
 
 def generate_sheet(symbol_name, reference, value, footprint_name, output_filename, lib_path=None):
     """
@@ -41,15 +43,43 @@ def generate_sheet(symbol_name, reference, value, footprint_name, output_filenam
         )
 
     # 4. Save the generated schematic to its file.
-    file_path = output_filename
+    file_path = f"ChipChat_Project/{output_filename}"
     kicad_api.save_schematic(schematic_data, file_path)
     print(f"--- Finished sheet: {output_filename} ---\n")
 
+
 def main():
     """
-    Main function to generate all schematic files for the project.
+    Main function to generate the project.
+    Step 1: Copy components from the master database into project.json
+    Step 2 (future): Add connections/nets
+    Step 3 (future): Generate schematic sheets from project.json
     """
-    # --- Generate BME280 Sensor Sheet ---
+
+    # --- Step 1: Build project.json from master database ---
+    print("=== Step 1: Building project.json from master database ===\n")
+    project_helper.list_available_parts()
+    print()
+
+    project = project_helper.create_project(
+        project_name="ChipChat_Project",
+        part_names=[
+            "USB_C_Receptacle_USB2.0_16P",
+            "TPS628438DRL",
+            "MCP2221A-I_SL",
+            "BME280"
+        ]
+    )
+
+    # Print summary of what was copied
+    print("\n=== Project summary ===")
+    for comp in project["components"]:
+        pin_count = len(comp.get("pins", []))
+        print(f"  {comp['name']} - {comp['type']} - {pin_count} pins")
+
+    # --- Step 2: Generate schematic sheets for each component ---
+    print("\n=== Step 2: Generating schematic sheets ===\n")
+
     generate_sheet(
         symbol_name="BME280",
         reference="U1",
@@ -58,7 +88,6 @@ def main():
         output_filename="BME280_Sensor.kicad_sch"
     )
 
-    # --- Generate MCP2210 USB to SPI Sheet ---
     generate_sheet(
         symbol_name="MCP2210-I_SO",
         reference="U1",
@@ -66,6 +95,7 @@ def main():
         footprint_name="Footprint_Library:MCP2210-I_SO",
         output_filename="MCP2210_USB_TO_SPI.kicad_sch"
     )
+
 
 if __name__ == "__main__":
     main()

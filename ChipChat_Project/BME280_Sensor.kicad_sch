@@ -1,5 +1,5 @@
 (kicad_sch (version 20250114) (generator "ChipChat_Gemini")
-	(uuid "e8c424e0-9872-4e3c-bdd1-82f15c6df6ab")
+	(uuid "3b78048c-8f51-4028-be07-5a2ee238a9ef")
 	(paper "A4")
 
 	(lib_symbols
@@ -130,7 +130,7 @@
 	(symbol
 		(lib_id "BME280")
 		(at 148.5 105.0 0)
-		(uuid "682101e8-2012-4567-81e0-f09b010e484c")
+		(uuid "20d30921-6fa6-44ba-aef1-b188cf737654")
 		(property "Reference" "U1" (at 148.5 107.54 0) (effects (font (size 1.27 1.27))))
 		(property "Value" "BME280" (at 148.5 102.46 0) (effects (font (size 1.27 1.27))))
 		(property "Footprint" "Footprint_Library:BME280" (at 148.5 105.0 0) (effects (font (size 1.27 1.27)) (hide yes)))

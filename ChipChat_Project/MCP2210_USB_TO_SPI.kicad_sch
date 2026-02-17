@@ -1,5 +1,5 @@
 (kicad_sch (version 20250114) (generator "ChipChat_Gemini")
-	(uuid "18209fae-f563-41ea-938b-a5a0e5df2383")
+	(uuid "ae89fd5a-d99f-457c-a03a-c5f29c2fcfe3")
 	(paper "A4")
 
 	(lib_symbols
@@ -223,7 +223,7 @@
 	(symbol
 		(lib_id "MCP2210-I_SO")
 		(at 148.5 105.0 0)
-		(uuid "9191c471-3e1a-44ae-bdaf-161ae7c840ed")
+		(uuid "5de854c4-3031-47fa-95e2-20b7a07c15bc")
 		(property "Reference" "U1" (at 148.5 107.54 0) (effects (font (size 1.27 1.27))))
 		(property "Value" "MCP2210-I/SO" (at 148.5 102.46 0) (effects (font (size 1.27 1.27))))
 		(property "Footprint" "Footprint_Library:MCP2210-I_SO" (at 148.5 105.0 0) (effects (font (size 1.27 1.27)) (hide yes)))

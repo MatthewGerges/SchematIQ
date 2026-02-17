@@ -113,7 +113,7 @@ def generate_schematic_text(schematic_data):
             text += f'\t\t(at {item["at"][0]} {item["at"][1]} {item["at"][2]})\n'
             text += f'\t\t(uuid "{item["uuid"]}")'
             text += _format_properties(item["properties"], item["at"])
-            text += "\n\t)\n"
+            text += "\n\t)\n'
             
     text += ")\n"
     return text

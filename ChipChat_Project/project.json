@@ -1,0 +1,569 @@
+{
+  "project_name": "ChipChat_Project",
+  "version": "1.0",
+  "components": [
+    {
+      "name": "USB_C_Receptacle_USB2.0_16P",
+      "manufacturer": "USB-IF",
+      "part_number": "USB_C_2.0_16P",
+      "type": "connector",
+      "description": "USB 2.0-only 16P Type-C Receptacle connector",
+      "interfaces": [
+        "USB2.0"
+      ],
+      "voltage_range": {
+        "min": 0,
+        "max": 5.0,
+        "unit": "V"
+      },
+      "symbol": {
+        "library": "Connector",
+        "lib_id": "Connector:USB_C_Receptacle_USB2.0_16P"
+      },
+      "footprint": {
+        "library": "Connector",
+        "name": "USB*C*Receptacle*"
+      },
+      "pins": [
+        {
+          "number": "A1",
+          "name": "GND",
+          "type": "power_in",
+          "function": "ground",
+          "voltage": {
+            "min": 0,
+            "max": 0,
+            "unit": "V"
+          }
+        },
+        {
+          "number": "A4",
+          "name": "VBUS+",
+          "type": "power_in",
+          "function": "power_supply",
+          "voltage": {
+            "min": 4.75,
+            "max": 5.25,
+            "unit": "V"
+          }
+        },
+        {
+          "number": "A5",
+          "name": "CC1",
+          "type": "bidirectional",
+          "function": "configuration_channel_1",
+          "voltage": {
+            "min": 0,
+            "max": 5.0,
+            "unit": "V"
+          }
+        },
+        {
+          "number": "A6",
+          "name": "D+",
+          "type": "bidirectional",
+          "function": "usb_data_plus",
+          "voltage": {
+            "min": 0,
+            "max": 3.6,
+            "unit": "V"
+          }
+        },
+        {
+          "number": "A7",
+          "name": "D-",
+          "type": "bidirectional",
+          "function": "usb_data_minus",
+          "voltage": {
+            "min": 0,
+            "max": 3.6,
+            "unit": "V"
+          }
+        },
+        {
+          "number": "A8",
+          "name": "SBU1",
+          "type": "bidirectional",
+          "function": "sideband_use_1",
+          "voltage": {
+            "min": 0,
+            "max": 5.0,
+            "unit": "V"
+          }
+        },
+        {
+          "number": "B1",
+          "name": "GND",
+          "type": "power_in",
+          "function": "ground",
+          "voltage": {
+            "min": 0,
+            "max": 0,
+            "unit": "V"
+          }
+        },
+        {
+          "number": "B4",
+          "name": "VBUS+",
+          "type": "power_in",
+          "function": "power_supply",
+          "voltage": {
+            "min": 4.75,
+            "max": 5.25,
+            "unit": "V"
+          }
+        },
+        {
+          "number": "B5",
+          "name": "CC2",
+          "type": "bidirectional",
+          "function": "configuration_channel_2",
+          "voltage": {
+            "min": 0,
+            "max": 5.0,
+            "unit": "V"
+          }
+        },
+        {
+          "number": "B6",
+          "name": "D+",
+          "type": "bidirectional",
+          "function": "usb_data_plus",
+          "voltage": {
+            "min": 0,
+            "max": 3.6,
+            "unit": "V"
+          }
+        },
+        {
+          "number": "B7",
+          "name": "D-",
+          "type": "bidirectional",
+          "function": "usb_data_minus",
+          "voltage": {
+            "min": 0,
+            "max": 3.6,
+            "unit": "V"
+          }
+        },
+        {
+          "number": "B8",
+          "name": "SBU2",
+          "type": "bidirectional",
+          "function": "sideband_use_2",
+          "voltage": {
+            "min": 0,
+            "max": 5.0,
+            "unit": "V"
+          }
+        },
+        {
+          "number": "S1",
+          "name": "SHIELD",
+          "type": "power_in",
+          "function": "shield_ground",
+          "voltage": {
+            "min": 0,
+            "max": 0,
+            "unit": "V"
+          }
+        }
+      ],
+      "datasheet": "https://www.usb.org/sites/default/files/documents/usb_type-c.zip"
+    },
+    {
+      "name": "TPS628438DRL",
+      "manufacturer": "Texas Instruments",
+      "part_number": "TPS628438DRL",
+      "type": "regulator",
+      "description": "600mA Step-Down Converter with DCS-Control, ultra-low Iq, 1.8-5.5 Vin, 1.8-3.6 Vout, SOT-563",
+      "interfaces": [],
+      "voltage_range": {
+        "input": {
+          "min": 1.8,
+          "max": 5.5,
+          "unit": "V"
+        },
+        "output": {
+          "min": 1.8,
+          "max": 3.6,
+          "unit": "V"
+        }
+      },
+      "symbol": {
+        "library": "Regulator_Switching",
+        "lib_id": "Regulator_Switching:TPS628438DRL"
+      },
+      "footprint": {
+        "library": "Package_TO_SOT_SMD",
+        "name": "SOT-563"
+      },
+      "pins": [
+        {
+          "number": "1",
+          "name": "GND",
+          "type": "power_in",
+          "function": "ground",
+          "voltage": {
+            "min": 0,
+            "max": 0,
+            "unit": "V"
+          }
+        },
+        {
+          "number": "2",
+          "name": "VIN",
+          "type": "power_in",
+          "function": "input_voltage",
+          "voltage": {
+            "min": 1.8,
+            "max": 5.5,
+            "unit": "V"
+          }
+        },
+        {
+          "number": "3",
+          "name": "VSET",
+          "type": "input",
+          "function": "voltage_set",
+          "voltage": {
+            "min": 0,
+            "max": 1.8,
+            "unit": "V"
+          }
+        },
+        {
+          "number": "4",
+          "name": "EN",
+          "type": "input",
+          "function": "enable",
+          "voltage": {
+            "vih_min": 1.2,
+            "vil_max": 0.4,
+            "unit": "V"
+          }
+        },
+        {
+          "number": "5",
+          "name": "SW",
+          "type": "power_out",
+          "function": "switch_node",
+          "voltage": {
+            "min": 0,
+            "max": 5.5,
+            "unit": "V"
+          }
+        },
+        {
+          "number": "6",
+          "name": "VOS",
+          "type": "input",
+          "function": "voltage_output_sense",
+          "voltage": {
+            "min": 1.8,
+            "max": 3.6,
+            "unit": "V"
+          }
+        }
+      ],
+      "datasheet": "https://www.ti.com/lit/ds/symlink/tps62843.pdf"
+    },
+    {
+      "name": "MCP2221A-I_SL",
+      "manufacturer": "Microchip",
+      "part_number": "MCP2221A-I/SL",
+      "type": "bridge",
+      "description": "USB Bridge, USB to I2C/UART USB 2.0 I2C, UART Interface 14-SOIC",
+      "interfaces": [
+        "USB2.0",
+        "I2C",
+        "UART"
+      ],
+      "voltage_range": {
+        "min": 3.0,
+        "max": 3.6,
+        "unit": "V"
+      },
+      "symbol": {
+        "library": "AI-PCB2",
+        "lib_id": "AI-PCB2:MCP2221A-I_SL"
+      },
+      "footprint": {
+        "library": "MCP2221A-I_SL",
+        "name": "SOIC127P600X175-14N"
+      },
+      "pins": [
+        {
+          "number": "1",
+          "name": "VDD",
+          "type": "power_in",
+          "function": "power_supply",
+          "voltage": {
+            "min": 3.0,
+            "max": 3.6,
+            "unit": "V"
+          }
+        },
+        {
+          "number": "2",
+          "name": "GP0",
+          "type": "bidirectional",
+          "function": "general_purpose_io_0",
+          "voltage": {
+            "min": 0,
+            "max": 3.6,
+            "unit": "V"
+          }
+        },
+        {
+          "number": "3",
+          "name": "GP1",
+          "type": "bidirectional",
+          "function": "general_purpose_io_1",
+          "voltage": {
+            "min": 0,
+            "max": 3.6,
+            "unit": "V"
+          }
+        },
+        {
+          "number": "4",
+          "name": "RST",
+          "type": "input",
+          "function": "reset",
+          "voltage": {
+            "vih_min": 2.0,
+            "vil_max": 0.8,
+            "unit": "V"
+          }
+        },
+        {
+          "number": "5",
+          "name": "URX",
+          "type": "input",
+          "function": "uart_receive",
+          "voltage": {
+            "min": 0,
+            "max": 3.6,
+            "unit": "V"
+          }
+        },
+        {
+          "number": "6",
+          "name": "UTX",
+          "type": "output",
+          "function": "uart_transmit",
+          "voltage": {
+            "min": 0,
+            "max": 3.6,
+            "unit": "V"
+          }
+        },
+        {
+          "number": "7",
+          "name": "GP2",
+          "type": "bidirectional",
+          "function": "general_purpose_io_2",
+          "voltage": {
+            "min": 0,
+            "max": 3.6,
+            "unit": "V"
+          }
+        },
+        {
+          "number": "8",
+          "name": "GP3",
+          "type": "bidirectional",
+          "function": "general_purpose_io_3",
+          "voltage": {
+            "min": 0,
+            "max": 3.6,
+            "unit": "V"
+          }
+        },
+        {
+          "number": "9",
+          "name": "SDA",
+          "type": "bidirectional",
+          "function": "i2c_data",
+          "voltage": {
+            "min": 0,
+            "max": 3.6,
+            "unit": "V"
+          }
+        },
+        {
+          "number": "10",
+          "name": "SCL",
+          "type": "bidirectional",
+          "function": "i2c_clock",
+          "voltage": {
+            "min": 0,
+            "max": 3.6,
+            "unit": "V"
+          }
+        },
+        {
+          "number": "11",
+          "name": "VUSB",
+          "type": "power_in",
+          "function": "usb_power",
+          "voltage": {
+            "min": 4.75,
+            "max": 5.25,
+            "unit": "V"
+          }
+        },
+        {
+          "number": "12",
+          "name": "D-",
+          "type": "bidirectional",
+          "function": "usb_data_minus",
+          "voltage": {
+            "min": 0,
+            "max": 3.6,
+            "unit": "V"
+          }
+        },
+        {
+          "number": "13",
+          "name": "D+",
+          "type": "bidirectional",
+          "function": "usb_data_plus",
+          "voltage": {
+            "min": 0,
+            "max": 3.6,
+            "unit": "V"
+          }
+        },
+        {
+          "number": "14",
+          "name": "VSS",
+          "type": "power_in",
+          "function": "ground",
+          "voltage": {
+            "min": 0,
+            "max": 0,
+            "unit": "V"
+          }
+        }
+      ],
+      "datasheet": ""
+    },
+    {
+      "name": "BME280",
+      "manufacturer": "Bosch",
+      "part_number": "BME280",
+      "type": "sensor",
+      "description": "3-in-1 sensor, humidity, pressure, temperature, I2C and SPI interface, 1.71-3.6V, LGA-8",
+      "interfaces": [
+        "I2C",
+        "SPI"
+      ],
+      "voltage_range": {
+        "min": 1.71,
+        "max": 3.6,
+        "unit": "V"
+      },
+      "symbol": {
+        "library": "KICAD_Library/Symbols/BME280.kicad_sym",
+        "lib_id": "BME280"
+      },
+      "footprint": {
+        "library": "Footprint_Library",
+        "name": "BME280"
+      },
+      "pins": [
+        {
+          "number": "1",
+          "name": "GND",
+          "type": "power_in",
+          "function": "ground",
+          "voltage": {
+            "min": 0,
+            "max": 0,
+            "unit": "V"
+          }
+        },
+        {
+          "number": "2",
+          "name": "CSB",
+          "type": "input",
+          "function": "chip_select_bar",
+          "voltage": {
+            "vih_min": 0.7,
+            "vil_max": 0.3,
+            "unit": "V"
+          }
+        },
+        {
+          "number": "3",
+          "name": "SDI",
+          "type": "bidirectional",
+          "function": "spi_data_in_i2c_sda",
+          "voltage": {
+            "vih_min": 0.7,
+            "vil_max": 0.3,
+            "unit": "V"
+          }
+        },
+        {
+          "number": "4",
+          "name": "SCK",
+          "type": "input",
+          "function": "spi_clock_i2c_scl",
+          "voltage": {
+            "vih_min": 0.7,
+            "vil_max": 0.3,
+            "unit": "V"
+          }
+        },
+        {
+          "number": "5",
+          "name": "SDO",
+          "type": "bidirectional",
+          "function": "spi_data_out_i2c_address_select",
+          "voltage": {
+            "vih_min": 0.7,
+            "vil_max": 0.3,
+            "unit": "V"
+          }
+        },
+        {
+          "number": "6",
+          "name": "VDDIO",
+          "type": "power_in",
+          "function": "io_power",
+          "voltage": {
+            "min": 1.71,
+            "max": 3.6,
+            "unit": "V"
+          }
+        },
+        {
+          "number": "7",
+          "name": "GND",
+          "type": "power_in",
+          "function": "ground",
+          "voltage": {
+            "min": 0,
+            "max": 0,
+            "unit": "V"
+          }
+        },
+        {
+          "number": "8",
+          "name": "VDD",
+          "type": "power_in",
+          "function": "core_power",
+          "voltage": {
+            "min": 1.71,
+            "max": 3.6,
+            "unit": "V"
+          }
+        }
+      ],
+      "datasheet": "https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bme280-ds002.pdf"
+    }
+  ]
+}

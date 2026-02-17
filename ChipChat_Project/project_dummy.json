@@ -14,63 +14,64 @@
       "ref": "J1",
       "part": "USB_C_Receptacle_USB2.0_16P",
       "sheet": "USBC",
+      "note": "needs passive: 5.1K resistor on CC1, 5.1K resistor on CC2",
       "connections": [
-        {"pin": "A4", "net": "PP_5V_VBUS"},
-        {"pin": "A9", "net": "PP_5V_VBUS"},
-        {"pin": "B4", "net": "PP_5V_VBUS"},
-        {"pin": "B9", "net": "PP_5V_VBUS"},
-        {"pin": "A1", "net": "GND"},
-        {"pin": "A12", "net": "GND"},
-        {"pin": "B1", "net": "GND"},
-        {"pin": "B12", "net": "GND"},
-        {"pin": "A5", "net": "USB_CC1"},
-        {"pin": "B5", "net": "USB_CC2"},
-        {"pin": "A7", "net": "USB_DN"},
-        {"pin": "B7", "net": "USB_DN"},
-        {"pin": "A6", "net": "USB_DP"},
-        {"pin": "B6", "net": "USB_DP"},
-        {"pin": "S1", "net": "GND"}
+        {"pin": "A4", "pin_name": "VBUS+", "net": "PP_5V_VBUS"},
+        {"pin": "A1", "pin_name": "GND", "net": "GND"},
+        {"pin": "A12", "pin_name": "GND", "net": "GND"},
+        {"pin": "B1", "pin_name": "GND", "net": "GND"},
+        {"pin": "B12", "pin_name": "GND", "net": "GND"},
+        {"pin": "A5", "pin_name": "CC1", "net": "USB_CC1"},
+        {"pin": "B5", "pin_name": "CC2", "net": "USB_CC2"},
+        {"pin": "A7", "pin_name": "D-", "net": "USB_DN"},
+        {"pin": "B7", "pin_name": "D-", "net": "USB_DN"},
+        {"pin": "A6", "pin_name": "D+", "net": "USB_DP"},
+        {"pin": "B6", "pin_name": "D+", "net": "USB_DP"},
+        {"pin": "S1", "pin_name": "SHIELD", "net": "GND"}
       ]
     },
     {
       "ref": "U1",
       "part": "TPS628438DRL",
       "sheet": "Buck_Converter",
+      "note": "needs passive: 249K resistor on VSET, 1.0uH inductor on SW, 4.7uF capacitor on VIN, 0.1uF capacitor on VIN, 4.7uF capacitor on VOS",
       "connections": [
-        {"pin": "1", "net": "GND"},
-        {"pin": "2", "net": "PP_5V_SYS"},
-        {"pin": "3", "net": "Buck_Vset_3V3"},
-        {"pin": "4", "net": "PP_5V_SYS"},
-        {"pin": "5", "net": "BUCK_SW"},
-        {"pin": "6", "net": "PP_3V3_OUT"}
+        {"pin": "1", "pin_name": "GND", "net": "GND"},
+        {"pin": "2", "pin_name": "VIN", "net": "PP_5V_SYS"},
+        {"pin": "3", "pin_name": "VSET", "net": "Buck_Vset_3V3"},
+        {"pin": "4", "pin_name": "EN", "net": "PP_5V_SYS"},
+        {"pin": "5", "pin_name": "SW", "net": "BUCK_SW"},
+        {"pin": "6", "pin_name": "VOS", "net": "PP_3V3_OUT"}
       ]
     },
     {
       "ref": "U2",
       "part": "MCP2221A-I_SL",
       "sheet": "USB_To_I2C",
+      "note": "needs passive: 10K resistor on RST, 0.47uF capacitor on VUSB, 0.1uF capacitor on VDD, 1uF capacitor on VDD",
       "connections": [
-        {"pin": "1", "net": "PP_3V3_OUT"},
-        {"pin": "4", "net": "MCP_NRST"},
-        {"pin": "9", "net": "I2C_SDA_BME"},
-        {"pin": "10", "net": "I2C_SCL_BME"},
-        {"pin": "12", "net": "USB_DN"},
-        {"pin": "13", "net": "USB_DP"},
-        {"pin": "14", "net": "GND"}
+        {"pin": "1", "pin_name": "VDD", "net": "PP_3V3_OUT"},
+        {"pin": "4", "pin_name": "RST", "net": "MCP_NRST"},
+        {"pin": "9", "pin_name": "SDA", "net": "I2C_SDA_BME"},
+        {"pin": "10", "pin_name": "SCL", "net": "I2C_SCL_BME"},
+        {"pin": "12", "pin_name": "D-", "net": "USB_DN"},
+        {"pin": "13", "pin_name": "D+", "net": "USB_DP"},
+        {"pin": "14", "pin_name": "VSS", "net": "GND"}
       ]
     },
     {
       "ref": "U3",
       "part": "BME280",
       "sheet": "BME280_Sensor",
+      "note": "needs passive: 4.7K resistor on SCL, 4.7K resistor on SDA, 0R resistor on SCL (debug), 0R resistor on SDA (debug), 0R resistor on SDO, 0.1uF capacitor on VDD, 0.1uF capacitor on VDDIO",
       "connections": [
-        {"pin": "1", "net": "GND"},
-        {"pin": "3", "net": "I2C_SDA_BME"},
-        {"pin": "4", "net": "I2C_SCL_BME"},
-        {"pin": "5", "net": "SDO_ADD"},
-        {"pin": "6", "net": "PP_3V3_OUT"},
-        {"pin": "7", "net": "GND"},
-        {"pin": "8", "net": "PP_3V3_OUT"}
+        {"pin": "1", "pin_name": "GND", "net": "GND"},
+        {"pin": "3", "pin_name": "SDI", "net": "I2C_SDA_BME"},
+        {"pin": "4", "pin_name": "SCK", "net": "I2C_SCL_BME"},
+        {"pin": "5", "pin_name": "SDO", "net": "SDO_ADD"},
+        {"pin": "6", "pin_name": "VDDIO", "net": "PP_3V3_OUT"},
+        {"pin": "7", "pin_name": "GND", "net": "GND"},
+        {"pin": "8", "pin_name": "VDD", "net": "PP_3V3_OUT"}
       ]
     }
   ],
@@ -107,50 +108,39 @@
   "nets": [
     {
       "name": "PP_5V_VBUS",
-      "sheet": "USBC",
       "type": "local",
+      "sheet": "USBC",
       "connections": [
-        {"ref": "J1", "pin": "A4"},
-        {"ref": "J1", "pin": "A9"},
-        {"ref": "J1", "pin": "B4"},
-        {"ref": "J1", "pin": "B9"}
+        {"ref": "J1", "pin": "A4", "pin_name": "VBUS+"}
       ]
     },
     {
       "name": "PP_5V_SYS",
-      "sheet": "USBC",
-      "type": "local",
+      "type": "hierarchical",
       "connections": [
-        {"ref": "FB1", "pin": "2"}
-      ]
-    },
-    {
-      "name": "PP_5V_SYS",
-      "sheet": "Buck_Converter",
-      "type": "local",
-      "connections": [
-        {"ref": "U1", "pin": "2"},
-        {"ref": "U1", "pin": "4"},
-        {"ref": "C3", "pin": "1"},
-        {"ref": "C4", "pin": "1"}
+        {"ref": "FB1", "pin": "2", "sheet": "USBC"},
+        {"ref": "U1", "pin": "2", "pin_name": "VIN", "sheet": "Buck_Converter"},
+        {"ref": "U1", "pin": "4", "pin_name": "EN", "sheet": "Buck_Converter"},
+        {"ref": "C3", "pin": "1", "sheet": "Buck_Converter"},
+        {"ref": "C4", "pin": "1", "sheet": "Buck_Converter"}
       ]
     },
     {
       "name": "USB_CC1",
-      "sheet": "USBC",
       "type": "local",
+      "sheet": "USBC",
       "connections": [
-        {"ref": "J1", "pin": "A5"},
+        {"ref": "J1", "pin": "A5", "pin_name": "CC1"},
         {"ref": "R1", "pin": "1"},
         {"ref": "D4", "pin": "1"}
       ]
     },
     {
       "name": "USB_CC2",
-      "sheet": "USBC",
       "type": "local",
+      "sheet": "USBC",
       "connections": [
-        {"ref": "J1", "pin": "B5"},
+        {"ref": "J1", "pin": "B5", "pin_name": "CC2"},
         {"ref": "R2", "pin": "1"}
       ]
     },
@@ -158,75 +148,60 @@
       "name": "USB_DN",
       "type": "hierarchical",
       "connections": [
-        {"ref": "J1", "pin": "A7", "sheet": "USBC"},
-        {"ref": "J1", "pin": "B7", "sheet": "USBC"},
-        {"ref": "U2", "pin": "12", "sheet": "USB_To_I2C"}
+        {"ref": "J1", "pin": "A7", "pin_name": "D-", "sheet": "USBC"},
+        {"ref": "J1", "pin": "B7", "pin_name": "D-", "sheet": "USBC"},
+        {"ref": "U2", "pin": "12", "pin_name": "D-", "sheet": "USB_To_I2C"}
       ]
     },
     {
       "name": "USB_DP",
       "type": "hierarchical",
       "connections": [
-        {"ref": "J1", "pin": "A6", "sheet": "USBC"},
-        {"ref": "J1", "pin": "B6", "sheet": "USBC"},
-        {"ref": "U2", "pin": "13", "sheet": "USB_To_I2C"}
+        {"ref": "J1", "pin": "A6", "pin_name": "D+", "sheet": "USBC"},
+        {"ref": "J1", "pin": "B6", "pin_name": "D+", "sheet": "USBC"},
+        {"ref": "U2", "pin": "13", "pin_name": "D+", "sheet": "USB_To_I2C"}
       ]
     },
     {
       "name": "BUCK_SW",
-      "sheet": "Buck_Converter",
       "type": "local",
+      "sheet": "Buck_Converter",
       "connections": [
-        {"ref": "U1", "pin": "5"},
+        {"ref": "U1", "pin": "5", "pin_name": "SW"},
         {"ref": "L1", "pin": "1"}
       ]
     },
     {
       "name": "Buck_Vset_3V3",
-      "sheet": "Buck_Converter",
       "type": "local",
+      "sheet": "Buck_Converter",
       "connections": [
-        {"ref": "U1", "pin": "3"},
+        {"ref": "U1", "pin": "3", "pin_name": "VSET"},
         {"ref": "R3", "pin": "1"}
       ]
     },
     {
       "name": "PP_3V3_OUT",
-      "sheet": "Buck_Converter",
-      "type": "local",
+      "type": "hierarchical",
       "connections": [
-        {"ref": "U1", "pin": "6"},
-        {"ref": "L1", "pin": "2"},
-        {"ref": "C5", "pin": "1"}
-      ]
-    },
-    {
-      "name": "PP_3V3_OUT",
-      "sheet": "USB_To_I2C",
-      "type": "local",
-      "connections": [
-        {"ref": "U2", "pin": "1"},
-        {"ref": "C7", "pin": "1"},
-        {"ref": "C8", "pin": "1"}
-      ]
-    },
-    {
-      "name": "PP_3V3_OUT",
-      "sheet": "BME280_Sensor",
-      "type": "local",
-      "connections": [
-        {"ref": "U3", "pin": "6"},
-        {"ref": "U3", "pin": "8"},
-        {"ref": "C9", "pin": "1"},
-        {"ref": "C10", "pin": "1"}
+        {"ref": "U1", "pin": "6", "pin_name": "VOS", "sheet": "Buck_Converter"},
+        {"ref": "L1", "pin": "2", "sheet": "Buck_Converter"},
+        {"ref": "C5", "pin": "1", "sheet": "Buck_Converter"},
+        {"ref": "U2", "pin": "1", "pin_name": "VDD", "sheet": "USB_To_I2C"},
+        {"ref": "C7", "pin": "1", "sheet": "USB_To_I2C"},
+        {"ref": "C8", "pin": "1", "sheet": "USB_To_I2C"},
+        {"ref": "U3", "pin": "6", "pin_name": "VDDIO", "sheet": "BME280_Sensor"},
+        {"ref": "U3", "pin": "8", "pin_name": "VDD", "sheet": "BME280_Sensor"},
+        {"ref": "C9", "pin": "1", "sheet": "BME280_Sensor"},
+        {"ref": "C10", "pin": "1", "sheet": "BME280_Sensor"}
       ]
     },
     {
       "name": "MCP_NRST",
-      "sheet": "USB_To_I2C",
       "type": "local",
+      "sheet": "USB_To_I2C",
       "connections": [
-        {"ref": "U2", "pin": "4"},
+        {"ref": "U2", "pin": "4", "pin_name": "RST"},
         {"ref": "R4", "pin": "1"}
       ]
     },
@@ -234,8 +209,8 @@
       "name": "I2C_SDA_BME",
       "type": "hierarchical",
       "connections": [
-        {"ref": "U2", "pin": "9", "sheet": "USB_To_I2C"},
-        {"ref": "U3", "pin": "3", "sheet": "BME280_Sensor"},
+        {"ref": "U2", "pin": "9", "pin_name": "SDA", "sheet": "USB_To_I2C"},
+        {"ref": "U3", "pin": "3", "pin_name": "SDI", "sheet": "BME280_Sensor"},
         {"ref": "R6", "pin": "1", "sheet": "BME280_Sensor"},
         {"ref": "R8", "pin": "1", "sheet": "BME280_Sensor"}
       ]
@@ -244,18 +219,18 @@
       "name": "I2C_SCL_BME",
       "type": "hierarchical",
       "connections": [
-        {"ref": "U2", "pin": "10", "sheet": "USB_To_I2C"},
-        {"ref": "U3", "pin": "4", "sheet": "BME280_Sensor"},
+        {"ref": "U2", "pin": "10", "pin_name": "SCL", "sheet": "USB_To_I2C"},
+        {"ref": "U3", "pin": "4", "pin_name": "SCK", "sheet": "BME280_Sensor"},
         {"ref": "R5", "pin": "1", "sheet": "BME280_Sensor"},
         {"ref": "R7", "pin": "1", "sheet": "BME280_Sensor"}
       ]
     },
     {
       "name": "SDO_ADD",
-      "sheet": "BME280_Sensor",
       "type": "local",
+      "sheet": "BME280_Sensor",
       "connections": [
-        {"ref": "U3", "pin": "5"},
+        {"ref": "U3", "pin": "5", "pin_name": "SDO"},
         {"ref": "R9", "pin": "1"}
       ]
     },
@@ -263,15 +238,15 @@
       "name": "GND",
       "type": "power",
       "connections": [
-        {"ref": "J1", "pin": "A1", "sheet": "USBC"},
-        {"ref": "J1", "pin": "A12", "sheet": "USBC"},
-        {"ref": "J1", "pin": "B1", "sheet": "USBC"},
-        {"ref": "J1", "pin": "B12", "sheet": "USBC"},
-        {"ref": "J1", "pin": "S1", "sheet": "USBC"},
-        {"ref": "U1", "pin": "1", "sheet": "Buck_Converter"},
-        {"ref": "U2", "pin": "14", "sheet": "USB_To_I2C"},
-        {"ref": "U3", "pin": "1", "sheet": "BME280_Sensor"},
-        {"ref": "U3", "pin": "7", "sheet": "BME280_Sensor"},
+        {"ref": "J1", "pin": "A1", "pin_name": "GND", "sheet": "USBC"},
+        {"ref": "J1", "pin": "A12", "pin_name": "GND", "sheet": "USBC"},
+        {"ref": "J1", "pin": "B1", "pin_name": "GND", "sheet": "USBC"},
+        {"ref": "J1", "pin": "B12", "pin_name": "GND", "sheet": "USBC"},
+        {"ref": "J1", "pin": "S1", "pin_name": "SHIELD", "sheet": "USBC"},
+        {"ref": "U1", "pin": "1", "pin_name": "GND", "sheet": "Buck_Converter"},
+        {"ref": "U2", "pin": "14", "pin_name": "VSS", "sheet": "USB_To_I2C"},
+        {"ref": "U3", "pin": "1", "pin_name": "GND", "sheet": "BME280_Sensor"},
+        {"ref": "U3", "pin": "7", "pin_name": "GND", "sheet": "BME280_Sensor"},
         {"ref": "R9", "pin": "2", "sheet": "BME280_Sensor"}
       ]
     }

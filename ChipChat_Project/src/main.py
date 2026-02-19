@@ -1,6 +1,12 @@
 import uuid
-import kicad_api
-import project_builder
+import os
+import sys
+
+# Add parent directory to path
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from src.lib import kicad_api
+from src.lib import project_builder
 
 def generate_sheet(symbol_name, reference, value, footprint_name, output_filename, lib_path=None):
     """

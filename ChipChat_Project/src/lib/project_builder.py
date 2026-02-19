@@ -2,7 +2,7 @@ import json
 import os
 
 # Path to the master component database
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 COMPONENT_DB_PATH = os.path.join(BASE_DIR, "component_database", "components.json")
 
 # Map component types to reference designator prefixes

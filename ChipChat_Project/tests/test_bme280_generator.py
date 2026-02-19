@@ -4,12 +4,17 @@ Run this to test the schematic generator.
 """
 
 import os
-import schematic_generator
+import sys
+
+# Add parent directory to path
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from src.lib import schematic_generator
 
 # Paths
-PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
-PROJECT_JSON = os.path.join(PROJECT_DIR, "project_dummy.json")  # Using dummy for now
-OUTPUT_FILE = os.path.join(PROJECT_DIR, "BME280_Test.kicad_sch")
+PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PROJECT_JSON = os.path.join(PROJECT_DIR, "data", "project_dummy.json")
+OUTPUT_FILE = os.path.join(PROJECT_DIR, "generated", "BME280_Test.kicad_sch")
 
 if __name__ == "__main__":
     print("=" * 60)

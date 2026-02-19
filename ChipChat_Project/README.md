@@ -1,17 +1,25 @@
-# ChipChat_Project
+# ChipChat Project
 
-BME280 sensor board — USB-C power in, buck converter to 3.3V, MCP2221A USB-to-I2C bridge, BME280 sensor.
+AI-powered PCB schematic generation using LLMs and algorithmic layout.
 
-## Files
-
-- `project.json` — Components copied from master database
-- `project_helper.py` — Helper to copy parts from master DB into project JSON
-- `kicad_api.py` — KiCad schematic generation functions
-- `main.py` — Entry point
-
-## Usage
+## Quick Start
 
 ```bash
+# Generate BME280 sensor schematic
 cd ChipChat_Project
-python main.py
+python tests/test_bme280_generator.py
 ```
+
+Output: `generated/BME280_Test.kicad_sch`
+
+## Structure
+
+- `src/lib/` - Core modules (kicad_api, project_builder, schematic_generator)
+- `data/` - JSON files (project_dummy.json, project.json)
+- `generated/` - Generated .kicad_sch files
+- `docs/` - Documentation
+- `tests/` - Test scripts
+
+## Status
+
+See `docs/PROJECT_STATUS.md` for current progress and next steps.

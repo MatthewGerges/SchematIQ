@@ -2,7 +2,8 @@ import json
 import os
 
 # Path to the master component database
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# Go up from src/lib/ -> src/ -> ChipChat_Project/ -> parent -> component_database/
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 COMPONENT_DB_PATH = os.path.join(BASE_DIR, "component_database", "components.json")
 
 # Map component types to reference designator prefixes
@@ -70,7 +71,9 @@ def build_project(project_name, parts, description="", output_path=None):
 
     # Save
     if output_path is None:
-        output_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "project.json")
+        # Save to data/ folder (go up from src/lib/ -> src/ -> ChipChat_Project/ -> data/)
+        base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        output_path = os.path.join(base_dir, "data", "project.json")
 
     with open(output_path, 'w', encoding='utf-8') as f:
         json.dump(project, f, indent=2)

@@ -2,7 +2,7 @@
 	(version 20250114)
 	(generator "eeschema")
 	(generator_version "9.0")
-	(uuid "d2a372a8-12e2-4c28-9c16-2e8a6352c286")
+	(uuid "ecc8b715-c049-4630-b0d4-746f48b8fa10")
 	(paper "A4")
 	(lib_symbols)
 	(sheet
@@ -19,7 +19,7 @@
 		(fill
 			(color 0 0 0 0.0000)
 		)
-		(uuid "a1b2c3d4-5678-90ab-cdef-1234567890ab")
+		(uuid "ccce37f5-ae11-4ee0-9b88-26cbadf48bee")
 		(property "Sheetname" "BME280_Sensor"
 			(at 30.48 29.8 0)
 			(effects
@@ -30,7 +30,7 @@
 			)
 		)
 		(property "Sheetfile" "BME280_Sensor.kicad_sch"
-			(at 30.48 51 0)
+			(at 30.48 51.0 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -53,9 +53,9 @@
 		(fill
 			(color 0 0 0 0.0000)
 		)
-		(uuid "e5f6a7b8-9012-34cd-ef01-2345678901ab")
+		(uuid "3cdebb4a-a660-444b-bca0-a88103b9c9aa")
 		(property "Sheetname" "MCP2210_USB_TO_SPI"
-			(at 30.48 59.6 0)
+			(at 30.48 60.28 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -64,7 +64,7 @@
 			)
 		)
 		(property "Sheetfile" "MCP2210_USB_TO_SPI.kicad_sch"
-			(at 30.48 81.5 0)
+			(at 30.48 81.48 0)
 			(effects
 				(font
 					(size 1.27 1.27)

@@ -5,10 +5,12 @@
 - **Project JSON**: `project_dummy.json` structure with sheets, components, passives, nets
 - **Project builder**: Copies components from DB to project.json, auto-assigns refs
 - **Schematic generator**: Generates BME280_Sensor sheet with components, wires, labels
-- **Folder structure**: Organized into `src/`, `data/`, `generated/`, `docs/`, `tests/`
+- **Folder structure**: Organized into `src/lib/`, `data/`, `generated/`, `docs/`, `tests/`
+- **Device symbols**: Fixed Device:R and Device:C embedding (proper KiCad format)
+- **Project paths**: Fixed KiCad project file to reference `generated/` folder
 
 ## Next
-- [ ] Fix Device:R/C symbol embedding (currently not showing in KiCad)
+- [ ] Test Device symbols display correctly in KiCad
 - [ ] Improve wire routing (avoid crossovers, use full page)
 - [ ] Generate remaining sheets (USBC, Buck_Converter, USB_To_I2C)
 - [ ] LLM integration for net generation

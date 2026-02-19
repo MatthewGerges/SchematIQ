@@ -68,40 +68,109 @@ def _embed_device_symbol(schematic_data, symbol_type):
     
     if symbol_type == "R":
         symbol_def = f'''(symbol "Device:R"
-	(pin_names (offset 1.016) hide)
+	(pin_numbers
+		(hide yes)
+	)
+	(pin_names
+		(offset 0)
+	)
 	(exclude_from_sim no)
-	(in_bom yes) (on_board yes)
+	(in_bom yes)
+	(on_board yes)
 	(property "Reference" "R"
-		(at 0 0 0)
-		(effects (font (size 1.27 1.27)))
+		(at 2.032 0 90)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
 	)
 	(property "Value" "R"
-		(at 0 -2.54 0)
-		(effects (font (size 1.27 1.27)))
+		(at 0 0 90)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
 	)
 	(property "Footprint" ""
-		(at 0 0 0)
-		(effects (font (size 1.27 1.27)) hide)
+		(at -1.778 0 90)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(hide yes)
+		)
 	)
 	(property "Datasheet" "~"
 		(at 0 0 0)
-		(effects (font (size 1.27 1.27)) hide)
-	)
-	(symbol "Device:R_0_1"
-		(polyline
-			(pts
-				(xy -1.27 0) (xy 1.27 0)
+		(effects
+			(font
+				(size 1.27 1.27)
 			)
-			(stroke (width 0.254) (type default))
-			(fill (type none))
+			(hide yes)
 		)
-		(pin "1" (uuid {pin1_uuid})
-			(at -3.81 0 180)
-			(length 2.54)
+	)
+	(property "Description" "Resistor"
+		(at 0 0 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(hide yes)
 		)
-		(pin "2" (uuid {pin2_uuid})
-			(at 3.81 0 0)
-			(length 2.54)
+	)
+	(symbol "R_0_1"
+		(rectangle
+			(start -1.016 -2.54)
+			(end 1.016 2.54)
+			(stroke
+				(width 0.254)
+				(type default)
+			)
+			(fill
+				(type none)
+			)
+		)
+	)
+	(symbol "R_1_1"
+		(pin passive line
+			(at 0 3.81 270)
+			(length 1.27)
+			(name "~"
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(number "1"
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(uuid "{pin1_uuid}")
+		)
+		(pin passive line
+			(at 0 -3.81 90)
+			(length 1.27)
+			(name "~"
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(number "2"
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(uuid "{pin2_uuid}")
 		)
 	)
 )'''
@@ -109,54 +178,124 @@ def _embed_device_symbol(schematic_data, symbol_type):
         pin3_uuid = str(uuid_module.uuid4())
         pin4_uuid = str(uuid_module.uuid4())
         symbol_def = f'''(symbol "Device:C"
-	(pin_names (offset 1.016) hide)
+	(pin_numbers
+		(hide yes)
+	)
+	(pin_names
+		(offset 0.254)
+	)
 	(exclude_from_sim no)
-	(in_bom yes) (on_board yes)
+	(in_bom yes)
+	(on_board yes)
 	(property "Reference" "C"
-		(at 0 0 0)
-		(effects (font (size 1.27 1.27)))
+		(at 0.635 2.54 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
 	)
 	(property "Value" "C"
-		(at 0 -2.54 0)
-		(effects (font (size 1.27 1.27)))
+		(at 0.635 -2.54 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
 	)
 	(property "Footprint" ""
-		(at 0 0 0)
-		(effects (font (size 1.27 1.27)) hide)
+		(at 0.9652 -3.81 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(hide yes)
+		)
 	)
 	(property "Datasheet" "~"
 		(at 0 0 0)
-		(effects (font (size 1.27 1.27)) hide)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(hide yes)
+		)
 	)
-	(symbol "Device:C_0_1"
+	(property "Description" "Unpolarized capacitor"
+		(at 0 0 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(hide yes)
+		)
+	)
+	(symbol "C_0_1"
 		(polyline
 			(pts
-				(xy 0 -1.27) (xy 0 1.27)
+				(xy -2.032 0.762) (xy 2.032 0.762)
 			)
-			(stroke (width 0.254) (type default))
-			(fill (type none))
+			(stroke
+				(width 0.508)
+				(type default)
+			)
+			(fill
+				(type none)
+			)
 		)
 		(polyline
 			(pts
-				(xy -1.27 -1.27) (xy 1.27 -1.27)
+				(xy -2.032 -0.762) (xy 2.032 -0.762)
 			)
-			(stroke (width 0.254) (type default))
-			(fill (type none))
-		)
-		(polyline
-			(pts
-				(xy -1.27 1.27) (xy 1.27 1.27)
+			(stroke
+				(width 0.508)
+				(type default)
 			)
-			(stroke (width 0.254) (type default))
-			(fill (type none))
+			(fill
+				(type none)
+			)
 		)
-		(pin "1" (uuid {pin3_uuid})
-			(at -3.81 0 180)
-			(length 2.54)
+	)
+	(symbol "C_1_1"
+		(pin passive line
+			(at 0 3.81 270)
+			(length 1.27)
+			(name "~"
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(number "1"
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(uuid "{pin3_uuid}")
 		)
-		(pin "2" (uuid {pin4_uuid})
-			(at 3.81 0 0)
-			(length 2.54)
+		(pin passive line
+			(at 0 -3.81 90)
+			(length 1.27)
+			(name "~"
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(number "2"
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(uuid "{pin4_uuid}")
 		)
 	)
 )'''
@@ -384,7 +523,7 @@ def generate_bme280_sensor_sheet(project_json_path, output_path):
     schematic_data = kicad_api.create_schematic_data("BME280_Sensor", sheet_uuid)
     
     # Get component database for symbol paths
-    # Import here to avoid circular dependency
+    # Go up from src/lib/ -> src/ -> ChipChat_Project/ -> parent -> component_database/
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
     COMPONENT_DB_PATH = os.path.join(BASE_DIR, "component_database", "components.json")
     with open(COMPONENT_DB_PATH, 'r', encoding='utf-8') as f:

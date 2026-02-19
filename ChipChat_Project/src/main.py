@@ -7,6 +7,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from src.lib import kicad_api
 from src.lib import project_builder
+from src.lib import project_generator
 
 def generate_sheet(symbol_name, reference, value, footprint_name, output_filename, lib_path=None):
     """
@@ -59,12 +60,17 @@ def main():
     )
 
     # --- Step 2: Generate schematic sheets ---
+    # Output to generated/ folder
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    generated_dir = os.path.join(base_dir, "generated")
+    os.makedirs(generated_dir, exist_ok=True)
+    
     generate_sheet(
         symbol_name="BME280",
         reference="U1",
         value="BME280",
         footprint_name="Footprint_Library:BME280",
-        output_filename="BME280_Sensor.kicad_sch"
+        output_filename=os.path.join(generated_dir, "BME280_Sensor.kicad_sch")
     )
 
     generate_sheet(
@@ -72,7 +78,25 @@ def main():
         reference="U1",
         value="MCP2210-I/SO",
         footprint_name="Footprint_Library:MCP2210-I_SO",
-        output_filename="MCP2210_USB_TO_SPI.kicad_sch"
+        output_filename=os.path.join(generated_dir, "MCP2210_USB_TO_SPI.kicad_sch")
+    )
+    
+    # --- Step 3: Generate root project files in generated/ folder ---
+    project_name = "ChipChat_Project"
+    root_schematic, sheet_uuids = project_generator.generate_root_schematic(
+        project_name=project_name,
+        sheet_files=[
+            ("BME280_Sensor", "BME280_Sensor.kicad_sch"),
+            ("MCP2210_USB_TO_SPI", "MCP2210_USB_TO_SPI.kicad_sch")
+        ],
+        output_dir=generated_dir
+    )
+    
+    project_generator.generate_project_file(
+        project_name=project_name,
+        root_schematic_path=f"{project_name}.kicad_sch",
+        output_dir=generated_dir,
+        sheet_uuids=sheet_uuids
     )
 
 

@@ -61,8 +61,13 @@ def embed_symbol_from_file(schematic_data, symbol_name, library_path=None):
         print(f"Error: Could not extract symbol from {symbol_filepath}")
         return None
 
-def place_component(schematic_data, lib_id, reference, value, position, angle=0, footprint=""):
-    """Adds a component instance to the schematic data."""
+def place_component(schematic_data, lib_id, reference, value, position, angle=0, footprint="", pins=None):
+    """Adds a component instance to the schematic data.
+    
+    Args:
+        pins: list of pin numbers (e.g. ["1", "2"]) for pin instance UUIDs.
+              If None, no pin instances are added.
+    """
     component = {
         "type": "symbol",
         "lib_id": lib_id,
@@ -72,10 +77,11 @@ def place_component(schematic_data, lib_id, reference, value, position, angle=0,
             "Reference": reference, 
             "Value": value,
             "Footprint": footprint
-        }
+        },
+        "pins": pins or []
     }
     schematic_data["items"].append(component)
-    print(f"Placed {reference} ({lib_id}) at {position} with footprint '{footprint}'")
+    print(f"Placed {reference} ({lib_id}) at {position}")
     return schematic_data
 
 def _format_properties(properties, parent_at):

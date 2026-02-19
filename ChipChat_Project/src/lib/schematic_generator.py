@@ -59,12 +59,33 @@ PIN_OFFSETS = {
 
 
 def _embed_device_symbol(schematic_data, symbol_type):
-    """Embed a standard Device symbol (R or C) into the schematic."""
-    import uuid as uuid_module
+    """Embed a standard Device symbol (R or C) from KICAD_Library/Symbols/."""
+    # Use actual symbol files instead of generating inline
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+    SYMBOL_LIB_PATH = os.path.join(BASE_DIR, "KICAD_Library", "Symbols")
     
-    # Generate proper UUIDs for pins
-    pin1_uuid = str(uuid_module.uuid4())
-    pin2_uuid = str(uuid_module.uuid4())
+    if symbol_type == "R":
+        symbol_name = "Resistor"
+    elif symbol_type == "C":
+        symbol_name = "Capacitor"
+    else:
+        return None
+    
+    # Try to embed from file
+    symbol_file = os.path.join(SYMBOL_LIB_PATH, f"{symbol_name}.kicad_sym")
+    if os.path.exists(symbol_file):
+        from src.lib import kicad_api
+        embedded_lib_id = kicad_api.embed_symbol_from_file(
+            schematic_data,
+            symbol_name,
+            library_path=SYMBOL_LIB_PATH
+        )
+        if embedded_lib_id:
+            print(f"Embedded {symbol_name} symbol from file")
+            return embedded_lib_id
+    
+    # Fallback: generate inline (without UUIDs in pins - they're not allowed in symbol definitions)
+    print(f"Warning: {symbol_name}.kicad_sym not found, using fallback inline generation")
     
     if symbol_type == "R":
         symbol_def = f'''(symbol "Device:R"
@@ -151,7 +172,6 @@ def _embed_device_symbol(schematic_data, symbol_type):
 					)
 				)
 			)
-			(uuid "{pin1_uuid}")
 		)
 		(pin passive line
 			(at 0 -3.81 90)
@@ -170,7 +190,6 @@ def _embed_device_symbol(schematic_data, symbol_type):
 					)
 				)
 			)
-			(uuid "{pin2_uuid}")
 		)
 	)
 )'''
@@ -276,7 +295,6 @@ def _embed_device_symbol(schematic_data, symbol_type):
 					)
 				)
 			)
-			(uuid "{pin3_uuid}")
 		)
 		(pin passive line
 			(at 0 -3.81 90)
@@ -295,7 +313,6 @@ def _embed_device_symbol(schematic_data, symbol_type):
 					)
 				)
 			)
-			(uuid "{pin4_uuid}")
 		)
 	)
 )'''
@@ -585,14 +602,14 @@ def generate_bme280_sensor_sheet(project_json_path, output_path):
         
         # Determine symbol library ID and embed if needed
         if ptype == "R":
-            lib_id = "Device:R"
-            # Embed Device:R symbol if not already embedded
-            if not any("Device:R" in str(s) for s in schematic_data["lib_symbols"]):
+            lib_id = "Resistor"
+            # Embed Resistor symbol if not already embedded
+            if not any('symbol "Resistor"' in str(s) for s in schematic_data["lib_symbols"]):
                 _embed_device_symbol(schematic_data, "R")
         elif ptype == "C":
-            lib_id = "Device:C"
-            # Embed Device:C symbol if not already embedded
-            if not any("Device:C" in str(s) for s in schematic_data["lib_symbols"]):
+            lib_id = "Capacitor"
+            # Embed Capacitor symbol if not already embedded
+            if not any('symbol "Capacitor"' in str(s) for s in schematic_data["lib_symbols"]):
                 _embed_device_symbol(schematic_data, "C")
         else:
             print(f"WARNING: Unknown passive type {ptype} for {ref}")
@@ -665,9 +682,63 @@ def generate_bme280_sensor_sheet(project_json_path, output_path):
     print(f"\n✓ BME280_Sensor schematic generated: {output_path}")
 
 
+def _format_component(item):
+    """Format a component instance in proper KiCad 9.x format."""
+    text = "\t(symbol\n"
+    text += f'\t\t(lib_id "{item["lib_id"]}")\n'
+    text += f'\t\t(at {item["at"][0]} {item["at"][1]} {item["at"][2]})\n'
+    text += f'\t\t(unit 1)\n'
+    text += f'\t\t(exclude_from_sim no)\n'
+    text += f'\t\t(in_bom yes)\n'
+    text += f'\t\t(on_board yes)\n'
+    text += f'\t\t(dnp no)\n'
+    text += f'\t\t(uuid "{item["uuid"]}")\n'
+    
+    # Properties
+    ref_at_y = item["at"][1] - 2.54
+    val_at_y = item["at"][1] + 2.54
+    angle = item["at"][2]
+    
+    ref_val = item["properties"].get("Reference", "")
+    val_val = item["properties"].get("Value", "")
+    footprint = item["properties"].get("Footprint", "")
+    
+    text += f'\t\t(property "Reference" "{ref_val}"\n'
+    text += f'\t\t\t(at {item["at"][0]} {ref_at_y} {angle})\n'
+    text += f'\t\t\t(effects\n\t\t\t\t(font\n\t\t\t\t\t(size 1.27 1.27)\n\t\t\t\t)\n\t\t\t)\n'
+    text += f'\t\t)\n'
+    
+    text += f'\t\t(property "Value" "{val_val}"\n'
+    text += f'\t\t\t(at {item["at"][0]} {val_at_y} {angle})\n'
+    text += f'\t\t\t(effects\n\t\t\t\t(font\n\t\t\t\t\t(size 1.27 1.27)\n\t\t\t\t)\n\t\t\t)\n'
+    text += f'\t\t)\n'
+    
+    text += f'\t\t(property "Footprint" "{footprint}"\n'
+    text += f'\t\t\t(at {item["at"][0]} {item["at"][1]} 0)\n'
+    text += f'\t\t\t(effects\n\t\t\t\t(font\n\t\t\t\t\t(size 1.27 1.27)\n\t\t\t\t)\n\t\t\t\t(hide yes)\n\t\t\t)\n'
+    text += f'\t\t)\n'
+    
+    text += f'\t\t(property "Datasheet" "~"\n'
+    text += f'\t\t\t(at {item["at"][0]} {item["at"][1]} 0)\n'
+    text += f'\t\t\t(effects\n\t\t\t\t(font\n\t\t\t\t\t(size 1.27 1.27)\n\t\t\t\t)\n\t\t\t\t(hide yes)\n\t\t\t)\n'
+    text += f'\t\t)\n'
+    
+    # Pin instances (required in KiCad 9.x)
+    for pin_num in item.get("pins", []):
+        text += f'\t\t(pin "{pin_num}"\n'
+        text += f'\t\t\t(uuid "{str(uuid.uuid4())}")\n'
+        text += f'\t\t)\n'
+    
+    text += "\t)\n"
+    return text
+
+
 def _save_schematic_with_extensions(schematic_data, file_path):
     """Save schematic with wires, labels, and power symbols."""
-    text = f'(kicad_sch (version {schematic_data["version"]}) (generator "{schematic_data["generator"]}")\n'
+    text = f'(kicad_sch\n'
+    text += f'\t(version {schematic_data["version"]})\n'
+    text += f'\t(generator "{schematic_data["generator"]}")\n'
+    text += f'\t(generator_version "9.0")\n'
     text += f'\t(uuid "{schematic_data["uuid"]}")\n'
     text += f'\t(paper "{schematic_data["paper"]}")\n\n'
     
@@ -675,31 +746,13 @@ def _save_schematic_with_extensions(schematic_data, file_path):
     if schematic_data["lib_symbols"]:
         text += "\t(lib_symbols\n"
         for symbol_def in schematic_data["lib_symbols"]:
-            text += f"\t{symbol_def}\n"
+            text += f"\t\t{symbol_def}\n"
         text += "\t)\n\n"
     
     # Components and other items
     for item in schematic_data["items"]:
         if item["type"] == "symbol":
-            text += "\t(symbol\n"
-            text += f'\t\t(lib_id "{item["lib_id"]}")\n'
-            text += f'\t\t(at {item["at"][0]} {item["at"][1]} {item["at"][2]})\n'
-            text += f'\t\t(uuid "{item["uuid"]}")'
-            # Format properties manually (since _format_properties is private)
-            prop_text = ""
-            ref_at_y = item["at"][1] + 2.54 
-            val_at_y = item["at"][1] - 2.54
-            
-            if "Reference" in item["properties"]:
-                prop_text += f'\n\t\t(property "Reference" "{item["properties"]["Reference"]}" (at {item["at"][0]} {ref_at_y} 0) (effects (font (size 1.27 1.27))))'
-            if "Value" in item["properties"]:
-                prop_text += f'\n\t\t(property "Value" "{item["properties"]["Value"]}" (at {item["at"][0]} {val_at_y} 0) (effects (font (size 1.27 1.27))))'
-            
-            footprint = item["properties"].get("Footprint", "")
-            prop_text += f'\n\t\t(property "Footprint" "{footprint}" (at {item["at"][0]} {item["at"][1]} 0) (effects (font (size 1.27 1.27)) (hide yes)))'
-            prop_text += f'\n\t\t(property "Datasheet" "" (at {item["at"][0]} {item["at"][1]} 0) (effects (font (size 1.27 1.27)) (hide yes)))'
-            text += prop_text
-            text += "\n\t)\n"
+            text += _format_component(item)
         elif item["type"] == "wire":
             text += _format_wire(item) + "\n"
         elif item["type"] == "label":
@@ -714,3 +767,95 @@ def _save_schematic_with_extensions(schematic_data, file_path):
     with open(file_path, "w", encoding="utf-8") as f:
         f.write(text)
     print(f"Schematic saved to {file_path}")
+
+
+# =============================================================================
+# SIMPLE TEST: BME280 center + 1 resistor (R7) top-left
+# =============================================================================
+
+def generate_simple_test(output_path):
+    """
+    Minimal test schematic:
+      - BME280 at center of page
+      - R7 (0R) at top-left, horizontal, with:
+        - Label "I2C_SCL_0R" on the left end
+        - Hierarchical label "I2C_SCL_BME" on the right end
+    
+    This is a baseline to get placement, wires, and labels right
+    before adding more components.
+    """
+    # Create schematic
+    sheet_uuid = str(uuid.uuid4())
+    schematic_data = kicad_api.create_schematic_data("SimpleTest", sheet_uuid)
+    
+    # --- Embed symbols ---
+    
+    # BME280
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+    SYMBOL_LIB_PATH = os.path.join(BASE_DIR, "KICAD_Library", "Symbols")
+    
+    bme_lib_id = kicad_api.embed_symbol_from_file(
+        schematic_data, "BME280", library_path=SYMBOL_LIB_PATH
+    )
+    
+    # Resistor
+    _embed_device_symbol(schematic_data, "R")
+    resistor_lib_id = "Resistor"
+    
+    # --- Place BME280 at center of A4 page ---
+    # A4 = 297 x 210 mm, center ≈ (148.59, 104.14)
+    bme_x, bme_y = 148.59, 104.14
+    kicad_api.place_component(
+        schematic_data,
+        bme_lib_id,
+        "U3", "BME280",
+        (bme_x, bme_y),
+        angle=0,
+        footprint="Package_LGA:Bosch_LGA-8_2.5x2.5mm_P0.65mm_ClockwisePinNumbering",
+        pins=["1", "2", "3", "4", "5", "6", "7", "8"]
+    )
+    
+    # --- Place R7 (0R) at top-left, HORIZONTAL ---
+    # Resistor symbol is vertical by default (pin 1 at top, pin 2 at bottom).
+    # Rotate 90° to make it horizontal:
+    #   Pin 1 (top) → right side: connection point at (center_x + 3.81, center_y)
+    #   Pin 2 (bottom) → left side: connection point at (center_x - 3.81, center_y)
+    r7_x, r7_y = 50.8, 38.1
+    kicad_api.place_component(
+        schematic_data,
+        resistor_lib_id,
+        "R7", "0",
+        (r7_x, r7_y),
+        angle=90,
+        pins=["1", "2"]
+    )
+    
+    # --- Wires and labels for R7 ---
+    # With 90° rotation (CW):
+    #   Pin 1 tip: (r7_x + 3.81, r7_y)  = (54.61, 38.1) — RIGHT side
+    #   Pin 2 tip: (r7_x - 3.81, r7_y)  = (46.99, 38.1) — LEFT side
+    
+    pin1_x = round(r7_x + 3.81, 2)   # 54.61 — right
+    pin2_x = round(r7_x - 3.81, 2)   # 46.99 — left
+    pin_y = r7_y                       # 38.1
+    
+    # Wire stub from pin 1 (right) → 2.54mm right to hierarchical label
+    wire1_end_x = round(pin1_x + 2.54, 2)   # 57.15
+    _add_wire(schematic_data, pin1_x, pin_y, wire1_end_x, pin_y)
+    
+    # Hierarchical label "I2C_SCL_BME" at end of right wire
+    _add_hierarchical_label(schematic_data, "I2C_SCL_BME", (wire1_end_x, pin_y), shape="input")
+    
+    # Wire stub from pin 2 (left) → 7.62mm left to local label
+    wire2_end_x = round(pin2_x - 7.62, 2)   # 39.37
+    _add_wire(schematic_data, pin2_x, pin_y, wire2_end_x, pin_y)
+    
+    # Local label "I2C_SCL_0R" at the wire (placed at start of wire, reads left-to-right)
+    _add_label(schematic_data, "I2C_SCL_0R", (wire2_end_x, pin_y))
+    
+    # --- Save ---
+    _save_schematic_with_extensions(schematic_data, output_path)
+    print(f"\n✓ Simple test schematic generated: {output_path}")
+    print(f"  BME280 at center ({bme_x}, {bme_y})")
+    print(f"  R7 at top-left ({r7_x}, {r7_y}), horizontal")
+    print(f"  Nets: I2C_SCL_0R (left of R7), I2C_SCL_BME (right of R7)")

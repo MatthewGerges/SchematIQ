@@ -2,7 +2,7 @@
 	(version 20250114)
 	(generator "ChipChat_Gemini")
 	(generator_version "9.0")
-	(uuid "5ba6d9dc-c968-4be2-adc9-e79dd916048c")
+	(uuid "33dcc091-b935-43d3-86c1-63a2ba12e559")
 	(paper "A4")
 
 	(lib_symbols
@@ -262,7 +262,7 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "084d7ab4-ed86-42a7-a97e-7fa3b7f21649")
+		(uuid "0fb46b3e-3552-4dd2-bf18-814c1f013d49")
 		(property "Reference" "U3"
 			(at 148.59 101.6 0)
 			(effects
@@ -298,28 +298,28 @@
 			)
 		)
 		(pin "1"
-			(uuid "01054d1e-7bd0-42de-b2a3-054d0b72269d")
+			(uuid "8e9925b3-e1bc-497a-aa23-d6be667ece70")
 		)
 		(pin "2"
-			(uuid "9f6af011-9fe8-4a43-8524-4c363e0a6930")
+			(uuid "a2b49a4f-c1b8-449c-ba56-0516ddf6b266")
 		)
 		(pin "3"
-			(uuid "4d4a8afb-e471-4d18-b7c4-72236683da6a")
+			(uuid "05afb064-00bc-400e-a26d-d10145b927df")
 		)
 		(pin "4"
-			(uuid "ef15db01-59d2-41a4-bfde-c43751d5cc16")
+			(uuid "e2a1adcd-754c-4377-9e1c-ad4b9ff956dd")
 		)
 		(pin "5"
-			(uuid "689c566e-d624-4ea9-a1dc-e2180688e962")
+			(uuid "cb5c84e9-885b-45ad-af92-7ffa0bf7ae4c")
 		)
 		(pin "6"
-			(uuid "3d0a7284-1ddf-497b-9f17-42a5140febfa")
+			(uuid "968d51b6-fa39-481f-8d96-8a83a87c5090")
 		)
 		(pin "7"
-			(uuid "914f891a-8ecc-4b54-beae-19b0598c9ae7")
+			(uuid "e8dfcb2b-6e13-450c-80f8-b69dcc04f97f")
 		)
 		(pin "8"
-			(uuid "7eb8996e-045a-4eff-aec9-8210f562814f")
+			(uuid "7dd98f52-a55e-4e25-8ec5-54835aea6c34")
 		)
 	)
 	(symbol
@@ -330,7 +330,7 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "e9800841-41dc-4471-9dbc-37b8374d5b9f")
+		(uuid "c39b0d2a-13cc-46a7-a1b9-fd224b6e0fe9")
 		(property "Reference" "R7"
 			(at 50.8 35.56 90)
 			(effects
@@ -366,31 +366,32 @@
 			)
 		)
 		(pin "1"
-			(uuid "0328c745-fa2f-4249-b7fa-b0f166a2669d")
+			(uuid "b814cf6c-2c40-4ce8-95ec-75fd70e87459")
 		)
 		(pin "2"
-			(uuid "e9eeec3a-7031-4a80-ad1d-4a39b2347711")
+			(uuid "e36a09bd-8c39-4df3-be93-523a44c23361")
 		)
 	)
 	(wire
 		(pts
-			(xy 54.61 38.1) (xy 57.15 38.1)
+			(xy 54.61 38.1) (xy 62.23 38.1)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "516e730d-7766-497f-9001-db692633117d")
+		(uuid "a65b2810-2468-4093-8cb6-953abe75a0c8")
 	)
 	(hierarchical_label "I2C_SCL_BME"
 		(shape input)
-		(at 57.15 38.1 0)
+		(at 62.23 38.1 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
+			(justify left)
 		)
-		(uuid "563d4337-9864-41cb-9e10-407ce13407d0")
+		(uuid "0e1d6408-543c-4118-bdf4-65dd5df710c4")
 	)
 	(wire
 		(pts
@@ -400,7 +401,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "db8c42ca-f7b3-4af3-9a54-7cf0cc79d1ed")
+		(uuid "6affa166-1441-4018-889e-cd5812118085")
 	)
 	(label "I2C_SCL_0R"
 		(at 39.37 38.1 0)
@@ -408,7 +409,8 @@
 			(font
 				(size 1.27 1.27)
 			)
+			(justify right bottom)
 		)
-		(uuid "064511b8-8cfd-4c2a-888c-f6979c72aeff")
+		(uuid "b61b1227-3123-4809-ba4a-2fcaf557d92b")
 	)
 )

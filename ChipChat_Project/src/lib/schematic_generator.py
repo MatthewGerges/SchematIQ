@@ -371,12 +371,19 @@ def _add_wire(schematic_data, x1, y1, x2, y2):
     schematic_data["items"].append(wire)
 
 
-def _add_label(schematic_data, text, position, net_name=None):
-    """Add a local net label."""
+def _add_label(schematic_data, text, position, net_name=None, justify="left bottom"):
+    """Add a local net label.
+    
+    justify controls where the text sits relative to the connection point:
+      "left bottom"  → text extends RIGHT and ABOVE the anchor (default)
+      "right bottom" → text extends LEFT and ABOVE the anchor
+    The (at) position is always the electrical connection point.
+    """
     label = {
         "type": "label",
         "text": text,
         "at": position,
+        "justify": justify,
         "uuid": str(uuid.uuid4()),
         "net_name": net_name or text
     }
@@ -414,16 +421,52 @@ def _format_wire(wire):
 
 
 def _format_label(label):
-    """Format a local label for KiCad output."""
+    """Format a local label for KiCad output.
+    
+    The (at) position is the electrical connection point.
+    justify controls text direction relative to connection:
+      "left bottom"  → text RIGHT of connection, above wire
+      "right bottom" → text LEFT of connection, above wire
+    """
     at = label["at"]
-    return f'\t(label "{label["text"]}"\n\t\t(at {at[0]} {at[1]} 0)\n\t\t(effects\n\t\t\t(font\n\t\t\t\t(size 1.27 1.27)\n\t\t\t)\n\t\t)\n\t\t(uuid "{label["uuid"]}")\n\t)'
+    justify = label.get("justify", "left bottom")
+    return (
+        f'\t(label "{label["text"]}"\n'
+        f'\t\t(at {at[0]} {at[1]} 0)\n'
+        f'\t\t(effects\n'
+        f'\t\t\t(font\n'
+        f'\t\t\t\t(size 1.27 1.27)\n'
+        f'\t\t\t)\n'
+        f'\t\t\t(justify {justify})\n'
+        f'\t\t)\n'
+        f'\t\t(uuid "{label["uuid"]}")\n'
+        f'\t)'
+    )
 
 
 def _format_hierarchical_label(label):
-    """Format a hierarchical label for KiCad output."""
+    """Format a hierarchical label for KiCad output.
+    
+    Hierarchical labels have a flag/triangle at the (at) position.
+    That IS the electrical connection point — wires must end there.
+    With (justify left) and angle 0, the text extends to the right
+    from the connection flag.
+    """
     at = label["at"]
     shape = label.get("shape", "bidirectional")
-    return f'\t(hierarchical_label "{label["text"]}"\n\t\t(shape {shape})\n\t\t(at {at[0]} {at[1]} 0)\n\t\t(effects\n\t\t\t(font\n\t\t\t\t(size 1.27 1.27)\n\t\t\t)\n\t\t)\n\t\t(uuid "{label["uuid"]}")\n\t)'
+    return (
+        f'\t(hierarchical_label "{label["text"]}"\n'
+        f'\t\t(shape {shape})\n'
+        f'\t\t(at {at[0]} {at[1]} 0)\n'
+        f'\t\t(effects\n'
+        f'\t\t\t(font\n'
+        f'\t\t\t\t(size 1.27 1.27)\n'
+        f'\t\t\t)\n'
+        f'\t\t\t(justify left)\n'
+        f'\t\t)\n'
+        f'\t\t(uuid "{label["uuid"]}")\n'
+        f'\t)'
+    )
 
 
 def _format_power_symbol(power):
@@ -839,19 +882,31 @@ def generate_simple_test(output_path):
     pin2_x = round(r7_x - 3.81, 2)   # 46.99 — left
     pin_y = r7_y                       # 38.1
     
-    # Wire stub from pin 1 (right) → 2.54mm right to hierarchical label
-    wire1_end_x = round(pin1_x + 2.54, 2)   # 57.15
-    _add_wire(schematic_data, pin1_x, pin_y, wire1_end_x, pin_y)
+    # =====================================================================
+    # How KiCad labels work (from reference BME280_Sensor.kicad_sch):
+    #
+    # HIERARCHICAL LABEL: (at) = connection point (flag/triangle).
+    #   Wire must END at this exact point. Text extends right.
+    #
+    # LOCAL LABEL: (at) = connection point.
+    #   "justify left bottom"  → text extends RIGHT, above wire
+    #   "justify right bottom" → text extends LEFT, above wire
+    #   Place AT a wire endpoint so there's no dangling wire.
+    # =====================================================================
     
-    # Hierarchical label "I2C_SCL_BME" at end of right wire
-    _add_hierarchical_label(schematic_data, "I2C_SCL_BME", (wire1_end_x, pin_y), shape="input")
+    # RIGHT SIDE: Hierarchical label "I2C_SCL_BME"
+    # Wire from pin 1 → label. Label (at) IS the wire endpoint.
+    hier_label_x = round(pin1_x + 7.62, 2)   # 62.23
+    _add_wire(schematic_data, pin1_x, pin_y, hier_label_x, pin_y)
+    _add_hierarchical_label(schematic_data, "I2C_SCL_BME", (hier_label_x, pin_y), shape="input")
     
-    # Wire stub from pin 2 (left) → 7.62mm left to local label
-    wire2_end_x = round(pin2_x - 7.62, 2)   # 39.37
+    # LEFT SIDE: Local label "I2C_SCL_0R"
+    # Wire from pin 2 extending left. Label AT the left wire endpoint
+    # with "justify right bottom" so text extends LEFT from the
+    # connection point (like image 3: text ← wire → resistor).
+    wire2_end_x = round(pin2_x - 7.62, 2)    # 39.37
     _add_wire(schematic_data, pin2_x, pin_y, wire2_end_x, pin_y)
-    
-    # Local label "I2C_SCL_0R" at the wire (placed at start of wire, reads left-to-right)
-    _add_label(schematic_data, "I2C_SCL_0R", (wire2_end_x, pin_y))
+    _add_label(schematic_data, "I2C_SCL_0R", (wire2_end_x, pin_y), justify="right bottom")
     
     # --- Save ---
     _save_schematic_with_extensions(schematic_data, output_path)

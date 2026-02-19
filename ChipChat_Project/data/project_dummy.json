@@ -66,8 +66,8 @@
       "note": "needs passive: 4.7K resistor on SCL, 4.7K resistor on SDA, 0R resistor on SCL (debug), 0R resistor on SDA (debug), 0R resistor on SDO, 0.1uF capacitor on VDD, 0.1uF capacitor on VDDIO",
       "connections": [
         {"pin": "1", "pin_name": "GND", "net": "GND"},
-        {"pin": "3", "pin_name": "SDI", "net": "I2C_SDA_BME"},
-        {"pin": "4", "pin_name": "SCK", "net": "I2C_SCL_BME"},
+        {"pin": "3", "pin_name": "SDI", "net": "I2C_SDA_0R"},
+        {"pin": "4", "pin_name": "SCK", "net": "I2C_SCL_0R"},
         {"pin": "5", "pin_name": "SDO", "net": "SDO_ADD"},
         {"pin": "6", "pin_name": "VDDIO", "net": "PP_3V3_OUT"},
         {"pin": "7", "pin_name": "GND", "net": "GND"},
@@ -192,10 +192,17 @@
       "type": "hierarchical",
       "connections": [
         {"ref": "U2", "pin": "9", "pin_name": "SDA", "sheet": "USB_To_I2C"},
-        {"ref": "U3", "pin": "3", "pin_name": "SDI", "sheet": "BME280_Sensor"},
         {"ref": "R6", "pin": "1", "sheet": "BME280_Sensor"},
-        {"ref": "R8", "pin": "1", "sheet": "BME280_Sensor"},
-        {"ref": "R8", "pin": "2", "sheet": "BME280_Sensor"}
+        {"ref": "R8", "pin": "1", "sheet": "BME280_Sensor"}
+      ]
+    },
+    {
+      "name": "I2C_SDA_0R",
+      "type": "local",
+      "sheet": "BME280_Sensor",
+      "connections": [
+        {"ref": "R8", "pin": "2"},
+        {"ref": "U3", "pin": "3", "pin_name": "SDI"}
       ]
     },
     {
@@ -203,10 +210,17 @@
       "type": "hierarchical",
       "connections": [
         {"ref": "U2", "pin": "10", "pin_name": "SCL", "sheet": "USB_To_I2C"},
-        {"ref": "U3", "pin": "4", "pin_name": "SCK", "sheet": "BME280_Sensor"},
         {"ref": "R5", "pin": "1", "sheet": "BME280_Sensor"},
-        {"ref": "R7", "pin": "1", "sheet": "BME280_Sensor"},
-        {"ref": "R7", "pin": "2", "sheet": "BME280_Sensor"}
+        {"ref": "R7", "pin": "1", "sheet": "BME280_Sensor"}
+      ]
+    },
+    {
+      "name": "I2C_SCL_0R",
+      "type": "local",
+      "sheet": "BME280_Sensor",
+      "connections": [
+        {"ref": "R7", "pin": "2"},
+        {"ref": "U3", "pin": "4", "pin_name": "SCK"}
       ]
     },
     {
@@ -494,7 +508,7 @@
       "purpose": "SCL series resistor (debug)",
       "connections": [
         {"pin": "1", "net": "I2C_SCL_BME"},
-        {"pin": "2", "net": "I2C_SCL_BME"}
+        {"pin": "2", "net": "I2C_SCL_0R"}
       ]
     },
     {
@@ -505,7 +519,7 @@
       "purpose": "SDA series resistor (debug)",
       "connections": [
         {"pin": "1", "net": "I2C_SDA_BME"},
-        {"pin": "2", "net": "I2C_SDA_BME"}
+        {"pin": "2", "net": "I2C_SDA_0R"}
       ]
     },
     {

@@ -1,6 +1,5 @@
 """
-Schematic generator for KiCad - generates complete schematics from project.json
-Uses Approach C: Hybrid (LLM reasoning + algorithmic layout)
+Schematic generator for KiCad — reads project JSON, places components algorithmically.
 """
 
 import json
@@ -8,435 +7,186 @@ import uuid
 import os
 import sys
 
-# Add parent directory to path for imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from src.lib import kicad_api
-from src.lib import project_builder
 
-# Improved layout - use more of the page, better spacing
-# A4 page: 297mm x 210mm
-# Use larger spacing to avoid wire crossovers
-GRID_X_START = 50.8  # Start 2 inches from left
-GRID_Y_START = 50.8  # Start 2 inches from top
-GRID_SPACING_X = 50.8  # 2 inch horizontal spacing (more room)
-GRID_SPACING_Y = 38.1  # 1.5 inch vertical spacing
-WIRE_LENGTH = 7.62  # 0.3 inch wire stub for labels (longer for clarity)
-PAGE_WIDTH = 297.0  # A4 width in mm
-PAGE_HEIGHT = 210.0  # A4 height in mm
+# =============================================================================
+# Constants
+# =============================================================================
 
-# Component order: left-to-right, top-to-bottom
-COMPONENT_ORDER = [
-    "U3",   # BME280 (main component, top-left)
-    "R5",   # I2C SCL pullup
-    "R6",   # I2C SDA pullup
-    "R9",   # Address select resistor
-    "C9",   # VDD decoupling
-    "C10",  # VDDIO decoupling
-]
+PIN_HALF_LEN = 3.81    # mm — pin tip offset from component center (R and C)
+WIRE_STUB = 7.62       # mm — wire length from pin to label
 
-# Pin positions relative to component center (in mm)
-# Standard KiCad pin spacing: 2.54mm (0.1 inch) for most components
-PIN_OFFSETS = {
-    "BME280": {
-        "1": (0, -7.62),   # GND (bottom)
-        "3": (-5.08, 0),   # SDI (left)
-        "4": (-5.08, -2.54), # SCK (left)
-        "5": (0, 7.62),    # SDO (top)
-        "6": (5.08, -2.54), # VDDIO (right)
-        "7": (0, 7.62),    # GND (top)
-        "8": (5.08, 0),    # VDD (right)
-    },
-    "R": {
-        "1": (-2.54, 0),   # Left pin (horizontal resistor)
-        "2": (2.54, 0),    # Right pin
-    },
-    "C": {
-        "1": (-2.54, 0),   # Left pin (horizontal capacitor)
-        "2": (2.54, 0),    # Right pin
-    }
-}
+# Algorithmic layout grid (all passives placed horizontally)
+PASSIVE_X_START = 80.0       # x center of first column
+PASSIVE_Y_START = 35.0       # y of first row
+PASSIVE_Y_SPACING = 15.24    # mm between rows
+PASSIVE_MAX_ROWS = 10        # rows per column before wrapping
+PASSIVE_COL_SPACING = 80.0   # mm between columns
 
+# Main component position
+MAIN_COMP_X = 200.0
+MAIN_COMP_Y = 100.0
+
+
+# =============================================================================
+# Symbol embedding
+# =============================================================================
 
 def _embed_device_symbol(schematic_data, symbol_type):
     """Embed a standard Device symbol (R or C) from KICAD_Library/Symbols/."""
-    # Use actual symbol files instead of generating inline
-    BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(
+        os.path.dirname(os.path.abspath(__file__)))))
     SYMBOL_LIB_PATH = os.path.join(BASE_DIR, "KICAD_Library", "Symbols")
-    
+
     if symbol_type == "R":
         symbol_name = "Resistor"
     elif symbol_type == "C":
         symbol_name = "Capacitor"
     else:
         return None
-    
-    # Try to embed from file
+
     symbol_file = os.path.join(SYMBOL_LIB_PATH, f"{symbol_name}.kicad_sym")
     if os.path.exists(symbol_file):
-        from src.lib import kicad_api
         embedded_lib_id = kicad_api.embed_symbol_from_file(
-            schematic_data,
-            symbol_name,
-            library_path=SYMBOL_LIB_PATH
+            schematic_data, symbol_name, library_path=SYMBOL_LIB_PATH
         )
         if embedded_lib_id:
             print(f"Embedded {symbol_name} symbol from file")
             return embedded_lib_id
-    
-    # Fallback: generate inline (without UUIDs in pins - they're not allowed in symbol definitions)
-    print(f"Warning: {symbol_name}.kicad_sym not found, using fallback inline generation")
-    
+
+    # Fallback inline (no UUIDs in pins — KiCad 9.x rule)
+    print(f"Warning: {symbol_name}.kicad_sym not found, using inline fallback")
+
     if symbol_type == "R":
-        symbol_def = f'''(symbol "Device:R"
-	(pin_numbers
-		(hide yes)
-	)
-	(pin_names
-		(offset 0)
-	)
-	(exclude_from_sim no)
-	(in_bom yes)
-	(on_board yes)
-	(property "Reference" "R"
-		(at 2.032 0 90)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-		)
-	)
-	(property "Value" "R"
-		(at 0 0 90)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-		)
-	)
-	(property "Footprint" ""
-		(at -1.778 0 90)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(hide yes)
-		)
-	)
-	(property "Datasheet" "~"
-		(at 0 0 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(hide yes)
-		)
-	)
-	(property "Description" "Resistor"
-		(at 0 0 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(hide yes)
-		)
-	)
-	(symbol "R_0_1"
-		(rectangle
-			(start -1.016 -2.54)
-			(end 1.016 2.54)
-			(stroke
-				(width 0.254)
-				(type default)
-			)
-			(fill
-				(type none)
-			)
-		)
-	)
-	(symbol "R_1_1"
-		(pin passive line
-			(at 0 3.81 270)
-			(length 1.27)
-			(name "~"
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(number "1"
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-		)
-		(pin passive line
-			(at 0 -3.81 90)
-			(length 1.27)
-			(name "~"
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(number "2"
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-		)
-	)
+        symbol_def = '''(symbol "Resistor"
+\t(pin_numbers (hide yes))
+\t(pin_names (offset 0))
+\t(exclude_from_sim no) (in_bom yes) (on_board yes)
+\t(property "Reference" "R" (at 2.032 0 90)
+\t\t(effects (font (size 1.27 1.27))))
+\t(property "Value" "R" (at 0 0 90)
+\t\t(effects (font (size 1.27 1.27))))
+\t(property "Footprint" "" (at -1.778 0 90)
+\t\t(effects (font (size 1.27 1.27)) (hide yes)))
+\t(property "Datasheet" "~" (at 0 0 0)
+\t\t(effects (font (size 1.27 1.27)) (hide yes)))
+\t(symbol "Resistor_0_1"
+\t\t(rectangle (start -1.016 -2.54) (end 1.016 2.54)
+\t\t\t(stroke (width 0.254) (type default)) (fill (type none))))
+\t(symbol "Resistor_1_1"
+\t\t(pin passive line (at 0 3.81 270) (length 1.27)
+\t\t\t(name "~" (effects (font (size 1.27 1.27))))
+\t\t\t(number "1" (effects (font (size 1.27 1.27)))))
+\t\t(pin passive line (at 0 -3.81 90) (length 1.27)
+\t\t\t(name "~" (effects (font (size 1.27 1.27))))
+\t\t\t(number "2" (effects (font (size 1.27 1.27))))))
 )'''
     elif symbol_type == "C":
-        pin3_uuid = str(uuid_module.uuid4())
-        pin4_uuid = str(uuid_module.uuid4())
-        symbol_def = f'''(symbol "Device:C"
-	(pin_numbers
-		(hide yes)
-	)
-	(pin_names
-		(offset 0.254)
-	)
-	(exclude_from_sim no)
-	(in_bom yes)
-	(on_board yes)
-	(property "Reference" "C"
-		(at 0.635 2.54 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-	)
-	(property "Value" "C"
-		(at 0.635 -2.54 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-	)
-	(property "Footprint" ""
-		(at 0.9652 -3.81 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(hide yes)
-		)
-	)
-	(property "Datasheet" "~"
-		(at 0 0 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(hide yes)
-		)
-	)
-	(property "Description" "Unpolarized capacitor"
-		(at 0 0 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(hide yes)
-		)
-	)
-	(symbol "C_0_1"
-		(polyline
-			(pts
-				(xy -2.032 0.762) (xy 2.032 0.762)
-			)
-			(stroke
-				(width 0.508)
-				(type default)
-			)
-			(fill
-				(type none)
-			)
-		)
-		(polyline
-			(pts
-				(xy -2.032 -0.762) (xy 2.032 -0.762)
-			)
-			(stroke
-				(width 0.508)
-				(type default)
-			)
-			(fill
-				(type none)
-			)
-		)
-	)
-	(symbol "C_1_1"
-		(pin passive line
-			(at 0 3.81 270)
-			(length 1.27)
-			(name "~"
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(number "1"
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-		)
-		(pin passive line
-			(at 0 -3.81 90)
-			(length 1.27)
-			(name "~"
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(number "2"
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-		)
-	)
+        symbol_def = '''(symbol "Capacitor"
+\t(pin_numbers (hide yes))
+\t(pin_names (offset 0.254))
+\t(exclude_from_sim no) (in_bom yes) (on_board yes)
+\t(property "Reference" "C" (at 0.635 2.54 0)
+\t\t(effects (font (size 1.27 1.27)) (justify left)))
+\t(property "Value" "C" (at 0.635 -2.54 0)
+\t\t(effects (font (size 1.27 1.27)) (justify left)))
+\t(property "Footprint" "" (at 0.9652 -3.81 0)
+\t\t(effects (font (size 1.27 1.27)) (hide yes)))
+\t(property "Datasheet" "~" (at 0 0 0)
+\t\t(effects (font (size 1.27 1.27)) (hide yes)))
+\t(symbol "Capacitor_0_1"
+\t\t(polyline (pts (xy -2.032 0.762) (xy 2.032 0.762))
+\t\t\t(stroke (width 0.508) (type default)) (fill (type none)))
+\t\t(polyline (pts (xy -2.032 -0.762) (xy 2.032 -0.762))
+\t\t\t(stroke (width 0.508) (type default)) (fill (type none))))
+\t(symbol "Capacitor_1_1"
+\t\t(pin passive line (at 0 3.81 270) (length 2.794)
+\t\t\t(name "~" (effects (font (size 1.27 1.27))))
+\t\t\t(number "1" (effects (font (size 1.27 1.27)))))
+\t\t(pin passive line (at 0 -3.81 90) (length 2.794)
+\t\t\t(name "~" (effects (font (size 1.27 1.27))))
+\t\t\t(number "2" (effects (font (size 1.27 1.27))))))
 )'''
     else:
         return
-    
-    # Add to lib_symbols
     schematic_data["lib_symbols"].append(symbol_def)
-    print(f"Embedded Device:{symbol_type} symbol")
 
 
-def _get_component_position(index):
-    """Calculate component position based on grid index (left-to-right, top-to-bottom)."""
-    # 3 columns layout for better use of page width
-    col = index % 3
-    row = index // 3
-    
-    x = GRID_X_START + col * GRID_SPACING_X
-    y = GRID_Y_START + row * GRID_SPACING_Y
-    
-    return {"x": x, "y": y, "angle": 0}
-
-
-def _get_pin_position(component_ref, component_type, pin_num, component_pos):
-    """Calculate absolute pin position based on component position and pin offset."""
-    comp_x = component_pos["x"]
-    comp_y = component_pos["y"]
-    comp_angle = component_pos.get("angle", 0)
-    
-    # Get pin offset
-    if component_type == "BME280":
-        offset = PIN_OFFSETS["BME280"].get(pin_num, (0, 0))
-    elif component_type in ["R", "C"]:
-        offset = PIN_OFFSETS[component_type].get(pin_num, (-2.54, 0))
-    else:
-        offset = (0, 0)
-    
-    # Apply rotation (simplified - only handles 0 and 90 degrees)
-    if comp_angle == 90:
-        offset = (-offset[1], offset[0])
-    elif comp_angle == 270:
-        offset = (offset[1], -offset[0])
-    elif comp_angle == 180:
-        offset = (-offset[0], -offset[1])
-    
-    return (comp_x + offset[0], comp_y + offset[1])
-
+# =============================================================================
+# Schematic items — add to data structure
+# =============================================================================
 
 def _add_wire(schematic_data, x1, y1, x2, y2):
-    """Add a wire segment to the schematic."""
-    wire = {
+    """Add a wire segment."""
+    schematic_data["items"].append({
         "type": "wire",
         "pts": [(x1, y1), (x2, y2)],
         "uuid": str(uuid.uuid4())
-    }
-    schematic_data["items"].append(wire)
+    })
 
 
 def _add_label(schematic_data, text, position, net_name=None, justify="left bottom"):
     """Add a local net label.
-    
-    justify controls where the text sits relative to the connection point:
-      "left bottom"  → text extends RIGHT and ABOVE the anchor (default)
-      "right bottom" → text extends LEFT and ABOVE the anchor
-    The (at) position is always the electrical connection point.
+
+    justify controls text direction from the connection point:
+      "left bottom"  → text extends RIGHT
+      "right bottom" → text extends LEFT
     """
-    label = {
+    schematic_data["items"].append({
         "type": "label",
         "text": text,
         "at": position,
         "justify": justify,
         "uuid": str(uuid.uuid4()),
         "net_name": net_name or text
-    }
-    schematic_data["items"].append(label)
+    })
 
 
-def _add_hierarchical_label(schematic_data, text, position, shape="bidirectional"):
-    """Add a hierarchical label."""
-    label = {
+def _add_hierarchical_label(schematic_data, text, position,
+                            shape="bidirectional", angle=0):
+    """Add a hierarchical label (off-page connector).
+
+    angle controls flag direction:
+      0   → flag points LEFT, text RIGHT  (wire comes from LEFT)
+      180 → flag points RIGHT, text LEFT  (wire comes from RIGHT)
+    """
+    schematic_data["items"].append({
         "type": "hierarchical_label",
         "text": text,
         "at": position,
+        "angle": angle,
         "shape": shape,
         "uuid": str(uuid.uuid4())
-    }
-    schematic_data["items"].append(label)
+    })
 
 
-def _add_power_symbol(schematic_data, lib_id, position, value):
-    """Add a power symbol (GND, +3.3V, etc.)."""
-    power = {
-        "type": "power_symbol",
-        "lib_id": lib_id,
-        "at": position,
-        "value": value,
-        "uuid": str(uuid.uuid4())
-    }
-    schematic_data["items"].append(power)
-
+# =============================================================================
+# KiCad formatters — convert data items to .kicad_sch text
+# =============================================================================
 
 def _format_wire(wire):
-    """Format a wire for KiCad output."""
     pts = wire["pts"]
-    return f'\t(wire\n\t\t(pts\n\t\t\t(xy {pts[0][0]} {pts[0][1]}) (xy {pts[1][0]} {pts[1][1]})\n\t\t)\n\t\t(stroke\n\t\t\t(width 0)\n\t\t\t(type default)\n\t\t)\n\t\t(uuid "{wire["uuid"]}")\n\t)'
+    return (
+        f'\t(wire\n'
+        f'\t\t(pts\n'
+        f'\t\t\t(xy {pts[0][0]} {pts[0][1]}) (xy {pts[1][0]} {pts[1][1]})\n'
+        f'\t\t)\n'
+        f'\t\t(stroke\n\t\t\t(width 0)\n\t\t\t(type default)\n\t\t)\n'
+        f'\t\t(uuid "{wire["uuid"]}")\n'
+        f'\t)'
+    )
 
 
 def _format_label(label):
-    """Format a local label for KiCad output.
-    
-    The (at) position is the electrical connection point.
-    justify controls text direction relative to connection:
-      "left bottom"  → text RIGHT of connection, above wire
-      "right bottom" → text LEFT of connection, above wire
-    """
     at = label["at"]
     justify = label.get("justify", "left bottom")
     return (
         f'\t(label "{label["text"]}"\n'
         f'\t\t(at {at[0]} {at[1]} 0)\n'
         f'\t\t(effects\n'
-        f'\t\t\t(font\n'
-        f'\t\t\t\t(size 1.27 1.27)\n'
-        f'\t\t\t)\n'
+        f'\t\t\t(font\n\t\t\t\t(size 1.27 1.27)\n\t\t\t)\n'
         f'\t\t\t(justify {justify})\n'
         f'\t\t)\n'
         f'\t\t(uuid "{label["uuid"]}")\n'
@@ -445,472 +195,268 @@ def _format_label(label):
 
 
 def _format_hierarchical_label(label):
-    """Format a hierarchical label for KiCad output.
-    
-    Hierarchical labels have a flag/triangle at the (at) position.
-    That IS the electrical connection point — wires must end there.
-    With (justify left) and angle 0, the text extends to the right
-    from the connection flag.
-    """
     at = label["at"]
+    angle = label.get("angle", 0)
     shape = label.get("shape", "bidirectional")
+    justify = "left" if angle == 0 else "right"
     return (
         f'\t(hierarchical_label "{label["text"]}"\n'
         f'\t\t(shape {shape})\n'
-        f'\t\t(at {at[0]} {at[1]} 0)\n'
+        f'\t\t(at {at[0]} {at[1]} {angle})\n'
         f'\t\t(effects\n'
-        f'\t\t\t(font\n'
-        f'\t\t\t\t(size 1.27 1.27)\n'
-        f'\t\t\t)\n'
-        f'\t\t\t(justify left)\n'
+        f'\t\t\t(font\n\t\t\t\t(size 1.27 1.27)\n\t\t\t)\n'
+        f'\t\t\t(justify {justify})\n'
         f'\t\t)\n'
         f'\t\t(uuid "{label["uuid"]}")\n'
         f'\t)'
     )
 
 
-def _format_power_symbol(power):
-    """Format a power symbol for KiCad output."""
-    at = power["at"]
-    lib_id = power["lib_id"]
-    value = power["value"]
-    ref = f"#PWR{hash(value) % 10000:04d}"
-    
-    return f'\t(symbol\n\t\t(lib_id "{lib_id}")\n\t\t(at {at[0]} {at[1]} 0)\n\t\t(unit 1)\n\t\t(exclude_from_sim no)\n\t\t(in_bom yes)\n\t\t(on_board yes)\n\t\t(dnp no)\n\t\t(fields_autoplaced yes)\n\t\t(uuid "{power["uuid"]}")\n\t\t(property "Reference" "{ref}"\n\t\t\t(at {at[0]} {at[1] + 3.81} 0)\n\t\t\t(effects\n\t\t\t\t(font\n\t\t\t\t\t(size 1.27 1.27)\n\t\t\t\t)\n\t\t\t\t(hide yes)\n\t\t\t)\n\t\t)\n\t\t(property "Value" "{value}"\n\t\t\t(at {at[0]} {at[1]} 0)\n\t\t\t(effects\n\t\t\t\t(font\n\t\t\t\t\t(size 1.27 1.27)\n\t\t\t)\n\t\t)\n\t\t)\n\t\t(property "Footprint" ""\n\t\t\t(at {at[0]} {at[1]} 0)\n\t\t\t(effects\n\t\t\t\t(font\n\t\t\t\t\t(size 1.27 1.27)\n\t\t\t)\n\t\t\t\t(hide yes)\n\t\t\t)\n\t\t)\n\t\t(property "Datasheet" ""\n\t\t\t(at {at[0]} {at[1]} 0)\n\t\t\t(effects\n\t\t\t\t(font\n\t\t\t\t\t(size 1.27 1.27)\n\t\t\t)\n\t\t\t\t(hide yes)\n\t\t\t)\n\t\t)\n\t\t(property "Description" "Power symbol creates a global label with name \\"{value}\\""\n\t\t\t(at {at[0]} {at[1]} 0)\n\t\t\t(effects\n\t\t\t\t(font\n\t\t\t\t\t(size 1.27 1.27)\n\t\t\t)\n\t\t\t\t(hide yes)\n\t\t\t)\n\t\t)\n\t\t(pin "1"\n\t\t\t(uuid "{str(uuid.uuid4())}")\n\t\t)\n\t)'
-
-
-def _generate_wires_for_net(schematic_data, net_name, connections, component_positions, project_data):
-    """Generate wires connecting all components on a net with labels."""
-    # Group connections by component
-    comp_pins = {}
-    
-    for conn in connections:
-        ref = conn.get("ref")
-        pin = conn.get("pin")
-        
-        if not ref or not pin:
-            continue
-        
-        # Get component type and position
-        comp_type = None
-        comp_pos = None
-        
-        for comp in project_data.get("components", []):
-            if comp["ref"] == ref:
-                comp_type = comp.get("part", "")
-                comp_pos = component_positions.get(ref)
-                break
-        if not comp_type:
-            for passive in project_data.get("passives", []):
-                if passive["ref"] == ref:
-                    comp_type = passive.get("type", "")
-                    comp_pos = component_positions.get(ref)
-                    break
-        
-        if not comp_type or not comp_pos:
-            continue
-        
-        # Calculate pin position
-        pin_pos = _get_pin_position(ref, comp_type, pin, comp_pos)
-        
-        if ref not in comp_pins:
-            comp_pins[ref] = []
-        comp_pins[ref].append({"pin": pin, "pos": pin_pos})
-    
-    if not comp_pins:
-        return
-    
-    # Improved routing: avoid crossovers by routing horizontally first, then vertically
-    # Collect all pin positions
-    all_pin_positions = []
-    pin_to_ref = {}
-    for ref, pins in comp_pins.items():
-        for pin_info in pins:
-            pos = pin_info["pos"]
-            all_pin_positions.append(pos)
-            pin_to_ref[pos] = ref
-    
-    if not all_pin_positions:
-        return
-    
-    # Sort pins by Y, then X to route top-to-bottom, left-to-right
-    all_pin_positions.sort(key=lambda p: (p[1], p[0]))
-    
-    # Find routing column (rightmost pin + spacing)
-    max_x = max(p[0] for p in all_pin_positions)
-    route_x = max_x + WIRE_LENGTH + 5.08  # Route column
-    
-    # Route each pin to the routing column, then connect vertically
-    wire_stubs = []
-    for pin_x, pin_y in all_pin_positions:
-        # Horizontal stub from pin
-        stub_end_x = pin_x + WIRE_LENGTH
-        stub_end_y = pin_y
-        _add_wire(schematic_data, pin_x, pin_y, stub_end_x, stub_end_y)
-        
-        # Horizontal to routing column
-        _add_wire(schematic_data, stub_end_x, stub_end_y, route_x, stub_end_y)
-        wire_stubs.append((route_x, stub_end_y))
-    
-    # Connect all stubs vertically in routing column
-    if len(wire_stubs) > 1:
-        wire_stubs.sort(key=lambda p: p[1])  # Sort by Y
-        for i in range(len(wire_stubs) - 1):
-            x1, y1 = wire_stubs[i]
-            x2, y2 = wire_stubs[i + 1]
-            _add_wire(schematic_data, x1, y1, x2, y2)
-    
-    # Place label at top of routing column
-    label_y = min(p[1] for p in all_pin_positions) - 5.08
-    label_x = route_x
-    _add_label(schematic_data, net_name, (label_x, label_y), net_name)
-
-
-def generate_bme280_sensor_sheet(project_json_path, output_path):
-    """
-    Generate the BME280_Sensor schematic sheet from project.json.
-    
-    Args:
-        project_json_path: Path to project.json file
-        output_path: Path where to save the .kicad_sch file
-    """
-    # Load project data
-    with open(project_json_path, 'r', encoding='utf-8') as f:
-        project_data = json.load(f)
-    
-    # Create schematic data structure
-    sheet_uuid = str(uuid.uuid4())
-    schematic_data = kicad_api.create_schematic_data("BME280_Sensor", sheet_uuid)
-    
-    # Get component database for symbol paths
-    # Go up from src/lib/ -> src/ -> ChipChat_Project/ -> parent -> component_database/
-    BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-    COMPONENT_DB_PATH = os.path.join(BASE_DIR, "component_database", "components.json")
-    with open(COMPONENT_DB_PATH, 'r', encoding='utf-8') as f:
-        db = json.load(f)
-    
-    # Track component positions for wire generation
-    component_positions = {}
-    
-    # Place BME280 (U3) - first component
-    bme280_info = None
-    for comp in project_data.get("components", []):
-        if comp["ref"] == "U3" and comp["sheet"] == "BME280_Sensor":
-            bme280_info = comp
-            break
-    
-    if not bme280_info:
-        print("ERROR: U3 BME280 not found in project.json")
-        return
-    
-    # Embed BME280 symbol
-    part_name = bme280_info["part"]
-    symbol_lib_id = kicad_api.embed_symbol_from_file(
-        schematic_data,
-        part_name,
-        library_path=None
-    )
-    
-    if not symbol_lib_id:
-        print(f"ERROR: Could not load symbol for {part_name}")
-        return
-    
-    # Place U3 at position 0 (top-left)
-    u3_pos = _get_component_position(0)
-    component_positions["U3"] = u3_pos
-    footprint = db.get(part_name, {}).get("footprint", {}).get("name", "")
-    kicad_api.place_component(
-        schematic_data,
-        symbol_lib_id,
-        "U3",
-        part_name,
-        (u3_pos["x"], u3_pos["y"]),
-        angle=u3_pos["angle"],
-        footprint=footprint
-    )
-    
-    # Place passive components in order
-    passives_on_sheet = [p for p in project_data.get("passives", [])
-                        if p.get("sheet") == "BME280_Sensor"]
-    
-    # Sort passives by reference to match COMPONENT_ORDER (only include those in order)
-    passives_on_sheet = [p for p in passives_on_sheet if p["ref"] in COMPONENT_ORDER]
-    passives_on_sheet.sort(key=lambda p: COMPONENT_ORDER.index(p["ref"]))
-    
-    passive_index = 1  # Start after U3
-    for passive in passives_on_sheet:
-        ref = passive["ref"]
-        ptype = passive["type"]
-        value = passive["value"]
-        
-        # Determine symbol library ID and embed if needed
-        if ptype == "R":
-            lib_id = "Resistor"
-            # Embed Resistor symbol if not already embedded
-            if not any('symbol "Resistor"' in str(s) for s in schematic_data["lib_symbols"]):
-                _embed_device_symbol(schematic_data, "R")
-        elif ptype == "C":
-            lib_id = "Capacitor"
-            # Embed Capacitor symbol if not already embedded
-            if not any('symbol "Capacitor"' in str(s) for s in schematic_data["lib_symbols"]):
-                _embed_device_symbol(schematic_data, "C")
-        else:
-            print(f"WARNING: Unknown passive type {ptype} for {ref}")
-            continue
-        
-        # Place component at grid position
-        pos = _get_component_position(passive_index)
-        component_positions[ref] = pos
-        kicad_api.place_component(
-            schematic_data,
-            lib_id,
-            ref,
-            value,
-            (pos["x"], pos["y"]),
-            angle=pos["angle"]
-        )
-        passive_index += 1
-    
-    # Add hierarchical labels on left side
-    hier_y_start = GRID_Y_START
-    _add_hierarchical_label(
-        schematic_data,
-        "I2C_SCL_BME",
-        (GRID_X_START - 12.7, hier_y_start),
-        shape="output"
-    )
-    _add_hierarchical_label(
-        schematic_data,
-        "I2C_SDA_BME",
-        (GRID_X_START - 12.7, hier_y_start + GRID_SPACING_Y),
-        shape="bidirectional"
-    )
-    
-    # Generate wires for each net
-    # Build a map of ref -> sheet for quick lookup
-    ref_to_sheet = {}
-    for comp in project_data.get("components", []):
-        ref_to_sheet[comp["ref"]] = comp.get("sheet")
-    for passive in project_data.get("passives", []):
-        ref_to_sheet[passive["ref"]] = passive.get("sheet")
-    
-    for net in project_data.get("nets", []):
-        # Filter connections to this sheet
-        sheet_connections = []
-        for conn in net.get("connections", []):
-            ref = conn.get("ref")
-            conn_sheet = conn.get("sheet")
-            
-            # If sheet is specified in connection, use it
-            if conn_sheet == "BME280_Sensor":
-                sheet_connections.append(conn)
-            # Otherwise, check if component is on this sheet
-            elif ref in ref_to_sheet and ref_to_sheet[ref] == "BME280_Sensor":
-                # Create a copy with sheet info
-                conn_copy = conn.copy()
-                conn_copy["sheet"] = "BME280_Sensor"
-                sheet_connections.append(conn_copy)
-        
-        if sheet_connections:
-            _generate_wires_for_net(
-                schematic_data,
-                net["name"],
-                sheet_connections,
-                component_positions,
-                project_data
-            )
-    
-    # Generate and save schematic
-    _save_schematic_with_extensions(schematic_data, output_path)
-    print(f"\n✓ BME280_Sensor schematic generated: {output_path}")
-
-
 def _format_component(item):
-    """Format a component instance in proper KiCad 9.x format."""
+    """Format a component instance in KiCad 9.x format."""
     text = "\t(symbol\n"
     text += f'\t\t(lib_id "{item["lib_id"]}")\n'
     text += f'\t\t(at {item["at"][0]} {item["at"][1]} {item["at"][2]})\n'
-    text += f'\t\t(unit 1)\n'
-    text += f'\t\t(exclude_from_sim no)\n'
-    text += f'\t\t(in_bom yes)\n'
-    text += f'\t\t(on_board yes)\n'
-    text += f'\t\t(dnp no)\n'
+    text += '\t\t(unit 1)\n'
+    text += '\t\t(exclude_from_sim no)\n'
+    text += '\t\t(in_bom yes)\n'
+    text += '\t\t(on_board yes)\n'
+    text += '\t\t(dnp no)\n'
     text += f'\t\t(uuid "{item["uuid"]}")\n'
-    
-    # Properties
-    ref_at_y = item["at"][1] - 2.54
-    val_at_y = item["at"][1] + 2.54
-    angle = item["at"][2]
-    
+
     ref_val = item["properties"].get("Reference", "")
     val_val = item["properties"].get("Value", "")
     footprint = item["properties"].get("Footprint", "")
-    
+    angle = item["at"][2]
+    ref_y = item["at"][1] - 2.54
+    val_y = item["at"][1] + 2.54
+
     text += f'\t\t(property "Reference" "{ref_val}"\n'
-    text += f'\t\t\t(at {item["at"][0]} {ref_at_y} {angle})\n'
-    text += f'\t\t\t(effects\n\t\t\t\t(font\n\t\t\t\t\t(size 1.27 1.27)\n\t\t\t\t)\n\t\t\t)\n'
-    text += f'\t\t)\n'
-    
+    text += f'\t\t\t(at {item["at"][0]} {ref_y} {angle})\n'
+    text += '\t\t\t(effects\n\t\t\t\t(font\n\t\t\t\t\t(size 1.27 1.27)\n\t\t\t\t)\n\t\t\t)\n'
+    text += '\t\t)\n'
+
     text += f'\t\t(property "Value" "{val_val}"\n'
-    text += f'\t\t\t(at {item["at"][0]} {val_at_y} {angle})\n'
-    text += f'\t\t\t(effects\n\t\t\t\t(font\n\t\t\t\t\t(size 1.27 1.27)\n\t\t\t\t)\n\t\t\t)\n'
-    text += f'\t\t)\n'
-    
+    text += f'\t\t\t(at {item["at"][0]} {val_y} {angle})\n'
+    text += '\t\t\t(effects\n\t\t\t\t(font\n\t\t\t\t\t(size 1.27 1.27)\n\t\t\t\t)\n\t\t\t)\n'
+    text += '\t\t)\n'
+
     text += f'\t\t(property "Footprint" "{footprint}"\n'
     text += f'\t\t\t(at {item["at"][0]} {item["at"][1]} 0)\n'
-    text += f'\t\t\t(effects\n\t\t\t\t(font\n\t\t\t\t\t(size 1.27 1.27)\n\t\t\t\t)\n\t\t\t\t(hide yes)\n\t\t\t)\n'
-    text += f'\t\t)\n'
-    
+    text += '\t\t\t(effects\n\t\t\t\t(font\n\t\t\t\t\t(size 1.27 1.27)\n\t\t\t\t)\n\t\t\t\t(hide yes)\n\t\t\t)\n'
+    text += '\t\t)\n'
+
     text += f'\t\t(property "Datasheet" "~"\n'
     text += f'\t\t\t(at {item["at"][0]} {item["at"][1]} 0)\n'
-    text += f'\t\t\t(effects\n\t\t\t\t(font\n\t\t\t\t\t(size 1.27 1.27)\n\t\t\t\t)\n\t\t\t\t(hide yes)\n\t\t\t)\n'
-    text += f'\t\t)\n'
-    
-    # Pin instances (required in KiCad 9.x)
+    text += '\t\t\t(effects\n\t\t\t\t(font\n\t\t\t\t\t(size 1.27 1.27)\n\t\t\t\t)\n\t\t\t\t(hide yes)\n\t\t\t)\n'
+    text += '\t\t)\n'
+
     for pin_num in item.get("pins", []):
         text += f'\t\t(pin "{pin_num}"\n'
         text += f'\t\t\t(uuid "{str(uuid.uuid4())}")\n'
-        text += f'\t\t)\n'
-    
+        text += '\t\t)\n'
+
     text += "\t)\n"
     return text
 
 
-def _save_schematic_with_extensions(schematic_data, file_path):
-    """Save schematic with wires, labels, and power symbols."""
-    text = f'(kicad_sch\n'
+def _save_schematic(schematic_data, file_path):
+    """Save schematic data to a .kicad_sch file."""
+    text = '(kicad_sch\n'
     text += f'\t(version {schematic_data["version"]})\n'
     text += f'\t(generator "{schematic_data["generator"]}")\n'
-    text += f'\t(generator_version "9.0")\n'
+    text += '\t(generator_version "9.0")\n'
     text += f'\t(uuid "{schematic_data["uuid"]}")\n'
     text += f'\t(paper "{schematic_data["paper"]}")\n\n'
-    
-    # Embedded symbols
+
     if schematic_data["lib_symbols"]:
         text += "\t(lib_symbols\n"
-        for symbol_def in schematic_data["lib_symbols"]:
-            text += f"\t\t{symbol_def}\n"
+        for sym in schematic_data["lib_symbols"]:
+            text += f"\t\t{sym}\n"
         text += "\t)\n\n"
-    
-    # Components and other items
+
     for item in schematic_data["items"]:
-        if item["type"] == "symbol":
+        t = item["type"]
+        if t == "symbol":
             text += _format_component(item)
-        elif item["type"] == "wire":
+        elif t == "wire":
             text += _format_wire(item) + "\n"
-        elif item["type"] == "label":
+        elif t == "label":
             text += _format_label(item) + "\n"
-        elif item["type"] == "hierarchical_label":
+        elif t == "hierarchical_label":
             text += _format_hierarchical_label(item) + "\n"
-        elif item["type"] == "power_symbol":
-            text += _format_power_symbol(item) + "\n"
-    
+
     text += ")\n"
-    
+
     with open(file_path, "w", encoding="utf-8") as f:
         f.write(text)
     print(f"Schematic saved to {file_path}")
 
 
 # =============================================================================
-# SIMPLE TEST: BME280 center + 1 resistor (R7) top-left
+# JSON loader — reads passives + net types from project JSON
 # =============================================================================
 
-def generate_simple_test(output_path):
+def _load_sheet_passives(json_path, sheet_name):
+    """Load passives and net-type info for a specific sheet.
+
+    Returns:
+        passives:   list of {ref, type, value, pin1_net, pin2_net}
+        net_types:  dict  net_name → "hierarchical" | "local" | "power"
     """
-    Minimal test schematic:
-      - BME280 at center of page
-      - R7 (0R) at top-left, horizontal, with:
-        - Label "I2C_SCL_0R" on the left end
-        - Hierarchical label "I2C_SCL_BME" on the right end
-    
-    This is a baseline to get placement, wires, and labels right
-    before adding more components.
+    with open(json_path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    # Build net-type lookup from the "nets" section
+    net_types = {}
+    for net in data.get("nets", []):
+        net_types[net["name"]] = net.get("type", "local")
+
+    # Filter passives belonging to this sheet
+    passives = []
+    for p in data.get("passives", []):
+        if p.get("sheet") != sheet_name:
+            continue
+        conns = {c["pin"]: c["net"] for c in p.get("connections", [])}
+        passives.append({
+            "ref": p["ref"],
+            "type": p["type"],       # "R" or "C"
+            "value": p["value"],
+            "pin1_net": conns.get("1", ""),   # RIGHT side (after 90° rotation)
+            "pin2_net": conns.get("2", ""),    # LEFT side
+        })
+
+    return passives, net_types
+
+
+def _load_sheet_components(json_path, sheet_name):
+    """Load main components (non-passives) for a sheet.
+
+    Returns list of {ref, part, connections}.
     """
-    # Create schematic
+    with open(json_path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    return [c for c in data.get("components", []) if c.get("sheet") == sheet_name]
+
+
+# =============================================================================
+# Wiring helper — connects horizontal passive pins to net labels
+# =============================================================================
+
+def _wire_horizontal_passive(schematic_data, cx, cy, passive, net_types):
+    """Wire both sides of a horizontal passive with appropriate labels.
+
+    All passives are horizontal (angle=90):
+      Pin 1 = RIGHT (+x)     Pin 2 = LEFT (-x)
+    """
+    pin1_x = round(cx + PIN_HALF_LEN, 2)
+    pin2_x = round(cx - PIN_HALF_LEN, 2)
+
+    # --- RIGHT side (pin 1) ---
+    right_end = round(pin1_x + WIRE_STUB, 2)
+    _add_wire(schematic_data, pin1_x, cy, right_end, cy)
+
+    pin1_net = passive["pin1_net"]
+    if net_types.get(pin1_net) == "hierarchical":
+        # angle 0 → flag points LEFT, text extends RIGHT (wire comes from left)
+        _add_hierarchical_label(schematic_data, pin1_net,
+                                (right_end, cy), shape="bidirectional", angle=0)
+    else:
+        _add_label(schematic_data, pin1_net, (right_end, cy),
+                   justify="left bottom")
+
+    # --- LEFT side (pin 2) ---
+    left_end = round(pin2_x - WIRE_STUB, 2)
+    _add_wire(schematic_data, pin2_x, cy, left_end, cy)
+
+    pin2_net = passive["pin2_net"]
+    if net_types.get(pin2_net) == "hierarchical":
+        # angle 180 → flag points RIGHT, text extends LEFT (wire comes from right)
+        _add_hierarchical_label(schematic_data, pin2_net,
+                                (left_end, cy), shape="bidirectional", angle=180)
+    else:
+        _add_label(schematic_data, pin2_net, (left_end, cy),
+                   justify="right bottom")
+
+
+# =============================================================================
+# Main entry point — generate schematic from project JSON
+# =============================================================================
+
+def generate_from_json(output_path, json_path, sheet_name="BME280_Sensor"):
+    """Generate a schematic sheet by reading from the project JSON.
+
+    - Reads passives for the given sheet
+    - Places them ALL horizontally in a column grid (top-left → right)
+    - Adds wires + net labels (hierarchical or local based on nets section)
+    - Places main components (e.g. BME280) at center-right
+    """
+    # 1. Load data from JSON
+    passives, net_types = _load_sheet_passives(json_path, sheet_name)
+    main_comps = _load_sheet_components(json_path, sheet_name)
+
+    if not passives and not main_comps:
+        print(f"Nothing found for sheet '{sheet_name}' in {json_path}")
+        return
+
+    # 2. Create schematic
     sheet_uuid = str(uuid.uuid4())
-    schematic_data = kicad_api.create_schematic_data("SimpleTest", sheet_uuid)
-    
-    # --- Embed symbols ---
-    
-    # BME280
-    BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+    schematic_data = kicad_api.create_schematic_data(sheet_name, sheet_uuid)
+
+    # 3. Paths
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(
+        os.path.dirname(os.path.abspath(__file__)))))
     SYMBOL_LIB_PATH = os.path.join(BASE_DIR, "KICAD_Library", "Symbols")
-    
-    bme_lib_id = kicad_api.embed_symbol_from_file(
-        schematic_data, "BME280", library_path=SYMBOL_LIB_PATH
-    )
-    
-    # Resistor
-    _embed_device_symbol(schematic_data, "R")
-    resistor_lib_id = "Resistor"
-    
-    # --- Place BME280 at center of A4 page ---
-    # A4 = 297 x 210 mm, center ≈ (148.59, 104.14)
-    bme_x, bme_y = 148.59, 104.14
-    kicad_api.place_component(
-        schematic_data,
-        bme_lib_id,
-        "U3", "BME280",
-        (bme_x, bme_y),
-        angle=0,
-        footprint="Package_LGA:Bosch_LGA-8_2.5x2.5mm_P0.65mm_ClockwisePinNumbering",
-        pins=["1", "2", "3", "4", "5", "6", "7", "8"]
-    )
-    
-    # --- Place R7 (0R) at top-left, HORIZONTAL ---
-    # Resistor symbol is vertical by default (pin 1 at top, pin 2 at bottom).
-    # Rotate 90° to make it horizontal:
-    #   Pin 1 (top) → right side: connection point at (center_x + 3.81, center_y)
-    #   Pin 2 (bottom) → left side: connection point at (center_x - 3.81, center_y)
-    r7_x, r7_y = 50.8, 38.1
-    kicad_api.place_component(
-        schematic_data,
-        resistor_lib_id,
-        "R7", "0",
-        (r7_x, r7_y),
-        angle=90,
-        pins=["1", "2"]
-    )
-    
-    # --- Wires and labels for R7 ---
-    # With 90° rotation (CW):
-    #   Pin 1 tip: (r7_x + 3.81, r7_y)  = (54.61, 38.1) — RIGHT side
-    #   Pin 2 tip: (r7_x - 3.81, r7_y)  = (46.99, 38.1) — LEFT side
-    
-    pin1_x = round(r7_x + 3.81, 2)   # 54.61 — right
-    pin2_x = round(r7_x - 3.81, 2)   # 46.99 — left
-    pin_y = r7_y                       # 38.1
-    
-    # =====================================================================
-    # How KiCad labels work (from reference BME280_Sensor.kicad_sch):
-    #
-    # HIERARCHICAL LABEL: (at) = connection point (flag/triangle).
-    #   Wire must END at this exact point. Text extends right.
-    #
-    # LOCAL LABEL: (at) = connection point.
-    #   "justify left bottom"  → text extends RIGHT, above wire
-    #   "justify right bottom" → text extends LEFT, above wire
-    #   Place AT a wire endpoint so there's no dangling wire.
-    # =====================================================================
-    
-    # RIGHT SIDE: Hierarchical label "I2C_SCL_BME"
-    # Wire from pin 1 → label. Label (at) IS the wire endpoint.
-    hier_label_x = round(pin1_x + 7.62, 2)   # 62.23
-    _add_wire(schematic_data, pin1_x, pin_y, hier_label_x, pin_y)
-    _add_hierarchical_label(schematic_data, "I2C_SCL_BME", (hier_label_x, pin_y), shape="input")
-    
-    # LEFT SIDE: Local label "I2C_SCL_0R"
-    # Wire from pin 2 extending left. Label AT the left wire endpoint
-    # with "justify right bottom" so text extends LEFT from the
-    # connection point (like image 3: text ← wire → resistor).
-    wire2_end_x = round(pin2_x - 7.62, 2)    # 39.37
-    _add_wire(schematic_data, pin2_x, pin_y, wire2_end_x, pin_y)
-    _add_label(schematic_data, "I2C_SCL_0R", (wire2_end_x, pin_y), justify="right bottom")
-    
-    # --- Save ---
-    _save_schematic_with_extensions(schematic_data, output_path)
-    print(f"\n✓ Simple test schematic generated: {output_path}")
-    print(f"  BME280 at center ({bme_x}, {bme_y})")
-    print(f"  R7 at top-left ({r7_x}, {r7_y}), horizontal")
-    print(f"  Nets: I2C_SCL_0R (left of R7), I2C_SCL_BME (right of R7)")
+
+    # 4. Embed passive symbols (only the types present)
+    types_needed = set(p["type"] for p in passives)
+    if "R" in types_needed:
+        _embed_device_symbol(schematic_data, "R")
+    if "C" in types_needed:
+        _embed_device_symbol(schematic_data, "C")
+
+    # 5. Place main component(s) at center-right
+    for comp in main_comps:
+        part_name = comp["part"]
+        lib_id = kicad_api.embed_symbol_from_file(
+            schematic_data, part_name, library_path=SYMBOL_LIB_PATH
+        )
+        if lib_id:
+            # Figure out pin count from connections
+            pin_nums = [c["pin"] for c in comp.get("connections", [])]
+            # Ensure we cover all pins even if some aren't in connections
+            max_pin = max((int(p) for p in pin_nums if p.isdigit()), default=1)
+            all_pins = [str(i) for i in range(1, max_pin + 1)]
+
+            kicad_api.place_component(
+                schematic_data, lib_id, comp["ref"], part_name,
+                (MAIN_COMP_X, MAIN_COMP_Y), angle=0,
+                footprint="", pins=all_pins
+            )
+
+    # 6. Place passives — all horizontal, column grid
+    for i, p in enumerate(passives):
+        col = i // PASSIVE_MAX_ROWS
+        row = i % PASSIVE_MAX_ROWS
+        px = round(PASSIVE_X_START + col * PASSIVE_COL_SPACING, 2)
+        py = round(PASSIVE_Y_START + row * PASSIVE_Y_SPACING, 2)
+
+        lib_id = "Resistor" if p["type"] == "R" else "Capacitor"
+        kicad_api.place_component(
+            schematic_data, lib_id, p["ref"], p["value"],
+            (px, py), angle=90, pins=["1", "2"]
+        )
+        _wire_horizontal_passive(schematic_data, px, py, p, net_types)
+
+    # 7. Save
+    _save_schematic(schematic_data, output_path)
+
+    print(f"\n✓ Schematic generated from {os.path.basename(json_path)}")
+    print(f"  Sheet: {sheet_name}")
+    if main_comps:
+        for c in main_comps:
+            print(f"  Component: {c['ref']} ({c['part']}) at ({MAIN_COMP_X}, {MAIN_COMP_Y})")
+    print(f"  {len(passives)} passives (horizontal, column grid):")
+    for p in passives:
+        print(f"    {p['ref']:>3s} ({p['value']:>5s}):  {p['pin2_net']} ←[{p['ref']}]→ {p['pin1_net']}")

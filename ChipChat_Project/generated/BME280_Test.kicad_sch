@@ -2,7 +2,7 @@
 	(version 20250114)
 	(generator "ChipChat_Gemini")
 	(generator_version "9.0")
-	(uuid "1043b137-cf7b-416c-a5cb-db4cd95dad7c")
+	(uuid "c4ee44b7-50df-425c-b194-efd328776167")
 	(paper "A4")
 
 	(lib_symbols
@@ -401,7 +401,7 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "2cf3bef5-0c42-427e-a205-28acc585d928")
+		(uuid "9dedeb17-5964-462f-b852-b9a39a3646b1")
 		(property "Reference" "U3"
 			(at 200.0 97.46 0)
 			(effects
@@ -437,29 +437,151 @@
 			)
 		)
 		(pin "1"
-			(uuid "73ac9826-a44b-4c1f-9a84-4e96abfccd0f")
+			(uuid "6228b784-b40b-4675-85da-c2e5308babcc")
 		)
 		(pin "2"
-			(uuid "1c918dc3-f36a-4bef-a490-61807f9a250a")
+			(uuid "575f9fa9-1cb3-445b-995e-2807c7bb7a0c")
 		)
 		(pin "3"
-			(uuid "5572daff-7442-4ada-8381-c10153cc4274")
+			(uuid "30af3215-12e4-4847-a05e-535ead241948")
 		)
 		(pin "4"
-			(uuid "9fcf23ff-e5f9-48d9-bc3f-b7b2b1e7566f")
+			(uuid "da695790-8efb-4517-9d0c-d6954ede8926")
 		)
 		(pin "5"
-			(uuid "a5b609bb-e0fe-4aee-962c-57d9184a1df7")
+			(uuid "e286ec9c-2414-4bc6-a6f9-72ecbada50a9")
 		)
 		(pin "6"
-			(uuid "7a73d985-720c-4b96-86f2-061182162e84")
+			(uuid "5a4d19a0-82ec-47cf-a599-d3feeeb15136")
 		)
 		(pin "7"
-			(uuid "8b3920be-7c33-4b6d-8cc0-3ee7d15fe163")
+			(uuid "9010d5ed-2289-4b65-aaac-4a10553de43f")
 		)
 		(pin "8"
-			(uuid "71861a8a-7ed1-4cfc-89f4-a9a8340ed6b6")
+			(uuid "9640fce9-ee1c-4043-98f0-c498c988223d")
 		)
+	)
+	(wire
+		(pts
+			(xy 215.24 89.84) (xy 222.86 89.84)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "49adc253-4a90-49e9-afde-4b8f0404faf2")
+	)
+	(label "GND"
+		(at 222.86 89.84 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "29d98938-67ef-4636-beb7-96f35058bf82")
+	)
+	(wire
+		(pts
+			(xy 184.76 97.46) (xy 177.14 97.46)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "332a5806-ee78-4a8e-bb84-44011b646dbc")
+	)
+	(label "I2C_SDA_0R"
+		(at 177.14 97.46 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "60bd3955-1c8d-47aa-a349-59e57a20951b")
+	)
+	(wire
+		(pts
+			(xy 184.76 100.0) (xy 177.14 100.0)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9771b483-724d-4d7b-91f1-53f798e7339b")
+	)
+	(label "I2C_SCL_0R"
+		(at 177.14 100.0 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "e79a3f86-5801-4ae6-af91-3a6f43d9014e")
+	)
+	(wire
+		(pts
+			(xy 184.76 94.92) (xy 177.14 94.92)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "65ad0e52-10a0-4eb7-832f-8c4dee8baed9")
+	)
+	(label "SDO_ADD"
+		(at 177.14 94.92 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "e9c4f78b-6e72-4f04-a4ed-3cf280196aa9")
+	)
+	(wire
+		(pts
+			(xy 215.24 110.16) (xy 222.86 110.16)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "588d3b69-a9be-476b-ace4-7aac65eb0693")
+	)
+	(hierarchical_label "PP_3V3_OUT"
+		(shape bidirectional)
+		(at 222.86 110.16 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "7e871011-c0cd-4581-9dcd-4efdeba33acb")
+	)
+	(wire
+		(pts
+			(xy 215.24 107.62) (xy 222.86 107.62)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7d22bf2a-2ecb-4924-af51-c1e24e49a197")
+	)
+	(hierarchical_label "PP_3V3_OUT"
+		(shape bidirectional)
+		(at 222.86 107.62 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "07b50f44-827a-49d9-ba0a-4153c915b017")
 	)
 	(symbol
 		(lib_id "Resistor")
@@ -469,7 +591,7 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "65ae3fd2-350a-4107-bf95-f14f99d7d0f9")
+		(uuid "ab1e9ac1-b1f6-4a48-8090-98837b9d92c6")
 		(property "Reference" "R5"
 			(at 80.0 32.46 90)
 			(effects
@@ -505,10 +627,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "b52966f6-26ef-4503-b87c-d849c9577075")
+			(uuid "6c2ccf48-e589-4d74-a8c7-e87478becd4c")
 		)
 		(pin "2"
-			(uuid "0b10aafa-c408-4dd6-b521-33f84497a43b")
+			(uuid "64206ccd-3238-45e5-bc1c-9a9ef54f8906")
 		)
 	)
 	(wire
@@ -519,7 +641,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "380433be-3bb1-45a9-88ca-f6d2df854c2a")
+		(uuid "218299c5-abf0-47ff-9601-55e33ea30556")
 	)
 	(hierarchical_label "I2C_SCL_BME"
 		(shape bidirectional)
@@ -530,7 +652,7 @@
 			)
 			(justify left)
 		)
-		(uuid "0b8d3ca9-c7a6-4ac6-8cb4-0127e662c553")
+		(uuid "ace02fa3-fde7-465b-9c0d-52045553beda")
 	)
 	(wire
 		(pts
@@ -540,7 +662,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "792615f7-8ac5-494f-ad3a-13ae385484ff")
+		(uuid "7b5c50de-f42b-48c6-b2fb-de0221b2a2be")
 	)
 	(hierarchical_label "PP_3V3_OUT"
 		(shape bidirectional)
@@ -551,7 +673,7 @@
 			)
 			(justify right)
 		)
-		(uuid "2151fc1f-19d6-474e-8579-c2b14a2b1e24")
+		(uuid "9486f882-bbc6-4539-87bf-cafe278c5583")
 	)
 	(symbol
 		(lib_id "Resistor")
@@ -561,7 +683,7 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "6e35195e-b47b-4003-aaee-276704beb37e")
+		(uuid "d841114f-1d3b-4850-bf3e-c26b646d173e")
 		(property "Reference" "R6"
 			(at 80.0 47.7 90)
 			(effects
@@ -597,10 +719,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "26d3a13a-55f1-4ad3-9c78-106e4ad37b39")
+			(uuid "5fac381a-ce77-4528-aaed-eca2ad092244")
 		)
 		(pin "2"
-			(uuid "7a091091-d98e-4f92-91cf-b61f80172c1a")
+			(uuid "d714c1d9-c2ee-4687-a669-0b2a9ff023f5")
 		)
 	)
 	(wire
@@ -611,7 +733,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "bdc7c215-d689-4575-92ff-5f3ab8411c50")
+		(uuid "00db343a-15b1-4fee-85c2-360181756b30")
 	)
 	(hierarchical_label "I2C_SDA_BME"
 		(shape bidirectional)
@@ -622,7 +744,7 @@
 			)
 			(justify left)
 		)
-		(uuid "0fc25e15-ca52-4569-b2ae-f97b99d8df51")
+		(uuid "1a28d503-32ee-4982-86b4-08b4255be047")
 	)
 	(wire
 		(pts
@@ -632,7 +754,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "9f3f1d95-ff9e-412e-9f42-e8a4df9bbd5d")
+		(uuid "be636901-8568-4542-8f77-f8cbdf2a21ff")
 	)
 	(hierarchical_label "PP_3V3_OUT"
 		(shape bidirectional)
@@ -643,7 +765,7 @@
 			)
 			(justify right)
 		)
-		(uuid "7111130a-6bd6-4dc1-b1c5-ced0ad55c29c")
+		(uuid "e053c61e-653c-4708-a5ba-a6ad20833b0d")
 	)
 	(symbol
 		(lib_id "Resistor")
@@ -653,7 +775,7 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "84f9fd79-34d0-4a8e-a6c2-8259dfe9349a")
+		(uuid "1de1316b-3cb1-49e7-a378-0a4b600c742c")
 		(property "Reference" "R7"
 			(at 80.0 62.940000000000005 90)
 			(effects
@@ -689,10 +811,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "de1b50e2-f11e-4ddc-bc65-db91dbfaaff6")
+			(uuid "9a2f38a4-523f-4e70-9d39-35ca4a07a936")
 		)
 		(pin "2"
-			(uuid "cfbdfd7e-dd30-40c6-97a7-6fa2c978434a")
+			(uuid "5c128255-321a-4cf5-886d-097fd756596f")
 		)
 	)
 	(wire
@@ -703,7 +825,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "94f73608-5ae2-4165-b56b-13ac88b859aa")
+		(uuid "884e3e82-a99e-428f-a3da-45b869c71adf")
 	)
 	(hierarchical_label "I2C_SCL_BME"
 		(shape bidirectional)
@@ -714,7 +836,7 @@
 			)
 			(justify left)
 		)
-		(uuid "4e3d8d50-4131-43ef-a91d-234b5a3b81b9")
+		(uuid "9e40ee64-7ca7-4255-baab-4e4bdcf36442")
 	)
 	(wire
 		(pts
@@ -724,7 +846,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "1caaaad4-29ff-4a83-9f4f-99467d686387")
+		(uuid "ea2a7ff2-fb1c-4e24-81fc-26d1ed276187")
 	)
 	(label "I2C_SCL_0R"
 		(at 68.57 65.48 0)
@@ -734,7 +856,7 @@
 			)
 			(justify right bottom)
 		)
-		(uuid "b531c01e-57cd-4f86-a81f-6fb2b1dfe4ba")
+		(uuid "1ece66d8-56ce-4e94-82e1-1d0b9c2884d9")
 	)
 	(symbol
 		(lib_id "Resistor")
@@ -744,7 +866,7 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "ff1ff57a-6303-475b-a361-a0013ac726ca")
+		(uuid "eebe3c6a-f586-4674-a3d1-a03d9008e0e2")
 		(property "Reference" "R8"
 			(at 80.0 78.17999999999999 90)
 			(effects
@@ -780,10 +902,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "280fea36-8a58-4ac9-9371-4f4cc16ac882")
+			(uuid "3d697c3f-1e76-48d7-a44e-88e9c61e131b")
 		)
 		(pin "2"
-			(uuid "e2628134-9c03-4eec-af78-1ef7f74c1d6e")
+			(uuid "b7e70820-ba44-4b11-a93f-e655d898d7dc")
 		)
 	)
 	(wire
@@ -794,7 +916,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "57bff8d2-5cfc-48f3-8396-4ba09ede93f7")
+		(uuid "78f42a2f-061b-441a-898c-3fd631e67687")
 	)
 	(hierarchical_label "I2C_SDA_BME"
 		(shape bidirectional)
@@ -805,7 +927,7 @@
 			)
 			(justify left)
 		)
-		(uuid "9ab4f219-7199-4e25-9dcb-d3ce9de5cd76")
+		(uuid "eeff36db-8018-4736-a14e-95aac49241a6")
 	)
 	(wire
 		(pts
@@ -815,7 +937,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "f23beee8-ebe8-4b88-928b-214d7d0848dc")
+		(uuid "09b893b0-da40-4ed8-a5c0-97e7f375d9d9")
 	)
 	(label "I2C_SDA_0R"
 		(at 68.57 80.72 0)
@@ -825,7 +947,7 @@
 			)
 			(justify right bottom)
 		)
-		(uuid "734c8e09-ad64-497e-a7f9-36e96bd1eca7")
+		(uuid "f46bf9d1-4c66-4af5-9640-a90e62eaa577")
 	)
 	(symbol
 		(lib_id "Resistor")
@@ -835,7 +957,7 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "57306344-70a6-4de0-ba3b-b70e7c1d8fde")
+		(uuid "fe1b386d-5144-428c-be7b-e93981043edc")
 		(property "Reference" "R9"
 			(at 80.0 93.41999999999999 90)
 			(effects
@@ -871,10 +993,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "5b682166-0970-45e6-9985-b415df524f96")
+			(uuid "e12a6074-922e-4c9f-a45e-50033781ab5f")
 		)
 		(pin "2"
-			(uuid "49ffb0a3-bd7c-4d07-a20b-344cddc6f960")
+			(uuid "eb0c4796-6acc-4714-af73-a7b5a50ac6e0")
 		)
 	)
 	(wire
@@ -885,7 +1007,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "2c2c7619-44b8-4c50-9fd0-4a2016a0e0ec")
+		(uuid "75353346-2210-44c1-960a-4e0363f1a97d")
 	)
 	(label "SDO_ADD"
 		(at 91.43 95.96 0)
@@ -895,7 +1017,7 @@
 			)
 			(justify left bottom)
 		)
-		(uuid "7979bfab-a9e9-4d9e-a3a3-78ce28cfa6ff")
+		(uuid "83f2c80d-a315-4134-bd02-74a9329c2983")
 	)
 	(wire
 		(pts
@@ -905,7 +1027,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "ae8327f0-c29e-4e28-a7bd-e4597c0ca256")
+		(uuid "2ce2a1f8-ba08-4e30-88b4-3ed4acec6cbf")
 	)
 	(label "GND"
 		(at 68.57 95.96 0)
@@ -915,7 +1037,7 @@
 			)
 			(justify right bottom)
 		)
-		(uuid "cbdfb189-68d3-4583-804f-20baa317b6b7")
+		(uuid "c7141d68-70f9-4bd4-af25-95aa56d9b6b0")
 	)
 	(symbol
 		(lib_id "Capacitor")
@@ -925,7 +1047,7 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "a0c9c960-4424-430f-91cc-ca9a93849448")
+		(uuid "78829b87-dad9-4636-8578-8c45f5e01460")
 		(property "Reference" "C9"
 			(at 80.0 108.66 90)
 			(effects
@@ -961,10 +1083,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "754bda38-3f5b-44f0-b102-969e1099979b")
+			(uuid "c1e5505c-167f-4472-b2c5-95fe7dc7aa85")
 		)
 		(pin "2"
-			(uuid "600e18b6-c543-44ed-b277-dcc3003576e0")
+			(uuid "36e8453e-2288-4bd7-819b-d71dc928da34")
 		)
 	)
 	(wire
@@ -975,7 +1097,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "32c052f0-a3e0-46ad-b216-72c302ec45f6")
+		(uuid "bc87ca03-e201-4094-81cf-7a93d512c6f8")
 	)
 	(hierarchical_label "PP_3V3_OUT"
 		(shape bidirectional)
@@ -986,7 +1108,7 @@
 			)
 			(justify left)
 		)
-		(uuid "e70dd801-a975-4a7d-8b89-d2288c993d2f")
+		(uuid "997f2f9d-abf8-4ff2-81a3-6079d4a2bf38")
 	)
 	(wire
 		(pts
@@ -996,7 +1118,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "e60b455a-e0ec-4dac-a527-42623bb0962f")
+		(uuid "c7fa77c4-ab6c-4611-aca8-b989a46723cf")
 	)
 	(label "GND"
 		(at 68.57 111.2 0)
@@ -1006,7 +1128,7 @@
 			)
 			(justify right bottom)
 		)
-		(uuid "0c139436-4a33-426c-ac15-dccaee2db94e")
+		(uuid "a13aa3c1-3f33-4818-904e-c829669e69f4")
 	)
 	(symbol
 		(lib_id "Capacitor")
@@ -1016,7 +1138,7 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "0aff78cb-550a-4d89-bd8c-22990f3abaf3")
+		(uuid "70204caa-3312-422b-b250-97fbe85d64b2")
 		(property "Reference" "C10"
 			(at 80.0 123.89999999999999 90)
 			(effects
@@ -1052,10 +1174,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "71bdb3a4-c66d-495a-b0f6-59009b983b94")
+			(uuid "5212689f-8a3a-44f3-9294-d61e47ccfa76")
 		)
 		(pin "2"
-			(uuid "f8226173-1a11-45e0-b918-30b03bb23317")
+			(uuid "18c1fd51-b290-4def-bbe1-ce9c439e34aa")
 		)
 	)
 	(wire
@@ -1066,7 +1188,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "c1fd6fbf-33a0-4f36-9cef-f1c5f484c226")
+		(uuid "baf176a7-5966-4408-a5ac-a7000ff76a36")
 	)
 	(hierarchical_label "PP_3V3_OUT"
 		(shape bidirectional)
@@ -1077,7 +1199,7 @@
 			)
 			(justify left)
 		)
-		(uuid "5c281f70-5df7-45db-9b40-259d5704ef10")
+		(uuid "29544b20-e17e-45b5-869a-f89804f16ba2")
 	)
 	(wire
 		(pts
@@ -1087,7 +1209,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "f012f2e1-d89f-4884-84b4-bdf1cc13a96e")
+		(uuid "b90b9452-c682-4415-914c-2e09da57ddef")
 	)
 	(label "GND"
 		(at 68.57 126.44 0)
@@ -1097,6 +1219,6 @@
 			)
 			(justify right bottom)
 		)
-		(uuid "47b46a60-202e-48b1-9494-a305d026605f")
+		(uuid "d1f30b8b-f1cd-4910-b14a-026fdd108020")
 	)
 )

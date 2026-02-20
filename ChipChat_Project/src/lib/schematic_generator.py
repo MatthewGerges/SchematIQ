@@ -5,6 +5,7 @@ Schematic generator for KiCad — reads project JSON, places components algorith
 import json
 import uuid
 import os
+import re
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
@@ -381,6 +382,119 @@ def _wire_horizontal_passive(schematic_data, cx, cy, passive, net_types):
 
 
 # =============================================================================
+# Symbol pin parser — reads pin positions from .kicad_sym files
+# =============================================================================
+
+def _parse_symbol_pins(symbol_file_path):
+    """Parse pin tip positions from a .kicad_sym file.
+
+    Returns: dict  pin_number → {x, y, angle, name}
+      (x, y) = pin TIP (connection point) relative to symbol center
+      angle  = direction from tip INTO the body (0=right, 180=left, 270=up, 90=down)
+    """
+    with open(symbol_file_path, "r", encoding="utf-8") as f:
+        content = f.read()
+
+    pins = {}
+    for block in content.split("(pin ")[1:]:       # skip preamble
+        at_m = re.search(r"\(at\s+([-\d.]+)\s+([-\d.]+)\s+([-\d.]+)\)", block)
+        num_m = re.search(r'\(number\s+"([^"]+)"', block)
+        name_m = re.search(r'\(name\s+"([^"]*)"', block)
+        if not at_m or not num_m:
+            continue
+
+        # "hide" keyword before (name ...) means the pin is invisible
+        hidden = "hide" in block.split("(name")[0] if "(name" in block else False
+
+        pins[num_m.group(1)] = {
+            "x": float(at_m.group(1)),
+            "y": float(at_m.group(2)),
+            "angle": float(at_m.group(3)),
+            "name": name_m.group(1) if name_m else "",
+            "hidden": hidden,
+        }
+
+    return pins
+
+
+# =============================================================================
+# Component pin wiring — connects IC pins to net labels
+# =============================================================================
+
+def _wire_component_pins(schematic_data, comp_x, comp_y,
+                         connections, symbol_pins, net_types):
+    """Add wires + net labels for every connected pin of a component.
+
+    Reads pin positions from the parsed symbol data.  For each pin in
+    *connections*, adds a wire stub extending AWAY from the body and
+    an appropriate label (hierarchical or local) at the wire end.
+
+    Skips hidden pins that share a position with an already-wired pin
+    (e.g. duplicate GND pins on BME280).
+    """
+    wired_positions = set()
+
+    for conn in connections:
+        pin_num = conn["pin"]
+        net_name = conn.get("net", "")
+        if not net_name or pin_num not in symbol_pins:
+            continue
+
+        pin = symbol_pins[pin_num]
+
+        # Absolute pin-tip position (component placed at angle 0)
+        abs_x = round(comp_x + pin["x"], 2)
+        abs_y = round(comp_y + pin["y"], 2)
+
+        # Skip duplicate positions (e.g. hidden GND pin 7 overlaps pin 1)
+        pos_key = (abs_x, abs_y)
+        if pos_key in wired_positions:
+            continue
+        wired_positions.add(pos_key)
+
+        # Wire extends OPPOSITE to pin's internal direction
+        #   pin angle 180 → body is LEFT of tip  → wire goes RIGHT
+        #   pin angle 0   → body is RIGHT of tip → wire goes LEFT
+        angle = pin["angle"]
+        if angle == 180.0:
+            dx, dy = WIRE_STUB, 0
+        elif angle == 0.0:
+            dx, dy = -WIRE_STUB, 0
+        elif angle == 270.0:
+            dx, dy = 0, -WIRE_STUB
+        elif angle == 90.0:
+            dx, dy = 0, WIRE_STUB
+        else:
+            dx, dy = WIRE_STUB, 0        # fallback
+
+        end_x = round(abs_x + dx, 2)
+        end_y = round(abs_y + dy, 2)
+
+        _add_wire(schematic_data, abs_x, abs_y, end_x, end_y)
+
+        # Choose label type from net_types + wire direction
+        nt = net_types.get(net_name, "local")
+
+        if dx > 0:           # wire goes RIGHT
+            if nt == "hierarchical":
+                _add_hierarchical_label(schematic_data, net_name,
+                                       (end_x, end_y), angle=0)
+            else:
+                _add_label(schematic_data, net_name, (end_x, end_y),
+                           justify="left bottom")
+        elif dx < 0:          # wire goes LEFT
+            if nt == "hierarchical":
+                _add_hierarchical_label(schematic_data, net_name,
+                                       (end_x, end_y), angle=180)
+            else:
+                _add_label(schematic_data, net_name, (end_x, end_y),
+                           justify="right bottom")
+        elif dy != 0:         # vertical wire
+            _add_label(schematic_data, net_name, (end_x, end_y),
+                       justify="left bottom")
+
+
+# =============================================================================
 # Main entry point — generate schematic from project JSON
 # =============================================================================
 
@@ -416,7 +530,7 @@ def generate_from_json(output_path, json_path, sheet_name="BME280_Sensor"):
     if "C" in types_needed:
         _embed_device_symbol(schematic_data, "C")
 
-    # 5. Place main component(s) at center-right
+    # 5. Place main component(s) at center-right and wire their pins
     for comp in main_comps:
         part_name = comp["part"]
         lib_id = kicad_api.embed_symbol_from_file(
@@ -425,7 +539,6 @@ def generate_from_json(output_path, json_path, sheet_name="BME280_Sensor"):
         if lib_id:
             # Figure out pin count from connections
             pin_nums = [c["pin"] for c in comp.get("connections", [])]
-            # Ensure we cover all pins even if some aren't in connections
             max_pin = max((int(p) for p in pin_nums if p.isdigit()), default=1)
             all_pins = [str(i) for i in range(1, max_pin + 1)]
 
@@ -434,6 +547,16 @@ def generate_from_json(output_path, json_path, sheet_name="BME280_Sensor"):
                 (MAIN_COMP_X, MAIN_COMP_Y), angle=0,
                 footprint="", pins=all_pins
             )
+
+            # Parse pin positions from symbol file and wire connections
+            sym_file = os.path.join(SYMBOL_LIB_PATH, f"{part_name}.kicad_sym")
+            if os.path.exists(sym_file):
+                symbol_pins = _parse_symbol_pins(sym_file)
+                _wire_component_pins(
+                    schematic_data, MAIN_COMP_X, MAIN_COMP_Y,
+                    comp.get("connections", []), symbol_pins, net_types
+                )
+                print(f"  Wired {len(comp.get('connections', []))} pins on {comp['ref']}")
 
     # 6. Place passives — all horizontal, column grid
     for i, p in enumerate(passives):

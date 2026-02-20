@@ -2,7 +2,7 @@
 	(version 20250114)
 	(generator "ChipChat_Gemini")
 	(generator_version "9.0")
-	(uuid "c4ee44b7-50df-425c-b194-efd328776167")
+	(uuid "4e421cde-10cf-480c-a7b8-ff7f32d65a97")
 	(paper "A4")
 
 	(lib_symbols
@@ -401,7 +401,7 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "9dedeb17-5964-462f-b852-b9a39a3646b1")
+		(uuid "68a21e05-5feb-463c-8921-5489297632c2")
 		(property "Reference" "U3"
 			(at 200.0 97.46 0)
 			(effects
@@ -437,109 +437,29 @@
 			)
 		)
 		(pin "1"
-			(uuid "6228b784-b40b-4675-85da-c2e5308babcc")
+			(uuid "5f1c8b2d-bf99-4f62-8302-9195d2c1f720")
 		)
 		(pin "2"
-			(uuid "575f9fa9-1cb3-445b-995e-2807c7bb7a0c")
+			(uuid "30b84af7-1cc2-4bf2-be59-171050683f27")
 		)
 		(pin "3"
-			(uuid "30af3215-12e4-4847-a05e-535ead241948")
+			(uuid "52b33da5-7161-4ef5-9016-19d1ce0bd68c")
 		)
 		(pin "4"
-			(uuid "da695790-8efb-4517-9d0c-d6954ede8926")
+			(uuid "4d0429df-d187-4ac0-8afc-fb132137a39b")
 		)
 		(pin "5"
-			(uuid "e286ec9c-2414-4bc6-a6f9-72ecbada50a9")
+			(uuid "e66dab8c-5b6d-41e3-b2ba-227cebc52ef3")
 		)
 		(pin "6"
-			(uuid "5a4d19a0-82ec-47cf-a599-d3feeeb15136")
+			(uuid "b5df2eef-5083-46d6-a18a-0c18c428cc71")
 		)
 		(pin "7"
-			(uuid "9010d5ed-2289-4b65-aaac-4a10553de43f")
+			(uuid "4be8a99b-7f21-4a62-9ae6-1c0fac8a8030")
 		)
 		(pin "8"
-			(uuid "9640fce9-ee1c-4043-98f0-c498c988223d")
+			(uuid "1fdd8e39-d682-4a4d-8adc-dd6528930d17")
 		)
-	)
-	(wire
-		(pts
-			(xy 215.24 89.84) (xy 222.86 89.84)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "49adc253-4a90-49e9-afde-4b8f0404faf2")
-	)
-	(label "GND"
-		(at 222.86 89.84 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "29d98938-67ef-4636-beb7-96f35058bf82")
-	)
-	(wire
-		(pts
-			(xy 184.76 97.46) (xy 177.14 97.46)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "332a5806-ee78-4a8e-bb84-44011b646dbc")
-	)
-	(label "I2C_SDA_0R"
-		(at 177.14 97.46 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right bottom)
-		)
-		(uuid "60bd3955-1c8d-47aa-a349-59e57a20951b")
-	)
-	(wire
-		(pts
-			(xy 184.76 100.0) (xy 177.14 100.0)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "9771b483-724d-4d7b-91f1-53f798e7339b")
-	)
-	(label "I2C_SCL_0R"
-		(at 177.14 100.0 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right bottom)
-		)
-		(uuid "e79a3f86-5801-4ae6-af91-3a6f43d9014e")
-	)
-	(wire
-		(pts
-			(xy 184.76 94.92) (xy 177.14 94.92)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "65ad0e52-10a0-4eb7-832f-8c4dee8baed9")
-	)
-	(label "SDO_ADD"
-		(at 177.14 94.92 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right bottom)
-		)
-		(uuid "e9c4f78b-6e72-4f04-a4ed-3cf280196aa9")
 	)
 	(wire
 		(pts
@@ -549,39 +469,119 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "588d3b69-a9be-476b-ace4-7aac65eb0693")
+		(uuid "7f78d023-e06f-4cf5-9799-e908f76846c8")
 	)
-	(hierarchical_label "PP_3V3_OUT"
-		(shape bidirectional)
+	(label "GND"
 		(at 222.86 110.16 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify left)
+			(justify left bottom)
 		)
-		(uuid "7e871011-c0cd-4581-9dcd-4efdeba33acb")
+		(uuid "1d66d3ec-e182-4bdb-9153-e124f6257763")
 	)
 	(wire
 		(pts
-			(xy 215.24 107.62) (xy 222.86 107.62)
+			(xy 184.76 102.54) (xy 177.14 102.54)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "7d22bf2a-2ecb-4924-af51-c1e24e49a197")
+		(uuid "d7868b7b-640e-4a12-822b-19ea63741784")
+	)
+	(label "I2C_SDA_0R"
+		(at 177.14 102.54 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "1b97a9df-1304-49c0-b06c-9347d7fb54e7")
+	)
+	(wire
+		(pts
+			(xy 184.76 100.0) (xy 177.14 100.0)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7a4171d3-0aa2-4947-a5d3-23c365101294")
+	)
+	(label "I2C_SCL_0R"
+		(at 177.14 100.0 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "102a0f47-ed08-41c0-a694-1a750e3afa43")
+	)
+	(wire
+		(pts
+			(xy 184.76 105.08) (xy 177.14 105.08)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "bc6dc685-f5fe-4905-8a2c-4e0fa71d2bb0")
+	)
+	(label "SDO_ADD"
+		(at 177.14 105.08 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "89f5927d-212b-499d-804a-c83e7e546af0")
+	)
+	(wire
+		(pts
+			(xy 215.24 89.84) (xy 222.86 89.84)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f8da32e0-350b-4421-950f-3804cfc37dc2")
 	)
 	(hierarchical_label "PP_3V3_OUT"
 		(shape bidirectional)
-		(at 222.86 107.62 0)
+		(at 222.86 89.84 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify left)
 		)
-		(uuid "07b50f44-827a-49d9-ba0a-4153c915b017")
+		(uuid "854d4b5b-4941-4653-8867-abfe87492631")
+	)
+	(wire
+		(pts
+			(xy 215.24 92.38) (xy 222.86 92.38)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "acdbcfb5-7a4b-4e62-9fc4-667f79b91d50")
+	)
+	(hierarchical_label "PP_3V3_OUT"
+		(shape bidirectional)
+		(at 222.86 92.38 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "7d97c338-a4b0-4ea2-9e7c-6c835a2dbba5")
 	)
 	(symbol
 		(lib_id "Resistor")
@@ -591,7 +591,7 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "ab1e9ac1-b1f6-4a48-8090-98837b9d92c6")
+		(uuid "b5df622a-39f2-4a27-a37a-87c64ce14261")
 		(property "Reference" "R5"
 			(at 80.0 32.46 90)
 			(effects
@@ -627,10 +627,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "6c2ccf48-e589-4d74-a8c7-e87478becd4c")
+			(uuid "17376153-16bf-4d00-ad3c-d290da0a2e5a")
 		)
 		(pin "2"
-			(uuid "64206ccd-3238-45e5-bc1c-9a9ef54f8906")
+			(uuid "f82cd3e7-fbe0-404b-8748-9ebd10acb24b")
 		)
 	)
 	(wire
@@ -641,7 +641,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "218299c5-abf0-47ff-9601-55e33ea30556")
+		(uuid "4040539a-b4a2-4596-829a-39f1267c6455")
 	)
 	(hierarchical_label "I2C_SCL_BME"
 		(shape bidirectional)
@@ -652,7 +652,7 @@
 			)
 			(justify left)
 		)
-		(uuid "ace02fa3-fde7-465b-9c0d-52045553beda")
+		(uuid "cb81b235-f55a-4325-a74c-a56429eeb626")
 	)
 	(wire
 		(pts
@@ -662,7 +662,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "7b5c50de-f42b-48c6-b2fb-de0221b2a2be")
+		(uuid "46efa87d-b919-4209-8b17-6512af93a9dc")
 	)
 	(hierarchical_label "PP_3V3_OUT"
 		(shape bidirectional)
@@ -673,7 +673,7 @@
 			)
 			(justify right)
 		)
-		(uuid "9486f882-bbc6-4539-87bf-cafe278c5583")
+		(uuid "f0058ebc-205e-40f8-ba54-ec8b7ba98b80")
 	)
 	(symbol
 		(lib_id "Resistor")
@@ -683,7 +683,7 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "d841114f-1d3b-4850-bf3e-c26b646d173e")
+		(uuid "f101ac41-463d-4726-8d82-aad374e54939")
 		(property "Reference" "R6"
 			(at 80.0 47.7 90)
 			(effects
@@ -719,10 +719,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "5fac381a-ce77-4528-aaed-eca2ad092244")
+			(uuid "3da3adcb-2683-4af4-9322-cc1fdba56fdf")
 		)
 		(pin "2"
-			(uuid "d714c1d9-c2ee-4687-a669-0b2a9ff023f5")
+			(uuid "9569f1f6-b5ac-4cd5-9fed-8f31ae778961")
 		)
 	)
 	(wire
@@ -733,7 +733,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "00db343a-15b1-4fee-85c2-360181756b30")
+		(uuid "0c16f3c8-9395-40a7-8d30-577794f93ef1")
 	)
 	(hierarchical_label "I2C_SDA_BME"
 		(shape bidirectional)
@@ -744,7 +744,7 @@
 			)
 			(justify left)
 		)
-		(uuid "1a28d503-32ee-4982-86b4-08b4255be047")
+		(uuid "6316658c-7d82-4a6a-8725-f2a225a27f53")
 	)
 	(wire
 		(pts
@@ -754,7 +754,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "be636901-8568-4542-8f77-f8cbdf2a21ff")
+		(uuid "781cfe42-5825-43cd-8572-a1a86b6d4f10")
 	)
 	(hierarchical_label "PP_3V3_OUT"
 		(shape bidirectional)
@@ -765,7 +765,7 @@
 			)
 			(justify right)
 		)
-		(uuid "e053c61e-653c-4708-a5ba-a6ad20833b0d")
+		(uuid "4d054bf6-c7b5-4b28-bf43-daf28ca7f9bf")
 	)
 	(symbol
 		(lib_id "Resistor")
@@ -775,7 +775,7 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "1de1316b-3cb1-49e7-a378-0a4b600c742c")
+		(uuid "336aa2b8-3b0b-4591-b384-3311f4e5aca9")
 		(property "Reference" "R7"
 			(at 80.0 62.940000000000005 90)
 			(effects
@@ -811,10 +811,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "9a2f38a4-523f-4e70-9d39-35ca4a07a936")
+			(uuid "7babec37-215b-4ad6-be8f-dd930f464e1d")
 		)
 		(pin "2"
-			(uuid "5c128255-321a-4cf5-886d-097fd756596f")
+			(uuid "f56c07f3-5fd6-4ec7-8fb8-7e2b448ebaaf")
 		)
 	)
 	(wire
@@ -825,7 +825,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "884e3e82-a99e-428f-a3da-45b869c71adf")
+		(uuid "bb76d7c9-8246-408b-a9cc-995afa626685")
 	)
 	(hierarchical_label "I2C_SCL_BME"
 		(shape bidirectional)
@@ -836,7 +836,7 @@
 			)
 			(justify left)
 		)
-		(uuid "9e40ee64-7ca7-4255-baab-4e4bdcf36442")
+		(uuid "464799ae-fb06-4f28-8e51-cca866c0dacf")
 	)
 	(wire
 		(pts
@@ -846,7 +846,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "ea2a7ff2-fb1c-4e24-81fc-26d1ed276187")
+		(uuid "2cef34d8-ffb6-4462-af90-d169c10cead5")
 	)
 	(label "I2C_SCL_0R"
 		(at 68.57 65.48 0)
@@ -856,7 +856,7 @@
 			)
 			(justify right bottom)
 		)
-		(uuid "1ece66d8-56ce-4e94-82e1-1d0b9c2884d9")
+		(uuid "856c647f-5232-4b19-9d36-0bf511a5b1ae")
 	)
 	(symbol
 		(lib_id "Resistor")
@@ -866,7 +866,7 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "eebe3c6a-f586-4674-a3d1-a03d9008e0e2")
+		(uuid "be5d3aa3-50c9-4a94-b27c-3e104e8e5f17")
 		(property "Reference" "R8"
 			(at 80.0 78.17999999999999 90)
 			(effects
@@ -902,10 +902,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "3d697c3f-1e76-48d7-a44e-88e9c61e131b")
+			(uuid "3cbf7939-8d83-4317-b317-6ff974714d7b")
 		)
 		(pin "2"
-			(uuid "b7e70820-ba44-4b11-a93f-e655d898d7dc")
+			(uuid "006119b6-b605-4569-ae5e-2a03f53d63e2")
 		)
 	)
 	(wire
@@ -916,7 +916,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "78f42a2f-061b-441a-898c-3fd631e67687")
+		(uuid "523e73dc-b738-49da-8610-d7c30083f787")
 	)
 	(hierarchical_label "I2C_SDA_BME"
 		(shape bidirectional)
@@ -927,7 +927,7 @@
 			)
 			(justify left)
 		)
-		(uuid "eeff36db-8018-4736-a14e-95aac49241a6")
+		(uuid "87977f81-d156-4ffd-aed3-e8c701e57b7e")
 	)
 	(wire
 		(pts
@@ -937,7 +937,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "09b893b0-da40-4ed8-a5c0-97e7f375d9d9")
+		(uuid "4aa7edec-be32-420e-af8f-a2f0dfd5fbc8")
 	)
 	(label "I2C_SDA_0R"
 		(at 68.57 80.72 0)
@@ -947,7 +947,7 @@
 			)
 			(justify right bottom)
 		)
-		(uuid "f46bf9d1-4c66-4af5-9640-a90e62eaa577")
+		(uuid "2d2baf96-00b5-4475-b81d-5efb40478be1")
 	)
 	(symbol
 		(lib_id "Resistor")
@@ -957,7 +957,7 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "fe1b386d-5144-428c-be7b-e93981043edc")
+		(uuid "8bc04cce-338f-4d05-b9db-7f86437b2465")
 		(property "Reference" "R9"
 			(at 80.0 93.41999999999999 90)
 			(effects
@@ -993,10 +993,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "e12a6074-922e-4c9f-a45e-50033781ab5f")
+			(uuid "37aefbc9-4b2a-4acb-be67-8a5e613bcfda")
 		)
 		(pin "2"
-			(uuid "eb0c4796-6acc-4714-af73-a7b5a50ac6e0")
+			(uuid "381f1851-3341-47ac-8a31-6aada0b3bc78")
 		)
 	)
 	(wire
@@ -1007,7 +1007,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "75353346-2210-44c1-960a-4e0363f1a97d")
+		(uuid "66624a7d-ca44-4997-a1ca-9f873c686716")
 	)
 	(label "SDO_ADD"
 		(at 91.43 95.96 0)
@@ -1017,7 +1017,7 @@
 			)
 			(justify left bottom)
 		)
-		(uuid "83f2c80d-a315-4134-bd02-74a9329c2983")
+		(uuid "88c20aeb-152e-45a3-bac3-87627a6273a4")
 	)
 	(wire
 		(pts
@@ -1027,7 +1027,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "2ce2a1f8-ba08-4e30-88b4-3ed4acec6cbf")
+		(uuid "256fe470-9f16-4813-a61f-ec3f3b620b4a")
 	)
 	(label "GND"
 		(at 68.57 95.96 0)
@@ -1037,7 +1037,7 @@
 			)
 			(justify right bottom)
 		)
-		(uuid "c7141d68-70f9-4bd4-af25-95aa56d9b6b0")
+		(uuid "5bf8a4e1-0aac-4827-a97c-748be2fa99f8")
 	)
 	(symbol
 		(lib_id "Capacitor")
@@ -1047,7 +1047,7 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "78829b87-dad9-4636-8578-8c45f5e01460")
+		(uuid "4d79c342-a2e8-432f-a9cf-adedc139a6c1")
 		(property "Reference" "C9"
 			(at 80.0 108.66 90)
 			(effects
@@ -1083,10 +1083,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "c1e5505c-167f-4472-b2c5-95fe7dc7aa85")
+			(uuid "4a502055-cf40-4a46-af7c-d0b6152255ae")
 		)
 		(pin "2"
-			(uuid "36e8453e-2288-4bd7-819b-d71dc928da34")
+			(uuid "ca6a3708-f0e1-4282-84ef-30c2d9dbc0a7")
 		)
 	)
 	(wire
@@ -1097,7 +1097,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "bc87ca03-e201-4094-81cf-7a93d512c6f8")
+		(uuid "29ba7aa9-5b1b-4078-9793-1c409260f6ee")
 	)
 	(hierarchical_label "PP_3V3_OUT"
 		(shape bidirectional)
@@ -1108,7 +1108,7 @@
 			)
 			(justify left)
 		)
-		(uuid "997f2f9d-abf8-4ff2-81a3-6079d4a2bf38")
+		(uuid "091bc73b-2437-4ea3-8ece-00a9afddb0fc")
 	)
 	(wire
 		(pts
@@ -1118,7 +1118,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "c7fa77c4-ab6c-4611-aca8-b989a46723cf")
+		(uuid "6cf444b7-feb6-4700-9aaa-63aefe994cd9")
 	)
 	(label "GND"
 		(at 68.57 111.2 0)
@@ -1128,7 +1128,7 @@
 			)
 			(justify right bottom)
 		)
-		(uuid "a13aa3c1-3f33-4818-904e-c829669e69f4")
+		(uuid "2f6ea1e1-06ea-4ad8-a9a9-d02435d62ac3")
 	)
 	(symbol
 		(lib_id "Capacitor")
@@ -1138,7 +1138,7 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "70204caa-3312-422b-b250-97fbe85d64b2")
+		(uuid "b84a5b98-8b6c-47fd-95bc-2f201cf52f4a")
 		(property "Reference" "C10"
 			(at 80.0 123.89999999999999 90)
 			(effects
@@ -1174,10 +1174,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "5212689f-8a3a-44f3-9294-d61e47ccfa76")
+			(uuid "f6ef4347-06c9-485b-9435-f083afed7d8c")
 		)
 		(pin "2"
-			(uuid "18c1fd51-b290-4def-bbe1-ce9c439e34aa")
+			(uuid "301581a7-8c41-4feb-a785-a00ac7700589")
 		)
 	)
 	(wire
@@ -1188,7 +1188,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "baf176a7-5966-4408-a5ac-a7000ff76a36")
+		(uuid "cdc7c80b-0421-4f12-84e5-fc79015d55db")
 	)
 	(hierarchical_label "PP_3V3_OUT"
 		(shape bidirectional)
@@ -1199,7 +1199,7 @@
 			)
 			(justify left)
 		)
-		(uuid "29544b20-e17e-45b5-869a-f89804f16ba2")
+		(uuid "f586e7a1-617e-4f1c-9361-2c6c42ea34f1")
 	)
 	(wire
 		(pts
@@ -1209,7 +1209,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "b90b9452-c682-4415-914c-2e09da57ddef")
+		(uuid "497de2d1-4e15-4c40-9ce0-8e67965bfe88")
 	)
 	(label "GND"
 		(at 68.57 126.44 0)
@@ -1219,6 +1219,6 @@
 			)
 			(justify right bottom)
 		)
-		(uuid "d1f30b8b-f1cd-4910-b14a-026fdd108020")
+		(uuid "0daef857-9f00-4f1e-9df1-2c8000cc4be1")
 	)
 )

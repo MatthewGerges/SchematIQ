@@ -429,6 +429,10 @@ def _wire_component_pins(schematic_data, comp_x, comp_y,
     *connections*, adds a wire stub extending AWAY from the body and
     an appropriate label (hierarchical or local) at the wire end.
 
+    IMPORTANT: Symbol .kicad_sym files use math-Y (up = positive),
+    but schematics use screen-Y (down = positive).  We negate Y and
+    flip vertical pin angles when converting.
+
     Skips hidden pins that share a position with an already-wired pin
     (e.g. duplicate GND pins on BME280).
     """
@@ -442,9 +446,11 @@ def _wire_component_pins(schematic_data, comp_x, comp_y,
 
         pin = symbol_pins[pin_num]
 
-        # Absolute pin-tip position (component placed at angle 0)
+        # Convert symbol coords → schematic coords
+        #   X is the same (right = positive in both)
+        #   Y is NEGATED (symbol: up = +, schematic: down = +)
         abs_x = round(comp_x + pin["x"], 2)
-        abs_y = round(comp_y + pin["y"], 2)
+        abs_y = round(comp_y - pin["y"], 2)       # ← negate Y
 
         # Skip duplicate positions (e.g. hidden GND pin 7 overlaps pin 1)
         pos_key = (abs_x, abs_y)
@@ -452,17 +458,26 @@ def _wire_component_pins(schematic_data, comp_x, comp_y,
             continue
         wired_positions.add(pos_key)
 
+        # Pin angle also needs Y-axis flip for vertical pins:
+        #   0° and 180° (horizontal) → unchanged
+        #   90° (down in symbol) → 270° (up in schematic)
+        #   270° (up in symbol) → 90° (down in schematic)
+        pin_angle = pin["angle"]
+        if pin_angle == 90.0:
+            pin_angle = 270.0
+        elif pin_angle == 270.0:
+            pin_angle = 90.0
+
         # Wire extends OPPOSITE to pin's internal direction
         #   pin angle 180 → body is LEFT of tip  → wire goes RIGHT
         #   pin angle 0   → body is RIGHT of tip → wire goes LEFT
-        angle = pin["angle"]
-        if angle == 180.0:
+        if pin_angle == 180.0:
             dx, dy = WIRE_STUB, 0
-        elif angle == 0.0:
+        elif pin_angle == 0.0:
             dx, dy = -WIRE_STUB, 0
-        elif angle == 270.0:
+        elif pin_angle == 270.0:
             dx, dy = 0, -WIRE_STUB
-        elif angle == 90.0:
+        elif pin_angle == 90.0:
             dx, dy = 0, WIRE_STUB
         else:
             dx, dy = WIRE_STUB, 0        # fallback

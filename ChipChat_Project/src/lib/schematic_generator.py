@@ -17,7 +17,8 @@ from src.lib import kicad_api
 # =============================================================================
 
 PIN_HALF_LEN = 3.81    # mm — pin tip offset from component center (R and C)
-WIRE_STUB = 7.62       # mm — wire length from pin to label
+WIRE_STUB = 7.62       # mm — wire length from pin to label (horizontal)
+WIRE_STUB_V = 10.16    # mm — wire length from pin to label (vertical, longer to clear body)
 
 # Algorithmic layout grid (all passives placed horizontally)
 PASSIVE_X_START = 80.0       # x center of first column
@@ -189,17 +190,20 @@ def _add_wire(schematic_data, x1, y1, x2, y2):
     })
 
 
-def _add_label(schematic_data, text, position, net_name=None, justify="left bottom"):
+def _add_label(schematic_data, text, position, net_name=None,
+               justify="left bottom", angle=0):
     """Add a local net label.
 
     justify controls text direction from the connection point:
-      "left bottom"  → text extends RIGHT
-      "right bottom" → text extends LEFT
+      "left bottom"  → text extends RIGHT (or UP when angle=90)
+      "right bottom" → text extends LEFT  (or DOWN when angle=90)
+    angle rotates the label (0=horizontal, 90=vertical CCW).
     """
     schematic_data["items"].append({
         "type": "label",
         "text": text,
         "at": position,
+        "angle": angle,
         "justify": justify,
         "uuid": str(uuid.uuid4()),
         "net_name": net_name or text
@@ -243,10 +247,11 @@ def _format_wire(wire):
 
 def _format_label(label):
     at = label["at"]
+    angle = label.get("angle", 0)
     justify = label.get("justify", "left bottom")
     return (
         f'\t(label "{label["text"]}"\n'
-        f'\t\t(at {at[0]} {at[1]} 0)\n'
+        f'\t\t(at {at[0]} {at[1]} {angle})\n'
         f'\t\t(effects\n'
         f'\t\t\t(font\n\t\t\t\t(size 1.27 1.27)\n\t\t\t)\n'
         f'\t\t\t(justify {justify})\n'
@@ -260,7 +265,8 @@ def _format_hierarchical_label(label):
     at = label["at"]
     angle = label.get("angle", 0)
     shape = label.get("shape", "bidirectional")
-    justify = "left" if angle == 0 else "right"
+    # justify depends on which direction the flag faces
+    justify = "left" if angle in (0, 90) else "right"
     return (
         f'\t(hierarchical_label "{label["text"]}"\n'
         f'\t\t(shape {shape})\n'
@@ -529,19 +535,21 @@ def _wire_component_pins(schematic_data, comp_x, comp_y,
         elif pin_angle == 270.0:
             pin_angle = 90.0
 
-        # Wire extends OPPOSITE to pin's internal direction
-        #   pin angle 180 → body is LEFT of tip  → wire goes RIGHT
-        #   pin angle 0   → body is RIGHT of tip → wire goes LEFT
+        # Wire extends OPPOSITE to pin's body-direction
+        #   pin angle 180 → body LEFT  → wire RIGHT  (+x)
+        #   pin angle 0   → body RIGHT → wire LEFT   (-x)
+        #   pin angle 270 → body UP    → wire DOWN   (+y in screen)
+        #   pin angle 90  → body DOWN  → wire UP     (-y in screen)
         if pin_angle == 180.0:
             dx, dy = WIRE_STUB, 0
         elif pin_angle == 0.0:
             dx, dy = -WIRE_STUB, 0
         elif pin_angle == 270.0:
-            dx, dy = 0, -WIRE_STUB
+            dx, dy = 0, WIRE_STUB_V         # DOWN (+y in screen)
         elif pin_angle == 90.0:
-            dx, dy = 0, WIRE_STUB
+            dx, dy = 0, -WIRE_STUB_V        # UP   (-y in screen)
         else:
-            dx, dy = WIRE_STUB, 0        # fallback
+            dx, dy = WIRE_STUB, 0            # fallback
 
         end_x = round(abs_x + dx, 2)
         end_y = round(abs_y + dy, 2)
@@ -551,23 +559,34 @@ def _wire_component_pins(schematic_data, comp_x, comp_y,
         # Choose label type from net_types + wire direction
         nt = net_types.get(net_name, "local")
 
-        if dx > 0:           # wire goes RIGHT
+        if dx > 0:           # wire goes RIGHT → horizontal label
             if nt == "hierarchical":
                 _add_hierarchical_label(schematic_data, net_name,
                                        (end_x, end_y), angle=0)
             else:
                 _add_label(schematic_data, net_name, (end_x, end_y),
                            justify="left bottom")
-        elif dx < 0:          # wire goes LEFT
+        elif dx < 0:          # wire goes LEFT → horizontal label
             if nt == "hierarchical":
                 _add_hierarchical_label(schematic_data, net_name,
                                        (end_x, end_y), angle=180)
             else:
                 _add_label(schematic_data, net_name, (end_x, end_y),
                            justify="right bottom")
-        elif dy != 0:         # vertical wire
-            _add_label(schematic_data, net_name, (end_x, end_y),
-                       justify="left bottom")
+        elif dy > 0:          # wire goes DOWN → vertical label, text DOWN
+            if nt == "hierarchical":
+                _add_hierarchical_label(schematic_data, net_name,
+                                       (end_x, end_y), angle=270)
+            else:
+                _add_label(schematic_data, net_name, (end_x, end_y),
+                           angle=90, justify="right bottom")
+        elif dy < 0:          # wire goes UP → vertical label, text UP
+            if nt == "hierarchical":
+                _add_hierarchical_label(schematic_data, net_name,
+                                       (end_x, end_y), angle=90)
+            else:
+                _add_label(schematic_data, net_name, (end_x, end_y),
+                           angle=90, justify="left bottom")
 
 
 # =============================================================================

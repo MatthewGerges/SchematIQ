@@ -2,7 +2,7 @@
 	(version 20250114)
 	(generator "ChipChat_Gemini")
 	(generator_version "9.0")
-	(uuid "46b2575a-5051-4fe7-8728-84f38891ffca")
+	(uuid "6ed48051-3c76-4a6d-8d35-4a5266c3f4be")
 	(paper "A4")
 	(lib_symbols)
 
@@ -20,7 +20,7 @@
 		(fill
 			(color 0 0 0 0.0000)
 		)
-		(uuid "06653678-8dcf-4c8c-a853-7525273e9512")
+		(uuid "daf2e792-4fd3-4793-97ea-b5320afdf8ef")
 		(property "Sheetname" "USBC"
 			(at 25.0 24.32 0)
 			(effects
@@ -55,7 +55,7 @@
 		(fill
 			(color 0 0 0 0.0000)
 		)
-		(uuid "6dba4ef0-8c24-4983-94b0-f09b487e5122")
+		(uuid "e7e674c2-ec3a-4014-979d-9607cc30a811")
 		(property "Sheetname" "Buck_Converter"
 			(at 85.0 24.32 0)
 			(effects
@@ -90,7 +90,7 @@
 		(fill
 			(color 0 0 0 0.0000)
 		)
-		(uuid "442a1aca-d63c-43c9-b3c8-d4f698882d08")
+		(uuid "1dacad18-df02-4b45-99be-559c38a50852")
 		(property "Sheetname" "USB_To_I2C"
 			(at 145.0 24.32 0)
 			(effects
@@ -125,7 +125,7 @@
 		(fill
 			(color 0 0 0 0.0000)
 		)
-		(uuid "a11cc8eb-97f5-458d-900c-8a2049adab7c")
+		(uuid "87caa5ab-d07e-4b47-b68e-a8072381abdf")
 		(property "Sheetname" "BME280_Sensor"
 			(at 205.0 24.32 0)
 			(effects
@@ -150,16 +150,16 @@
 		(path "/"
 			(page "1")
 		)
-		(path "/06653678-8dcf-4c8c-a853-7525273e9512"
+		(path "/daf2e792-4fd3-4793-97ea-b5320afdf8ef"
 			(page "2")
 		)
-		(path "/6dba4ef0-8c24-4983-94b0-f09b487e5122"
+		(path "/e7e674c2-ec3a-4014-979d-9607cc30a811"
 			(page "3")
 		)
-		(path "/442a1aca-d63c-43c9-b3c8-d4f698882d08"
+		(path "/1dacad18-df02-4b45-99be-559c38a50852"
 			(page "4")
 		)
-		(path "/a11cc8eb-97f5-458d-900c-8a2049adab7c"
+		(path "/87caa5ab-d07e-4b47-b68e-a8072381abdf"
 			(page "5")
 		)
 	)

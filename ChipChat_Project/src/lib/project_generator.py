@@ -1,359 +1,203 @@
-"""Functions to generate KiCad project files (.kicad_pro and .kicad_sch root)."""
+"""Generate KiCad project files (.kicad_pro and root .kicad_sch) from project JSON."""
+
 import json
 import uuid
 import os
 
 
-def generate_project_file(project_name, root_schematic_path, output_dir, sheet_uuids=None):
+# ─── Layout constants for root schematic ─────────────────────────────────────
+PIN_SPACING = 5.08       # mm between hierarchical pins on sheet box
+BOX_W = 50.0             # sheet box width
+BOX_H_MIN = 20.0         # minimum sheet box height
+BOX_MARGIN = 5.08        # space inside box above first pin
+Y_GAP = 15.0             # vertical gap between sheet boxes
+X_LEFT = 30.0            # left edge of first sheet box
+Y_START = 30.0           # top of first sheet box
+WIRE_LEN = 10.0          # wire stub from pin to label
+
+
+def generate_root_schematic(json_path, output_dir, project_name=None):
+    """Generate root .kicad_sch with hierarchical sheet boxes + pins from JSON.
+
+    Reads the sheets list and nets from the project JSON.  For every
+    hierarchical net, a pin is placed on each sheet box that touches
+    that net.  Short wires + net labels connect matching pins.
+
+    Returns (output_path, root_uuid, sheet_uuids)
+      sheet_uuids: list of (uuid_str, sheet_name) for .kicad_pro
     """
-    Generates a .kicad_pro file for the project.
-    
+    with open(json_path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    if project_name is None:
+        project_name = data.get("project_name", "Project")
+
+    sheets_def = data["sheets"]
+    nets = data.get("nets", [])
+
+    # Build mapping: sheet_name → [hierarchical net names that touch it]
+    sheet_hier_pins = {s["name"]: [] for s in sheets_def}
+    for net in nets:
+        if net.get("type") != "hierarchical":
+            continue
+        touched = set()
+        for conn in net.get("connections", []):
+            s = conn.get("sheet", "")
+            if s in sheet_hier_pins:
+                touched.add(s)
+        for s in sorted(touched):          # sorted for deterministic order
+            sheet_hier_pins[s].append(net["name"])
+
+    # Compute sheet positions
+    root_uuid = str(uuid.uuid4())
+    sheet_items = []
+    y_cursor = Y_START
+
+    for s_def in sheets_def:
+        name = s_def["name"]
+        pins = sheet_hier_pins.get(name, [])
+        box_h = max(BOX_H_MIN, len(pins) * PIN_SPACING + 2 * BOX_MARGIN)
+
+        sheet_items.append({
+            "uuid": str(uuid.uuid4()),
+            "at": (X_LEFT, round(y_cursor, 2)),
+            "size": (BOX_W, round(box_h, 2)),
+            "name": name,
+            "file": s_def["file"],
+            "page": s_def["page"],
+            "pins": pins,
+        })
+        y_cursor += box_h + Y_GAP
+
+    # ── Build KiCad s-expression ──────────────────────────────────────────
+    t = '(kicad_sch\n'
+    t += '\t(version 20250114)\n'
+    t += '\t(generator "ChipChat_Gemini")\n'
+    t += '\t(generator_version "9.0")\n'
+    t += f'\t(uuid "{root_uuid}")\n'
+    t += '\t(paper "A4")\n'
+    t += '\t(lib_symbols)\n\n'
+
+    # Sheet boxes
+    for sh in sheet_items:
+        sx, sy = sh["at"]
+        sw, sh_h = sh["size"]
+
+        t += '\t(sheet\n'
+        t += f'\t\t(at {sx} {sy})\n'
+        t += f'\t\t(size {sw} {sh_h})\n'
+        t += '\t\t(exclude_from_sim no)\n'
+        t += '\t\t(in_bom yes)\n'
+        t += '\t\t(on_board yes)\n'
+        t += '\t\t(dnp no)\n'
+        t += '\t\t(stroke\n\t\t\t(width 0)\n\t\t\t(type solid)\n\t\t)\n'
+        t += '\t\t(fill\n\t\t\t(color 0 0 0 0.0000)\n\t\t)\n'
+        t += f'\t\t(uuid "{sh["uuid"]}")\n'
+
+        # Sheetname property
+        t += f'\t\t(property "Sheetname" "{sh["name"]}"\n'
+        t += f'\t\t\t(at {sx} {round(sy - 0.68, 2)} 0)\n'
+        t += '\t\t\t(effects\n\t\t\t\t(font\n\t\t\t\t\t(size 1.27 1.27)\n'
+        t += '\t\t\t\t)\n\t\t\t\t(justify left bottom)\n\t\t\t)\n'
+        t += '\t\t)\n'
+
+        # Sheetfile property
+        t += f'\t\t(property "Sheetfile" "{sh["file"]}"\n'
+        t += f'\t\t\t(at {sx} {round(sy + sh_h + 0.2, 2)} 0)\n'
+        t += '\t\t\t(effects\n\t\t\t\t(font\n\t\t\t\t\t(size 1.27 1.27)\n'
+        t += '\t\t\t\t)\n\t\t\t\t(justify left top)\n\t\t\t)\n'
+        t += '\t\t)\n'
+
+        # Hierarchical pins on RIGHT edge of box
+        pin_y = round(sy + BOX_MARGIN, 2)
+        for pin_name in sh["pins"]:
+            pin_x = round(sx + sw, 2)
+            t += f'\t\t(pin "{pin_name}" bidirectional\n'
+            t += f'\t\t\t(at {pin_x} {pin_y} 0)\n'
+            t += '\t\t\t(effects\n\t\t\t\t(font\n\t\t\t\t\t(size 1.27 1.27)\n'
+            t += '\t\t\t\t)\n\t\t\t\t(justify left)\n\t\t\t)\n'
+            t += f'\t\t\t(uuid "{str(uuid.uuid4())}")\n'
+            t += '\t\t)\n'
+            pin_y = round(pin_y + PIN_SPACING, 2)
+
+        t += '\t)\n\n'
+
+    # Wires + net labels at each hierarchical pin (connects matching names)
+    for sh in sheet_items:
+        sx, sy = sh["at"]
+        sw = sh["size"][0]
+        pin_y = round(sy + BOX_MARGIN, 2)
+        for pin_name in sh["pins"]:
+            pin_x = round(sx + sw, 2)
+            wire_end = round(pin_x + WIRE_LEN, 2)
+
+            # Wire stub
+            t += f'\t(wire\n'
+            t += f'\t\t(pts\n\t\t\t(xy {pin_x} {pin_y}) (xy {wire_end} {pin_y})\n\t\t)\n'
+            t += '\t\t(stroke\n\t\t\t(width 0)\n\t\t\t(type default)\n\t\t)\n'
+            t += f'\t\t(uuid "{str(uuid.uuid4())}")\n'
+            t += '\t)\n'
+
+            # Net label
+            t += f'\t(label "{pin_name}"\n'
+            t += f'\t\t(at {wire_end} {pin_y} 0)\n'
+            t += '\t\t(effects\n\t\t\t(font\n\t\t\t\t(size 1.27 1.27)\n'
+            t += '\t\t\t)\n\t\t\t(justify left bottom)\n\t\t)\n'
+            t += f'\t\t(uuid "{str(uuid.uuid4())}")\n'
+            t += '\t)\n'
+
+            pin_y = round(pin_y + PIN_SPACING, 2)
+
+    # Sheet instances (page numbering)
+    t += '\n\t(sheet_instances\n'
+    t += '\t\t(path "/"\n\t\t\t(page "1")\n\t\t)\n'
+    for sh in sheet_items:
+        t += f'\t\t(path "/{sh["uuid"]}"\n'
+        t += f'\t\t\t(page "{sh["page"]}")\n'
+        t += '\t\t)\n'
+    t += '\t)\n'
+    t += '\t(embedded_fonts no)\n'
+    t += ')\n'
+
+    # Write
+    os.makedirs(output_dir, exist_ok=True)
+    output_path = os.path.join(output_dir, f"{project_name}.kicad_sch")
+    with open(output_path, 'w', encoding='utf-8') as f:
+        f.write(t)
+    print(f"Generated root schematic: {output_path}")
+
+    sheet_uuids = [(root_uuid, "Root")] + [(sh["uuid"], sh["name"]) for sh in sheet_items]
+    return output_path, root_uuid, sheet_uuids
+
+
+def generate_project_file(project_name, output_dir, sheet_uuids=None):
+    """Generate a minimal .kicad_pro file.
+
     Args:
-        project_name: Name of the project
-        root_schematic_path: Path to the root schematic file (relative to output_dir)
-        output_dir: Directory where the .kicad_pro file will be saved
-        sheet_uuids: List of tuples (uuid, sheet_name) for the sheets list
+        project_name: Used for filenames
+        output_dir:   Where to write the .kicad_pro
+        sheet_uuids:  List of (uuid, name) from generate_root_schematic
     """
-    # Try to read existing project file as template, or create minimal one
-    existing_proj_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(output_dir))), 
-                                      f"{project_name}.kicad_pro")
-    if os.path.exists(existing_proj_path):
-        with open(existing_proj_path, 'r', encoding='utf-8') as f:
-            project_data = json.load(f)
-        # Update the schematic path
-        if "project" in project_data:
-            project_data["project"]["schematic"] = root_schematic_path
-        # Update sheets list if provided
-        if sheet_uuids and "sheets" in project_data:
-            project_data["sheets"] = sheet_uuids
-    else:
-        # Create minimal project data
-        project_data = {
-        "board": {
-            "3dviewports": [],
-            "design_settings": {
-                "defaults": {
-                    "apply_defaults_to_fp_fields": False,
-                    "apply_defaults_to_fp_shapes": False,
-                    "apply_defaults_to_fp_text": False,
-                    "board_outline_line_width": 0.05,
-                    "copper_line_width": 0.2,
-                    "copper_text_italic": False,
-                    "copper_text_size_h": 1.5,
-                    "copper_text_size_v": 1.5,
-                    "copper_text_thickness": 0.3,
-                    "copper_text_upright": False,
-                    "courtyard_line_width": 0.05,
-                    "dimension_precision": 4,
-                    "dimension_units": 3,
-                    "dimensions": {
-                        "arrow_length": 1270000,
-                        "extension_offset": 500000,
-                        "keep_text_aligned": True,
-                        "suppress_zeroes": True,
-                        "text_position": 0,
-                        "units_format": 0
-                    },
-                    "fab_line_width": 0.1,
-                    "fab_text_italic": False,
-                    "fab_text_size_h": 1.0,
-                    "fab_text_size_v": 1.0,
-                    "fab_text_thickness": 0.15,
-                    "fab_text_upright": False,
-                    "other_line_width": 0.1,
-                    "other_text_italic": False,
-                    "other_text_size_h": 1.0,
-                    "other_text_size_v": 1.0,
-                    "other_text_thickness": 0.15,
-                    "other_text_upright": False,
-                    "pads": {
-                        "drill": 0.8,
-                        "height": 1.27,
-                        "width": 2.54
-                    },
-                    "silk_line_width": 0.1,
-                    "silk_text_italic": False,
-                    "silk_text_size_h": 1.0,
-                    "silk_text_size_v": 1.0,
-                    "silk_text_thickness": 0.1,
-                    "silk_text_upright": False,
-                    "zones": {
-                        "min_clearance": 0.5
-                    }
-                },
-                "diff_pair_dimensions": [],
-                "drc_exclusions": [],
-                "meta": {
-                    "version": 2
-                },
-                "rule_severities": {
-                    "annular_width": "error",
-                    "clearance": "error",
-                    "connection_width": "error",
-                    "copper_edge_clearance": "error",
-                    "copper_sliver": "error",
-                    "courtyards_overlap": "error",
-                    "diff_pair_gap_out_of_range": "error",
-                    "diff_pair_uncoupled_length_too_long": "error",
-                    "drill_out_of_range": "error",
-                    "duplicate_footprints": "error",
-                    "extra_footprint": "error",
-                    "footprint": "error",
-                    "footprint_type_mismatch": "error",
-                    "hole_clearance": "error",
-                    "hole_near_hole": "error",
-                    "invalid_outline": "error",
-                    "length_out_of_range": "error",
-                    "malformed_courtyard": "error",
-                    "microvia_drill_out_of_range": "error",
-                    "missing_courtyard": "warning",
-                    "missing_footprint": "error",
-                    "net_conflict": "error",
-                    "npth_inside_courtyard": "error",
-                    "padstack": "error",
-                    "pth_inside_courtyard": "error",
-                    "shorting_items": "error",
-                    "silk_edge_clearance": "error",
-                    "silk_over_copper": "warning",
-                    "silk_over_pads": "warning",
-                    "silk_sliver": "error",
-                    "solder_mask_bridge": "error",
-                    "starved_thermal": "error",
-                    "text_height": "warning",
-                    "text_thickness": "warning",
-                    "through_hole_pad_without_hole": "error",
-                    "too_many_vias": "error",
-                    "track_dangling": "warning",
-                    "track_dc_error": "error",
-                    "track_width": "error",
-                    "tracks_crossing": "error",
-                    "unconnected_items": "error",
-                    "unresolved_variable": "error",
-                    "via_annular_width": "error",
-                    "via_dangling": "warning",
-                    "zones_intersect": "error"
-                },
-                "rule_severities_metadata": {},
-                "rules": {
-                    "max_error": 0.0,
-                    "min_clearance": 0.0,
-                    "min_connection": 0.0,
-                    "min_copper_edge_clearance": 0.0,
-                    "min_hole_clearance": 0.0,
-                    "min_hole_to_hole": 0.0,
-                    "min_microvia_diameter": 0.0,
-                    "min_microvia_drill": 0.0,
-                    "min_resolved_spokes": 0,
-                    "min_silk_clearance": 0.0,
-                    "min_text_height": 0.0,
-                    "min_text_thickness": 0.0,
-                    "min_track_width": 0.0,
-                    "min_via_annular_width": 0.0,
-                    "min_via_diameter": 0.0,
-                    "min_via_drill": 0.0,
-                    "solder_mask_clearance": 0.0,
-                    "solder_mask_min_width": 0.0,
-                    "solder_mask_to_copper_clearance": 0.0
-                },
-                "solder_mask_expansion": 0.0,
-                "solder_mask_min_clearance": 0.0,
-                "solder_mask_to_copper_clearance": 0.0
-            },
-            "stackup": {
-                "layers": []
-            }
-        },
-        "net_settings": {
-            "classes": [
-                {
-                    "bus_width": 12.0,
-                    "clearance": 0.2,
-                    "diff_pair_gap": 0.25,
-                    "diff_pair_via_gap": 0.25,
-                    "diff_pair_width": 0.2,
-                    "line_style": 0,
-                    "microvia_diameter": 0.3,
-                    "microvia_drill": 0.1,
-                    "name": "Default",
-                    "pcb_color": "rgba(0, 0, 0, 0.000)",
-                    "schematic_color": "rgba(0, 0, 0, 0.000)",
-                    "track_width": 0.25,
-                    "via_diameter": 0.8,
-                    "via_drill": 0.4,
-                    "wire_width": 6.0
-                }
-            ],
-            "meta": {
-                "version": 3
-            }
-        },
-        "schematic": root_schematic_path,
+    project_data = {
+        "meta": {"filename": f"{project_name}.kicad_pro", "version": 2},
         "schematic": {
             "annotate_start_num": 0,
-            "bom_export_filename": "${PROJECTNAME}.csv",
-            "bom_fmt_presets": [],
-            "bom_fmt_settings": {
-                "field_delimiter": ",",
-                "keep_line_breaks": False,
-                "keep_tabs": False,
-                "name": "CSV",
-                "ref_delimiter": ",",
-                "ref_range_delimiter": "",
-                "string_delimiter": "\""
-            },
-            "bom_presets": [],
-            "bom_settings": {
-                "exclude_dnp": False,
-                "fields_ordered": [
-                    {
-                        "group_by": False,
-                        "label": "Reference",
-                        "name": "Reference",
-                        "show": True
-                    },
-                    {
-                        "group_by": False,
-                        "label": "Qty",
-                        "name": "${QUANTITY}",
-                        "show": True
-                    },
-                    {
-                        "group_by": True,
-                        "label": "Value",
-                        "name": "Value",
-                        "show": True
-                    },
-                    {
-                        "group_by": True,
-                        "label": "Footprint",
-                        "name": "Footprint",
-                        "show": True
-                    }
-                ],
-                "filter_string": "",
-                "group_symbols": True,
-                "include_excluded_from_bom": True,
-                "name": "Default Editing",
-                "sort_asc": True,
-                "sort_field": "Reference"
-            },
+            "bom_fmt_settings": {"field_delimiter": ",", "name": "CSV",
+                                 "ref_delimiter": ",", "string_delimiter": "\""},
             "connection_grid_size": 50.0,
             "drawing": {},
             "page_layout_descr_file": ""
         },
+        "sheets": [],
         "text_variables": {}
     }
-    
-    # Add project section with schematic path
-    project_data["project"] = {
-        "name": project_name,
-        "schematic": root_schematic_path,
-        "stackup": {
-            "layers": []
-        }
-    }
-    
-    # Add sheets list (will be populated when we know the sheet UUIDs)
-    project_data["sheets"] = []
-    
+
+    if sheet_uuids:
+        for uid, name in sheet_uuids:
+            project_data["sheets"].append([uid, name])
+
     output_path = os.path.join(output_dir, f"{project_name}.kicad_pro")
     with open(output_path, 'w', encoding='utf-8') as f:
         json.dump(project_data, f, indent=2)
-    
     print(f"Generated project file: {output_path}")
     return output_path
-
-
-def generate_root_schematic(project_name, sheet_files, output_dir):
-    """
-    Generates the root .kicad_sch file that references sub-sheets.
-    
-    Args:
-        project_name: Name of the project
-        sheet_files: List of tuples (sheet_name, sheet_file_path relative to output_dir)
-        output_dir: Directory where the .kicad_sch file will be saved
-    """
-    import uuid as uuid_module
-    
-    sheet_uuid = str(uuid_module.uuid4())
-    root_uuid = str(uuid_module.uuid4())
-    
-    # Generate sheet instances
-    sheet_instances = []
-    y_pos = 30.48
-    for i, (sheet_name, sheet_file) in enumerate(sheet_files):
-        sheet_instances.append({
-            "uuid": str(uuid_module.uuid4()),
-            "at": (30.48, y_pos + i * 30.48),
-            "size": (40.64, 20.32),
-            "sheetname": sheet_name,
-            "sheetfile": sheet_file
-        })
-    
-    # Generate the root schematic content
-    content = f'''(kicad_sch
-	(version 20250114)
-	(generator "eeschema")
-	(generator_version "9.0")
-	(uuid "{root_uuid}")
-	(paper "A4")
-	(lib_symbols)
-'''
-    
-    # Add sheet definitions
-    for sheet in sheet_instances:
-        content += f'''	(sheet
-		(at {sheet["at"][0]} {sheet["at"][1]})
-		(size {sheet["size"][0]} {sheet["size"][1]})
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(stroke
-			(width 0)
-			(type solid)
-		)
-		(fill
-			(color 0 0 0 0.0000)
-		)
-		(uuid "{sheet["uuid"]}")
-		(property "Sheetname" "{sheet["sheetname"]}"
-			(at {sheet["at"][0]} {sheet["at"][1] - 0.68} 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left bottom)
-			)
-		)
-		(property "Sheetfile" "{sheet["sheetfile"]}"
-			(at {sheet["at"][0]} {sheet["at"][1] + 20.52} 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left top)
-			)
-		)
-	)
-'''
-    
-    # Add sheet instances
-    content += '''	(sheet_instances
-		(path "/"
-			(page "1")
-		)
-	)
-	(embedded_fonts no)
-)
-'''
-    
-    output_path = os.path.join(output_dir, f"{project_name}.kicad_sch")
-    with open(output_path, 'w', encoding='utf-8') as f:
-        f.write(content)
-    
-    print(f"Generated root schematic: {output_path}")
-    
-    # Return root UUID and sheet UUIDs for .kicad_pro file
-    sheet_uuids = [(root_uuid, "Root")] + [(s["uuid"], s["sheetname"]) for s in sheet_instances]
-    return output_path, sheet_uuids

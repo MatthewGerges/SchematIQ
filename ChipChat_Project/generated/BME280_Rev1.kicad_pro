@@ -1,0 +1,41 @@
+{
+  "meta": {
+    "filename": "BME280_Rev1.kicad_pro",
+    "version": 2
+  },
+  "schematic": {
+    "annotate_start_num": 0,
+    "bom_fmt_settings": {
+      "field_delimiter": ",",
+      "name": "CSV",
+      "ref_delimiter": ",",
+      "string_delimiter": "\""
+    },
+    "connection_grid_size": 50.0,
+    "drawing": {},
+    "page_layout_descr_file": ""
+  },
+  "sheets": [
+    [
+      "92169434-07ad-44a3-9fd3-3f1e6aeef5ed",
+      "Root"
+    ],
+    [
+      "4f37e583-d5a4-4c7b-a86c-90420d8ab79c",
+      "USBC"
+    ],
+    [
+      "2371e8c9-1eb6-4ce6-b418-afec2c23afb4",
+      "Buck_Converter"
+    ],
+    [
+      "f7afa395-4f73-4771-99db-989a3f3b8930",
+      "USB_To_I2C"
+    ],
+    [
+      "fae7e226-f5c1-4399-bf35-a1324fc46faf",
+      "BME280_Sensor"
+    ]
+  ],
+  "text_variables": {}
+}

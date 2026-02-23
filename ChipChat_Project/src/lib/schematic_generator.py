@@ -269,13 +269,13 @@ def _save_schematic(schematic_data, file_path):
     text += '\t(generator_version "9.0")\n'
     text += f'\t(uuid "{schematic_data["uuid"]}")\n'
     text += f'\t(paper "{schematic_data["paper"]}")\n\n'
-
+    
     if schematic_data["lib_symbols"]:
         text += "\t(lib_symbols\n"
         for sym in schematic_data["lib_symbols"]:
             text += f"\t\t{sym}\n"
         text += "\t)\n\n"
-
+    
     for item in schematic_data["items"]:
         t = item["type"]
         if t == "symbol":
@@ -286,9 +286,9 @@ def _save_schematic(schematic_data, file_path):
             text += _format_label(item) + "\n"
         elif t == "hierarchical_label":
             text += _format_hierarchical_label(item) + "\n"
-
+    
     text += ")\n"
-
+    
     with open(file_path, "w", encoding="utf-8") as f:
         f.write(text)
     print(f"Schematic saved to {file_path}")
@@ -573,19 +573,29 @@ def generate_from_json(output_path, json_path, sheet_name="BME280_Sensor"):
                 )
                 print(f"  Wired {len(comp.get('connections', []))} pins on {comp['ref']}")
 
-    # 6. Place passives — all horizontal, column grid
-    for i, p in enumerate(passives):
-        col = i // PASSIVE_MAX_ROWS
-        row = i % PASSIVE_MAX_ROWS
+    # 6. Place passives — all horizontal, column grid (R and C only for now)
+    placed_idx = 0
+    for p in passives:
+        ptype = p["type"]
+        if ptype == "R":
+            lib_id = "Resistor"
+        elif ptype == "C":
+            lib_id = "Capacitor"
+        else:
+            print(f"  Skipping {p['ref']} (unsupported passive type: {ptype})")
+            continue
+
+        col = placed_idx // PASSIVE_MAX_ROWS
+        row = placed_idx % PASSIVE_MAX_ROWS
         px = round(PASSIVE_X_START + col * PASSIVE_COL_SPACING, 2)
         py = round(PASSIVE_Y_START + row * PASSIVE_Y_SPACING, 2)
 
-        lib_id = "Resistor" if p["type"] == "R" else "Capacitor"
         kicad_api.place_component(
             schematic_data, lib_id, p["ref"], p["value"],
             (px, py), angle=90, pins=["1", "2"]
         )
         _wire_horizontal_passive(schematic_data, px, py, p, net_types)
+        placed_idx += 1
 
     # 7. Save
     _save_schematic(schematic_data, output_path)

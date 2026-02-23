@@ -1,9 +1,275 @@
-(kicad_sch (version 20250114) (generator "ChipChat_Gemini")
-	(uuid "f9eda549-61a1-47f4-bc08-73ccfe9334ab")
+(kicad_sch
+	(version 20250114)
+	(generator "ChipChat_Gemini")
+	(generator_version "9.0")
+	(uuid "ba3db8e0-2b2f-415f-b335-fe180e28931c")
 	(paper "A4")
 
 	(lib_symbols
-	(symbol "BME280" (pin_names (offset 1.016)) (in_bom yes) (on_board yes)
+		(symbol "Resistor"
+		(pin_numbers
+			(hide yes)
+		)
+		(pin_names
+			(offset 0)
+		)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(property "Reference" "R"
+			(at 2.032 0 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Resistor"
+			(at 0 0 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at -1.778 0 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "ki_keywords" "R res resistor"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "ki_fp_filters" "R_*"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(symbol "Resistor_0_1"
+			(rectangle
+				(start -1.016 -2.54)
+				(end 1.016 2.54)
+				(stroke
+					(width 0.254)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+		)
+		(symbol "Resistor_1_1"
+			(pin passive line
+				(at 0 3.81 270)
+				(length 1.27)
+				(name "~"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at 0 -3.81 90)
+				(length 1.27)
+				(name "~"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+		)
+		(embedded_fonts no)
+	)
+		(symbol "Capacitor"
+		(pin_numbers
+			(hide yes)
+		)
+		(pin_names
+			(offset 0.254)
+		)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(property "Reference" "C"
+			(at 0.635 2.54 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "Capacitor"
+			(at 0.635 -2.54 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" ""
+			(at 0.9652 -3.81 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Unpolarized capacitor"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "ki_keywords" "cap capacitor"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "ki_fp_filters" "C_*"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(symbol "Capacitor_0_1"
+			(polyline
+				(pts
+					(xy -2.032 0.762) (xy 2.032 0.762)
+				)
+				(stroke
+					(width 0.508)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy -2.032 -0.762) (xy 2.032 -0.762)
+				)
+				(stroke
+					(width 0.508)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+		)
+		(symbol "Capacitor_1_1"
+			(pin passive line
+				(at 0 3.81 270)
+				(length 2.794)
+				(name "~"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at 0 -3.81 90)
+				(length 2.794)
+				(name "~"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+		)
+		(embedded_fonts no)
+	)
+		(symbol "BME280" (pin_names (offset 1.016)) (in_bom yes) (on_board yes)
     (property "Reference" "U" (id 0) (at -10.1662 13.3431 0)
       (effects (font (size 1.27 1.27)) (justify bottom left))
     )
@@ -129,11 +395,830 @@
 
 	(symbol
 		(lib_id "BME280")
-		(at 148.5 105.0 0)
-		(uuid "d832aa5e-bb10-4a97-903c-17617ac0baf3")
-		(property "Reference" "U1" (at 148.5 107.54 0) (effects (font (size 1.27 1.27))))
-		(property "Value" "BME280" (at 148.5 102.46 0) (effects (font (size 1.27 1.27))))
-		(property "Footprint" "Footprint_Library:BME280" (at 148.5 105.0 0) (effects (font (size 1.27 1.27)) (hide yes)))
-		(property "Datasheet" "" (at 148.5 105.0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+		(at 200.0 100.0 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "3ba04719-f5fa-48f4-8715-699d35c0d309")
+		(property "Reference" "U3"
+			(at 200.0 97.46 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "BME280"
+			(at 200.0 102.54 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 200.0 100.0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 200.0 100.0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "b3ee42be-40fe-4329-b664-7672aa3a2ca6")
+		)
+		(pin "2"
+			(uuid "dd103fc5-91f9-464e-a27a-b6c7e5e8419e")
+		)
+		(pin "3"
+			(uuid "b1a2afa9-e99d-421b-8791-7a07b4ef0e74")
+		)
+		(pin "4"
+			(uuid "0043bc24-44d0-4df0-b9d7-a31938643cf3")
+		)
+		(pin "5"
+			(uuid "05d82680-33ac-40cc-838d-4f25d46aefe8")
+		)
+		(pin "6"
+			(uuid "b33f21cb-8181-4984-97f3-4c14ee6ce090")
+		)
+		(pin "7"
+			(uuid "9e716ec4-f266-4c79-b897-feddf040bf62")
+		)
+		(pin "8"
+			(uuid "18f5f60b-5456-4058-a4f9-77f7e4c2dbd8")
+		)
+	)
+	(wire
+		(pts
+			(xy 215.24 110.16) (xy 222.86 110.16)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6cfb7153-0719-4ee5-b709-b8366524f7ef")
+	)
+	(label "GND"
+		(at 222.86 110.16 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "2aa5d670-62f9-4731-bd63-84eb5b8bd3fc")
+	)
+	(wire
+		(pts
+			(xy 184.76 102.54) (xy 177.14 102.54)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "84fb354a-7dff-454c-b7da-1262550f926d")
+	)
+	(label "I2C_SDA_0R"
+		(at 177.14 102.54 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "05774638-4586-40d2-a586-d05434b77624")
+	)
+	(wire
+		(pts
+			(xy 184.76 100.0) (xy 177.14 100.0)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d23986c1-9d6a-4afa-895c-e9e8bd3ceab6")
+	)
+	(label "I2C_SCL_0R"
+		(at 177.14 100.0 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "75a8da01-09bb-42b8-adf3-7f87dea406a9")
+	)
+	(wire
+		(pts
+			(xy 184.76 105.08) (xy 177.14 105.08)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0b2a5ce4-c5d5-4d2c-932e-0264df3c1409")
+	)
+	(label "SDO_ADD"
+		(at 177.14 105.08 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "d7a2969a-fdf0-42f9-b891-fdd5fdde7ab2")
+	)
+	(wire
+		(pts
+			(xy 215.24 89.84) (xy 222.86 89.84)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "68517fcd-1d1c-4170-80b4-096e7ee289a6")
+	)
+	(hierarchical_label "PP_3V3_OUT"
+		(shape bidirectional)
+		(at 222.86 89.84 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "adc72049-fcb8-487f-a768-707ddb6d5a09")
+	)
+	(wire
+		(pts
+			(xy 215.24 92.38) (xy 222.86 92.38)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9154a5f2-2cde-4f98-8ba9-ac9db616f60d")
+	)
+	(hierarchical_label "PP_3V3_OUT"
+		(shape bidirectional)
+		(at 222.86 92.38 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "dca54fea-668a-4a93-ad3b-3024ca386c13")
+	)
+	(symbol
+		(lib_id "Resistor")
+		(at 80.0 35.0 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "397b8c61-84d6-44db-93a0-5619911c2fce")
+		(property "Reference" "R5"
+			(at 80.0 32.46 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "4.7K"
+			(at 80.0 37.54 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 80.0 35.0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 80.0 35.0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "a81c1fc3-7625-465d-8047-10d3119a54bf")
+		)
+		(pin "2"
+			(uuid "da7af122-1be6-413e-9d1d-eeb4ef2db774")
+		)
+	)
+	(wire
+		(pts
+			(xy 83.81 35.0) (xy 91.43 35.0)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1e036226-f70b-4d22-a01d-b186b4411fc1")
+	)
+	(hierarchical_label "I2C_SCL_BME"
+		(shape bidirectional)
+		(at 91.43 35.0 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "93161817-6170-49fc-9e9f-b0112ba551da")
+	)
+	(wire
+		(pts
+			(xy 76.19 35.0) (xy 68.57 35.0)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6cac5c36-82d8-422b-b521-9eff5f5ceaa2")
+	)
+	(hierarchical_label "PP_3V3_OUT"
+		(shape bidirectional)
+		(at 68.57 35.0 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "bec2ca9a-7862-4716-b7a0-d1da0958b913")
+	)
+	(symbol
+		(lib_id "Resistor")
+		(at 80.0 50.24 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "d6e66ec2-7900-45ce-ab33-b9bfed2a7ca0")
+		(property "Reference" "R6"
+			(at 80.0 47.7 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "4.7K"
+			(at 80.0 52.78 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 80.0 50.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 80.0 50.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "92951f3a-31e2-4db7-9ed9-91f8611383f2")
+		)
+		(pin "2"
+			(uuid "1591f3b1-94f2-41e6-9267-7a6a5ff076f5")
+		)
+	)
+	(wire
+		(pts
+			(xy 83.81 50.24) (xy 91.43 50.24)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d9eab01b-df17-4e39-b05a-b874b90ee4ae")
+	)
+	(hierarchical_label "I2C_SDA_BME"
+		(shape bidirectional)
+		(at 91.43 50.24 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "fc2159e7-6eab-4a99-97aa-451cf8dce2a6")
+	)
+	(wire
+		(pts
+			(xy 76.19 50.24) (xy 68.57 50.24)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0a6b93b8-0677-4ce9-a85e-3c4ef99548cd")
+	)
+	(hierarchical_label "PP_3V3_OUT"
+		(shape bidirectional)
+		(at 68.57 50.24 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "68c112c0-401d-45d5-82df-31835467b5f2")
+	)
+	(symbol
+		(lib_id "Resistor")
+		(at 80.0 65.48 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "58187055-0a46-461c-aab7-891abd0d759d")
+		(property "Reference" "R7"
+			(at 80.0 62.940000000000005 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "0R"
+			(at 80.0 68.02000000000001 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 80.0 65.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 80.0 65.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "868094ed-728a-4871-8891-cfd4fd124e79")
+		)
+		(pin "2"
+			(uuid "e52d60b7-b240-4afa-b250-2885fba8bfe4")
+		)
+	)
+	(wire
+		(pts
+			(xy 83.81 65.48) (xy 91.43 65.48)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d1f8b195-bfea-403b-a92c-7fcbc77f55a7")
+	)
+	(hierarchical_label "I2C_SCL_BME"
+		(shape bidirectional)
+		(at 91.43 65.48 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "654757e7-79bc-4e8c-87ca-0668f2207854")
+	)
+	(wire
+		(pts
+			(xy 76.19 65.48) (xy 68.57 65.48)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "cf45d664-68ba-4307-9317-0e1bf8bb1b2a")
+	)
+	(label "I2C_SCL_0R"
+		(at 68.57 65.48 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "5d4bcaaa-0ea9-4553-9204-896db1aa0c83")
+	)
+	(symbol
+		(lib_id "Resistor")
+		(at 80.0 80.72 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "e777ddf6-6341-4ebf-b5c7-f901461bd3ad")
+		(property "Reference" "R8"
+			(at 80.0 78.17999999999999 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "0R"
+			(at 80.0 83.26 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 80.0 80.72 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 80.0 80.72 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "b4c2dd00-82e0-4792-9ded-a538f502b246")
+		)
+		(pin "2"
+			(uuid "9a1ef44a-d5e4-4b65-9532-9f436e89819e")
+		)
+	)
+	(wire
+		(pts
+			(xy 83.81 80.72) (xy 91.43 80.72)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "cefae54f-1fd2-481f-9c3a-7123d8041bca")
+	)
+	(hierarchical_label "I2C_SDA_BME"
+		(shape bidirectional)
+		(at 91.43 80.72 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "1d1733cd-05dd-40bc-a3df-636decb2ff7e")
+	)
+	(wire
+		(pts
+			(xy 76.19 80.72) (xy 68.57 80.72)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5e157d61-ffe7-4249-ba1a-af6fe2fe198c")
+	)
+	(label "I2C_SDA_0R"
+		(at 68.57 80.72 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "5683e014-da80-4582-bb90-54faeb474ca5")
+	)
+	(symbol
+		(lib_id "Resistor")
+		(at 80.0 95.96 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "3fbcb4b7-c74a-4351-86e7-dd7624ed72b0")
+		(property "Reference" "R9"
+			(at 80.0 93.41999999999999 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "0R"
+			(at 80.0 98.5 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 80.0 95.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 80.0 95.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "6998ea11-5be8-40f5-9450-601cb9f8df0c")
+		)
+		(pin "2"
+			(uuid "a19dbf4d-4eb7-4d2d-a043-5e050bb2b953")
+		)
+	)
+	(wire
+		(pts
+			(xy 83.81 95.96) (xy 91.43 95.96)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9a16cf84-9904-4fea-8ab3-3f7dd9f4d53c")
+	)
+	(label "SDO_ADD"
+		(at 91.43 95.96 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "09060977-b152-4c83-a7d4-33e9ac87cefa")
+	)
+	(wire
+		(pts
+			(xy 76.19 95.96) (xy 68.57 95.96)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b8981a9b-075a-4515-8a27-344fc79b93f3")
+	)
+	(label "GND"
+		(at 68.57 95.96 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "53836a55-d8c2-4154-993e-1170fff2d6f7")
+	)
+	(symbol
+		(lib_id "Capacitor")
+		(at 80.0 111.2 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "8510f3c5-119c-44e8-808f-1023868f2b65")
+		(property "Reference" "C9"
+			(at 80.0 108.66 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "0.1uF"
+			(at 80.0 113.74000000000001 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 80.0 111.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 80.0 111.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "da04add7-ee5e-442b-8964-895bf2477470")
+		)
+		(pin "2"
+			(uuid "a35ced1d-c150-4886-91e2-0add62296b13")
+		)
+	)
+	(wire
+		(pts
+			(xy 83.81 111.2) (xy 91.43 111.2)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c7b2df5d-d79d-4c3e-abdb-432576359e24")
+	)
+	(hierarchical_label "PP_3V3_OUT"
+		(shape bidirectional)
+		(at 91.43 111.2 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "a7826cac-61c3-4e1a-a28b-6e864cfcc82a")
+	)
+	(wire
+		(pts
+			(xy 76.19 111.2) (xy 68.57 111.2)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1cb92cab-5500-4230-ae61-8f8e7689d222")
+	)
+	(label "GND"
+		(at 68.57 111.2 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "86dcc5a0-47d6-4d11-9c5d-a13d7e6aba08")
+	)
+	(symbol
+		(lib_id "Capacitor")
+		(at 80.0 126.44 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "8ea3fa8f-3932-43e7-ae1e-84b7e4957afe")
+		(property "Reference" "C10"
+			(at 80.0 123.89999999999999 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "0.1uF"
+			(at 80.0 128.98 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 80.0 126.44 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 80.0 126.44 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "55217979-67d2-4bce-b5f5-a1d371b54d9e")
+		)
+		(pin "2"
+			(uuid "a523f132-d11b-407b-80b3-f0d8f4463215")
+		)
+	)
+	(wire
+		(pts
+			(xy 83.81 126.44) (xy 91.43 126.44)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "36166f2b-21e5-4d83-9f85-ababb4a256ae")
+	)
+	(hierarchical_label "PP_3V3_OUT"
+		(shape bidirectional)
+		(at 91.43 126.44 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "a94f1750-954c-4085-98b8-ce73489dde5a")
+	)
+	(wire
+		(pts
+			(xy 76.19 126.44) (xy 68.57 126.44)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d740b1ac-6aa0-4f69-9d8f-551801583be8")
+	)
+	(label "GND"
+		(at 68.57 126.44 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "a42be876-87ca-45a6-b13f-01ab89e5d210")
 	)
 )

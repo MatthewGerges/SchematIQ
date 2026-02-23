@@ -1,7 +1,70 @@
 {
+  "board": {
+    "3dviewports": [],
+    "ipc2581": {
+      "dist": "",
+      "distpn": "",
+      "internal_id": "",
+      "mfg": "",
+      "mpn": ""
+    },
+    "layer_pairs": [],
+    "layer_presets": [],
+    "viewports": []
+  },
+  "boards": [],
+  "cvpcb": {
+    "equivalence_files": []
+  },
+  "libraries": {
+    "pinned_footprint_libs": [],
+    "pinned_symbol_libs": []
+  },
   "meta": {
     "filename": "BME280_Rev1.kicad_pro",
-    "version": 2
+    "version": 3
+  },
+  "net_settings": {
+    "classes": [
+      {
+        "bus_width": 12,
+        "clearance": 0.2,
+        "diff_pair_gap": 0.25,
+        "diff_pair_via_gap": 0.25,
+        "diff_pair_width": 0.2,
+        "line_style": 0,
+        "microvia_diameter": 0.3,
+        "microvia_drill": 0.1,
+        "name": "Default",
+        "pcb_color": "rgba(0, 0, 0, 0.000)",
+        "priority": 2147483647,
+        "schematic_color": "rgba(0, 0, 0, 0.000)",
+        "track_width": 0.2,
+        "via_diameter": 0.6,
+        "via_drill": 0.3,
+        "wire_width": 6
+      }
+    ],
+    "meta": {
+      "version": 4
+    },
+    "net_colors": null,
+    "netclass_assignments": null,
+    "netclass_patterns": []
+  },
+  "pcbnew": {
+    "last_paths": {
+      "gencad": "",
+      "idf": "",
+      "netlist": "",
+      "plot": "",
+      "pos_files": "",
+      "specctra_dsn": "",
+      "step": "",
+      "svg": "",
+      "vrml": ""
+    },
+    "page_layout_descr_file": ""
   },
   "schematic": {
     "annotate_start_num": 0,
@@ -13,27 +76,29 @@
     },
     "connection_grid_size": 50.0,
     "drawing": {},
+    "legacy_lib_dir": "",
+    "legacy_lib_list": [],
     "page_layout_descr_file": ""
   },
   "sheets": [
     [
-      "92169434-07ad-44a3-9fd3-3f1e6aeef5ed",
+      "46b2575a-5051-4fe7-8728-84f38891ffca",
       "Root"
     ],
     [
-      "4f37e583-d5a4-4c7b-a86c-90420d8ab79c",
+      "06653678-8dcf-4c8c-a853-7525273e9512",
       "USBC"
     ],
     [
-      "2371e8c9-1eb6-4ce6-b418-afec2c23afb4",
+      "6dba4ef0-8c24-4983-94b0-f09b487e5122",
       "Buck_Converter"
     ],
     [
-      "f7afa395-4f73-4771-99db-989a3f3b8930",
+      "442a1aca-d63c-43c9-b3c8-d4f698882d08",
       "USB_To_I2C"
     ],
     [
-      "fae7e226-f5c1-4399-bf35-a1324fc46faf",
+      "a11cc8eb-97f5-458d-900c-8a2049adab7c",
       "BME280_Sensor"
     ]
   ],

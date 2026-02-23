@@ -2,13 +2,13 @@
 	(version 20250114)
 	(generator "ChipChat_Gemini")
 	(generator_version "9.0")
-	(uuid "92169434-07ad-44a3-9fd3-3f1e6aeef5ed")
+	(uuid "46b2575a-5051-4fe7-8728-84f38891ffca")
 	(paper "A4")
 	(lib_symbols)
 
 	(sheet
-		(at 30.0 30.0)
-		(size 50.0 25.4)
+		(at 25.0 25.0)
+		(size 45.0 15.0)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
@@ -20,9 +20,9 @@
 		(fill
 			(color 0 0 0 0.0000)
 		)
-		(uuid "4f37e583-d5a4-4c7b-a86c-90420d8ab79c")
+		(uuid "06653678-8dcf-4c8c-a853-7525273e9512")
 		(property "Sheetname" "USBC"
-			(at 30.0 29.32 0)
+			(at 25.0 24.32 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -31,7 +31,7 @@
 			)
 		)
 		(property "Sheetfile" "USBC.kicad_sch"
-			(at 30.0 55.6 0)
+			(at 25.0 40.2 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -39,41 +39,11 @@
 				(justify left top)
 			)
 		)
-		(pin "PP_5V_SYS" bidirectional
-			(at 80.0 35.08 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-			(uuid "5fc410ef-73fb-45a7-aa97-641218ffe70a")
-		)
-		(pin "USB_DN" bidirectional
-			(at 80.0 40.16 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-			(uuid "118de5b0-2250-455c-ac15-9b3ea340bee9")
-		)
-		(pin "USB_DP" bidirectional
-			(at 80.0 45.24 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-			(uuid "4a1c1ce7-cfdd-41ce-9037-ca3f5054de6c")
-		)
 	)
 
 	(sheet
-		(at 30.0 70.4)
-		(size 50.0 20.32)
+		(at 85.0 25.0)
+		(size 45.0 15.0)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
@@ -85,9 +55,9 @@
 		(fill
 			(color 0 0 0 0.0000)
 		)
-		(uuid "2371e8c9-1eb6-4ce6-b418-afec2c23afb4")
+		(uuid "6dba4ef0-8c24-4983-94b0-f09b487e5122")
 		(property "Sheetname" "Buck_Converter"
-			(at 30.0 69.72 0)
+			(at 85.0 24.32 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -96,7 +66,7 @@
 			)
 		)
 		(property "Sheetfile" "Buck_Converter.kicad_sch"
-			(at 30.0 90.92 0)
+			(at 85.0 40.2 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -104,31 +74,11 @@
 				(justify left top)
 			)
 		)
-		(pin "PP_5V_SYS" bidirectional
-			(at 80.0 75.48 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-			(uuid "7b095bb7-08f4-4390-8f39-e169c0850f05")
-		)
-		(pin "PP_3V3_OUT" bidirectional
-			(at 80.0 80.56 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-			(uuid "bf8dbb2d-00a8-4051-ad18-632fedba80ba")
-		)
 	)
 
 	(sheet
-		(at 30.0 105.72)
-		(size 50.0 40.64)
+		(at 145.0 25.0)
+		(size 45.0 15.0)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
@@ -140,9 +90,9 @@
 		(fill
 			(color 0 0 0 0.0000)
 		)
-		(uuid "f7afa395-4f73-4771-99db-989a3f3b8930")
+		(uuid "442a1aca-d63c-43c9-b3c8-d4f698882d08")
 		(property "Sheetname" "USB_To_I2C"
-			(at 30.0 105.04 0)
+			(at 145.0 24.32 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -151,7 +101,7 @@
 			)
 		)
 		(property "Sheetfile" "USB_To_I2C.kicad_sch"
-			(at 30.0 146.56 0)
+			(at 145.0 40.2 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -159,71 +109,11 @@
 				(justify left top)
 			)
 		)
-		(pin "PP_5V_SYS" bidirectional
-			(at 80.0 110.8 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-			(uuid "f221aca0-3331-4e07-80b1-1825791c6bbc")
-		)
-		(pin "USB_DN" bidirectional
-			(at 80.0 115.88 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-			(uuid "dbc6ef24-61c2-4d63-81b7-3efb3cff2558")
-		)
-		(pin "USB_DP" bidirectional
-			(at 80.0 120.96 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-			(uuid "b92f62eb-b648-4e7b-bf71-83a200c01956")
-		)
-		(pin "PP_3V3_OUT" bidirectional
-			(at 80.0 126.04 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-			(uuid "8dd5710a-ad32-4b41-9df6-7a90d6eeda9f")
-		)
-		(pin "I2C_SDA_BME" bidirectional
-			(at 80.0 131.12 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-			(uuid "cabf0b0e-6f12-4312-b506-616e6b300167")
-		)
-		(pin "I2C_SCL_BME" bidirectional
-			(at 80.0 136.2 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-			(uuid "f9c261e0-b744-4787-ba9b-1181df125162")
-		)
 	)
 
 	(sheet
-		(at 30.0 161.36)
-		(size 50.0 25.4)
+		(at 205.0 25.0)
+		(size 45.0 15.0)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
@@ -235,9 +125,9 @@
 		(fill
 			(color 0 0 0 0.0000)
 		)
-		(uuid "fae7e226-f5c1-4399-bf35-a1324fc46faf")
+		(uuid "a11cc8eb-97f5-458d-900c-8a2049adab7c")
 		(property "Sheetname" "BME280_Sensor"
-			(at 30.0 160.68 0)
+			(at 205.0 24.32 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -246,7 +136,7 @@
 			)
 		)
 		(property "Sheetfile" "BME280_Sensor.kicad_sch"
-			(at 30.0 186.96 0)
+			(at 205.0 40.2 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -254,333 +144,22 @@
 				(justify left top)
 			)
 		)
-		(pin "PP_3V3_OUT" bidirectional
-			(at 80.0 166.44 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-			(uuid "dceae8d8-2c94-493f-937a-a2a1c2291eae")
-		)
-		(pin "I2C_SDA_BME" bidirectional
-			(at 80.0 171.52 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-			(uuid "d286bf08-c052-42ac-8d2a-de89e7513483")
-		)
-		(pin "I2C_SCL_BME" bidirectional
-			(at 80.0 176.6 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-			(uuid "6c0e7475-2c6d-4231-ace6-5e80a3f16e91")
-		)
-	)
-
-	(wire
-		(pts
-			(xy 80.0 35.08) (xy 90.0 35.08)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "52f33fa9-cb18-4153-8516-542db7aad925")
-	)
-	(label "PP_5V_SYS"
-		(at 90.0 35.08 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "741d6039-8a0b-4a05-b95f-b5e983ff8645")
-	)
-	(wire
-		(pts
-			(xy 80.0 40.16) (xy 90.0 40.16)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "019eb4b6-d2a6-455a-8cec-ecb6c3310d10")
-	)
-	(label "USB_DN"
-		(at 90.0 40.16 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "21820e9c-52d5-4686-92d9-b4dfb67cf940")
-	)
-	(wire
-		(pts
-			(xy 80.0 45.24) (xy 90.0 45.24)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "90739393-018c-4cb9-b210-5550754117f8")
-	)
-	(label "USB_DP"
-		(at 90.0 45.24 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "74254980-124e-428b-88ab-9761bd684f03")
-	)
-	(wire
-		(pts
-			(xy 80.0 75.48) (xy 90.0 75.48)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "1551da64-a311-4b4e-bb3b-24259a599ce9")
-	)
-	(label "PP_5V_SYS"
-		(at 90.0 75.48 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "35c15af2-345c-4d8e-917d-0bb9c60b644b")
-	)
-	(wire
-		(pts
-			(xy 80.0 80.56) (xy 90.0 80.56)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "b60082e9-e4e4-43c2-a824-4dcc38023b68")
-	)
-	(label "PP_3V3_OUT"
-		(at 90.0 80.56 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "f1d72a6f-f1e9-4945-9936-bde30c0f3a22")
-	)
-	(wire
-		(pts
-			(xy 80.0 110.8) (xy 90.0 110.8)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "a76ee485-a1e8-42db-85c9-6278c8dc13b9")
-	)
-	(label "PP_5V_SYS"
-		(at 90.0 110.8 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "1b9cfef3-d582-4a78-b902-95cbfcd072bc")
-	)
-	(wire
-		(pts
-			(xy 80.0 115.88) (xy 90.0 115.88)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "44a3e81f-9407-45d4-87e0-c2e965952371")
-	)
-	(label "USB_DN"
-		(at 90.0 115.88 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "cf4b3962-e945-43e3-8ace-963fe8f63da9")
-	)
-	(wire
-		(pts
-			(xy 80.0 120.96) (xy 90.0 120.96)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "80e7f159-5870-471f-a98b-1366749f9486")
-	)
-	(label "USB_DP"
-		(at 90.0 120.96 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "1467b2ab-a476-48e4-8524-155d2c9d8906")
-	)
-	(wire
-		(pts
-			(xy 80.0 126.04) (xy 90.0 126.04)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "97911ca7-429b-4c80-84b4-bebdd30cce21")
-	)
-	(label "PP_3V3_OUT"
-		(at 90.0 126.04 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "b1fb7a43-83d6-43d5-8fe9-bcc6bfeeb3e4")
-	)
-	(wire
-		(pts
-			(xy 80.0 131.12) (xy 90.0 131.12)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "064ecae6-a16c-4104-9a55-0e435f4a980e")
-	)
-	(label "I2C_SDA_BME"
-		(at 90.0 131.12 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "8dcdc8e8-1cb1-49b6-971d-43ee4217317f")
-	)
-	(wire
-		(pts
-			(xy 80.0 136.2) (xy 90.0 136.2)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "5e5d2743-d846-49c1-a436-29cee0976118")
-	)
-	(label "I2C_SCL_BME"
-		(at 90.0 136.2 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "7d0e1bc4-df19-4783-bb75-3feb8863c17b")
-	)
-	(wire
-		(pts
-			(xy 80.0 166.44) (xy 90.0 166.44)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "a03ec4fc-e824-4425-8359-4b4d2b0e8cf6")
-	)
-	(label "PP_3V3_OUT"
-		(at 90.0 166.44 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "b8a7b821-1f81-405b-89d6-6774442b0250")
-	)
-	(wire
-		(pts
-			(xy 80.0 171.52) (xy 90.0 171.52)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "3094099c-cf76-4c0e-8676-3725f5e1341c")
-	)
-	(label "I2C_SDA_BME"
-		(at 90.0 171.52 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "3964ca55-764d-4290-a777-32a6eb037110")
-	)
-	(wire
-		(pts
-			(xy 80.0 176.6) (xy 90.0 176.6)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "41e199cf-5bea-44c9-93d3-9390b23a0e78")
-	)
-	(label "I2C_SCL_BME"
-		(at 90.0 176.6 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "ac55b366-b49a-4d0f-8c8c-58a335dbb080")
 	)
 
 	(sheet_instances
 		(path "/"
 			(page "1")
 		)
-		(path "/4f37e583-d5a4-4c7b-a86c-90420d8ab79c"
+		(path "/06653678-8dcf-4c8c-a853-7525273e9512"
 			(page "2")
 		)
-		(path "/2371e8c9-1eb6-4ce6-b418-afec2c23afb4"
+		(path "/6dba4ef0-8c24-4983-94b0-f09b487e5122"
 			(page "3")
 		)
-		(path "/f7afa395-4f73-4771-99db-989a3f3b8930"
+		(path "/442a1aca-d63c-43c9-b3c8-d4f698882d08"
 			(page "4")
 		)
-		(path "/fae7e226-f5c1-4399-bf35-a1324fc46faf"
+		(path "/a11cc8eb-97f5-458d-900c-8a2049adab7c"
 			(page "5")
 		)
 	)

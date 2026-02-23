@@ -32,34 +32,57 @@ MAIN_COMP_Y = 100.0
 
 
 # =============================================================================
-# Symbol embedding
+# Symbol embedding — passive type → symbol file mapping
 # =============================================================================
 
-def _embed_device_symbol(schematic_data, symbol_type):
-    """Embed a standard Device symbol (R or C) from KICAD_Library/Symbols/."""
-    BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(
-        os.path.dirname(os.path.abspath(__file__)))))
-    SYMBOL_LIB_PATH = os.path.join(BASE_DIR, "KICAD_Library", "Symbols")
+# Passive type → (symbol file name, placement angle for horizontal layout)
+#   Symbols with VERTICAL pins (R, C, FB, L) need angle=90 to lay horizontal.
+#   Symbols with HORIZONTAL pins (D) need angle=180 to keep pin 1 on the right.
+PASSIVE_CONFIG = {
+    "R":  {"file": "Resistor",     "angle": 90},
+    "C":  {"file": "Capacitor",    "angle": 90},
+    "D":  {"file": "SMAJ6.5CA",    "angle": 180},
+    "FB": {"file": "FerriteBead",  "angle": 90},
+    "L":  {"file": "L",            "angle": 90},
+}
 
-    if symbol_type == "R":
-        symbol_name = "Resistor"
-    elif symbol_type == "C":
-        symbol_name = "Capacitor"
-    else:
+
+def _get_symbol_lib_path():
+    """Return the absolute path to KICAD_Library/Symbols/."""
+    base = os.path.dirname(os.path.dirname(os.path.dirname(
+        os.path.dirname(os.path.abspath(__file__)))))
+    return os.path.join(base, "KICAD_Library", "Symbols")
+
+
+def _embed_passive_symbol(schematic_data, symbol_type):
+    """Embed a passive symbol from KICAD_Library/Symbols/.
+
+    Returns the lib_id string on success, or None.
+    """
+    cfg = PASSIVE_CONFIG.get(symbol_type)
+    if not cfg:
+        print(f"Warning: Unknown passive type '{symbol_type}'")
         return None
 
-    symbol_file = os.path.join(SYMBOL_LIB_PATH, f"{symbol_name}.kicad_sym")
-    if os.path.exists(symbol_file):
-        embedded_lib_id = kicad_api.embed_symbol_from_file(
-            schematic_data, symbol_name, library_path=SYMBOL_LIB_PATH
+    symbol_name = cfg["file"]
+    lib_path = _get_symbol_lib_path()
+    sym_file = os.path.join(lib_path, f"{symbol_name}.kicad_sym")
+
+    if os.path.exists(sym_file):
+        lib_id = kicad_api.embed_symbol_from_file(
+            schematic_data, symbol_name, library_path=lib_path
         )
-        if embedded_lib_id:
-            print(f"Embedded {symbol_name} symbol from file")
-            return embedded_lib_id
+        if lib_id:
+            print(f"  Embedded {symbol_name} ({symbol_type}) from file → lib_id={lib_id}")
+            return lib_id
 
-    # Fallback inline (no UUIDs in pins — KiCad 9.x rule)
-    print(f"Warning: {symbol_name}.kicad_sym not found, using inline fallback")
+    # Inline fallback for R, C, L (symbols that might not have a .kicad_sym)
+    print(f"  Warning: {symbol_name}.kicad_sym not found, trying inline fallback")
+    return _inline_passive_fallback(schematic_data, symbol_type)
 
+
+def _inline_passive_fallback(schematic_data, symbol_type):
+    """Inline symbol definitions for R, C, L when .kicad_sym files are missing."""
     if symbol_type == "R":
         symbol_def = '''(symbol "Resistor"
 \t(pin_numbers (hide yes))
@@ -84,6 +107,9 @@ def _embed_device_symbol(schematic_data, symbol_type):
 \t\t\t(name "~" (effects (font (size 1.27 1.27))))
 \t\t\t(number "2" (effects (font (size 1.27 1.27))))))
 )'''
+        schematic_data["lib_symbols"].append(symbol_def)
+        return "Resistor"
+
     elif symbol_type == "C":
         symbol_def = '''(symbol "Capacitor"
 \t(pin_numbers (hide yes))
@@ -110,9 +136,44 @@ def _embed_device_symbol(schematic_data, symbol_type):
 \t\t\t(name "~" (effects (font (size 1.27 1.27))))
 \t\t\t(number "2" (effects (font (size 1.27 1.27))))))
 )'''
-    else:
-        return
-    schematic_data["lib_symbols"].append(symbol_def)
+        schematic_data["lib_symbols"].append(symbol_def)
+        return "Capacitor"
+
+    elif symbol_type == "L":
+        # Inductor — same pin layout as resistor
+        symbol_def = '''(symbol "Inductor"
+\t(pin_numbers (hide yes))
+\t(pin_names (offset 0))
+\t(exclude_from_sim no) (in_bom yes) (on_board yes)
+\t(property "Reference" "L" (at 2.032 0 90)
+\t\t(effects (font (size 1.27 1.27))))
+\t(property "Value" "L" (at 0 0 90)
+\t\t(effects (font (size 1.27 1.27))))
+\t(property "Footprint" "" (at -1.778 0 90)
+\t\t(effects (font (size 1.27 1.27)) (hide yes)))
+\t(property "Datasheet" "~" (at 0 0 0)
+\t\t(effects (font (size 1.27 1.27)) (hide yes)))
+\t(symbol "Inductor_0_1"
+\t\t(arc (start 0 -2.54) (mid 0.6323 -1.905) (end 0 -1.27)
+\t\t\t(stroke (width 0.2032) (type default)) (fill (type none)))
+\t\t(arc (start 0 -1.27) (mid 0.6323 -0.635) (end 0 0)
+\t\t\t(stroke (width 0.2032) (type default)) (fill (type none)))
+\t\t(arc (start 0 0) (mid 0.6323 0.635) (end 0 1.27)
+\t\t\t(stroke (width 0.2032) (type default)) (fill (type none)))
+\t\t(arc (start 0 1.27) (mid 0.6323 1.905) (end 0 2.54)
+\t\t\t(stroke (width 0.2032) (type default)) (fill (type none))))
+\t(symbol "Inductor_1_1"
+\t\t(pin passive line (at 0 3.81 270) (length 1.27)
+\t\t\t(name "~" (effects (font (size 1.27 1.27))))
+\t\t\t(number "1" (effects (font (size 1.27 1.27)))))
+\t\t(pin passive line (at 0 -3.81 90) (length 1.27)
+\t\t\t(name "~" (effects (font (size 1.27 1.27))))
+\t\t\t(number "2" (effects (font (size 1.27 1.27))))))
+)'''
+        schematic_data["lib_symbols"].append(symbol_def)
+        return "Inductor"
+
+    return None
 
 
 # =============================================================================
@@ -534,16 +595,15 @@ def generate_from_json(output_path, json_path, sheet_name="BME280_Sensor"):
     schematic_data = kicad_api.create_schematic_data(sheet_name, sheet_uuid)
 
     # 3. Paths
-    BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(
-        os.path.dirname(os.path.abspath(__file__)))))
-    SYMBOL_LIB_PATH = os.path.join(BASE_DIR, "KICAD_Library", "Symbols")
+    SYMBOL_LIB_PATH = _get_symbol_lib_path()
 
-    # 4. Embed passive symbols (only the types present)
+    # 4. Embed passive symbols — one per unique type
     types_needed = set(p["type"] for p in passives)
-    if "R" in types_needed:
-        _embed_device_symbol(schematic_data, "R")
-    if "C" in types_needed:
-        _embed_device_symbol(schematic_data, "C")
+    passive_lib_ids = {}      # type → lib_id
+    for ptype in sorted(types_needed):
+        lib_id = _embed_passive_symbol(schematic_data, ptype)
+        if lib_id:
+            passive_lib_ids[ptype] = lib_id
 
     # 5. Place main component(s) at center-right and wire their pins
     for comp in main_comps:
@@ -573,16 +633,13 @@ def generate_from_json(output_path, json_path, sheet_name="BME280_Sensor"):
                 )
                 print(f"  Wired {len(comp.get('connections', []))} pins on {comp['ref']}")
 
-    # 6. Place passives — all horizontal, column grid (R and C only for now)
+    # 6. Place passives — all horizontal, column grid
     placed_idx = 0
     for p in passives:
         ptype = p["type"]
-        if ptype == "R":
-            lib_id = "Resistor"
-        elif ptype == "C":
-            lib_id = "Capacitor"
-        else:
-            print(f"  Skipping {p['ref']} (unsupported passive type: {ptype})")
+        lib_id = passive_lib_ids.get(ptype)
+        if not lib_id:
+            print(f"  Skipping {p['ref']} (no symbol for type: {ptype})")
             continue
 
         col = placed_idx // PASSIVE_MAX_ROWS
@@ -590,9 +647,12 @@ def generate_from_json(output_path, json_path, sheet_name="BME280_Sensor"):
         px = round(PASSIVE_X_START + col * PASSIVE_COL_SPACING, 2)
         py = round(PASSIVE_Y_START + row * PASSIVE_Y_SPACING, 2)
 
+        # Angle depends on symbol pin orientation (from PASSIVE_CONFIG)
+        angle = PASSIVE_CONFIG.get(ptype, {}).get("angle", 90)
+
         kicad_api.place_component(
             schematic_data, lib_id, p["ref"], p["value"],
-            (px, py), angle=90, pins=["1", "2"]
+            (px, py), angle=angle, pins=["1", "2"]
         )
         _wire_horizontal_passive(schematic_data, px, py, p, net_types)
         placed_idx += 1

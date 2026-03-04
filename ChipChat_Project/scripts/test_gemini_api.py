@@ -7,8 +7,8 @@ import os
 import sys
 from pathlib import Path
 
-from dotenv import load_dotenv
-from google import genai
+from dotenv import load_dotenv  # pip install python-dotenv
+from google import genai  # pip install google-genai
 
 load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 
@@ -19,19 +19,37 @@ if not api_key:
 
 client = genai.Client(api_key=api_key)
 
+# Change this to swap models. Full list: https://ai.google.dev/gemini-api/docs/models
+#
+# Gemini 3 family (preview):
+#   "gemini-3.1-pro"          - advanced intelligence, complex problem-solving, agentic coding
+#   "gemini-3-flash"          - frontier-class performance at a fraction of the cost
+#   "gemini-3.1-flash-lite"   - frontier-class, fraction of cost (newest)
+#   "gemini-3-pro"            - DEPRECATED (shutting down Mar 9, 2026) → use gemini-3.1-pro
+#
+# Gemini 2.5 family (stable):
+#   "gemini-2.5-flash"        - best price-performance, low-latency, reasoning
+#   "gemini-2.5-flash-lite"   - fastest and cheapest multimodal in 2.5 family
+#   "gemini-2.5-pro"          - most advanced, deep reasoning and coding
+#
+# Gemini 2.0 family (deprecated):
+#   "gemini-2.0-flash"        - DEPRECATED → use gemini-2.5-flash
+#   "gemini-2.0-flash-lite"   - DEPRECATED → use gemini-2.5-flash-lite
+MODEL = "gemini-2.5-flash"
+
 prompt = (
     "You are an electronics design assistant. "
-    "List the 5 essential components needed for a USB-C powered BME280 sensor board. "
-    "Reply as a JSON array of objects with keys: part, function."
+    "List the essential components needed for a USB-C powered BME280 sensor board. "
+    "Reply as a JSON array of objects with keys: part name, manufacturer part number, function."
 )
 
-print(f"Model:  gemini-2.5-flash")
+print(f"Model:  {MODEL}")
 print(f"Prompt: {prompt[:80]}...")
 print("-" * 60)
 
 try:
     response = client.models.generate_content(
-        model="gemini-2.5-flash",
+        model=MODEL,
         contents=prompt,
     )
     print(response.text)

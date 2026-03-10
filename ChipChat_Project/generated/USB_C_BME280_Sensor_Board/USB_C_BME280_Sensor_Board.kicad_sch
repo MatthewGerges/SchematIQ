@@ -1,0 +1,167 @@
+(kicad_sch
+	(version 20250114)
+	(generator "ChipChat_Gemini")
+	(generator_version "9.0")
+	(uuid "6c31b6c0-648b-4b1b-b97d-bc372622c933")
+	(paper "A4")
+	(lib_symbols)
+
+	(sheet
+		(at 25.0 25.0)
+		(size 45.0 15.0)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(stroke
+			(width 0)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "792e40c2-bcbb-4404-9456-e2f0ee05dfe8")
+		(property "Sheetname" "USB-C Connector"
+			(at 25.0 24.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "USB_C_Connector.kicad_sch"
+			(at 25.0 40.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+	)
+
+	(sheet
+		(at 85.0 25.0)
+		(size 45.0 15.0)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(stroke
+			(width 0)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "a9dd006a-f0db-4a0b-9acd-67a5cc42e789")
+		(property "Sheetname" "Power Supply (3.3V Buck)"
+			(at 85.0 24.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "Power_Supply_3V3.kicad_sch"
+			(at 85.0 40.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+	)
+
+	(sheet
+		(at 145.0 25.0)
+		(size 45.0 15.0)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(stroke
+			(width 0)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "3ef722dc-ded3-4d94-9941-f74bbb0d358b")
+		(property "Sheetname" "USB-to-I2C Bridge"
+			(at 145.0 24.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "USB_to_I2C_Bridge.kicad_sch"
+			(at 145.0 40.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+	)
+
+	(sheet
+		(at 205.0 25.0)
+		(size 45.0 15.0)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(stroke
+			(width 0)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "4cc6be6d-46c8-488a-aeed-4c2f5a34f131")
+		(property "Sheetname" "BME280 Sensor"
+			(at 205.0 24.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "BME280_Sensor.kicad_sch"
+			(at 205.0 40.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+	)
+
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+		(path "/792e40c2-bcbb-4404-9456-e2f0ee05dfe8"
+			(page "1")
+		)
+		(path "/a9dd006a-f0db-4a0b-9acd-67a5cc42e789"
+			(page "2")
+		)
+		(path "/3ef722dc-ded3-4d94-9941-f74bbb0d358b"
+			(page "3")
+		)
+		(path "/4cc6be6d-46c8-488a-aeed-4c2f5a34f131"
+			(page "4")
+		)
+	)
+	(embedded_fonts no)
+)

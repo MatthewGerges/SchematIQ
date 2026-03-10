@@ -1,0 +1,20 @@
+{
+  "meta": {
+    "filename": "library_test.kicad_pro",
+    "version": 2
+  },
+  "schematic": {
+    "annotate_start_num": 0,
+    "bom_fmt_settings": {
+      "field_delimiter": ",",
+      "name": "CSV",
+      "ref_delimiter": ",",
+      "string_delimiter": "\""
+    },
+    "connection_grid_size": 50.0,
+    "drawing": {},
+    "page_layout_descr_file": ""
+  },
+  "sheets": [],
+  "text_variables": {}
+}

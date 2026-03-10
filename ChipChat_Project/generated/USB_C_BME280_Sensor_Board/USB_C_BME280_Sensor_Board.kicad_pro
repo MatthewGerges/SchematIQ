@@ -1,0 +1,41 @@
+{
+  "meta": {
+    "filename": "USB_C_BME280_Sensor_Board.kicad_pro",
+    "version": 2
+  },
+  "schematic": {
+    "annotate_start_num": 0,
+    "bom_fmt_settings": {
+      "field_delimiter": ",",
+      "name": "CSV",
+      "ref_delimiter": ",",
+      "string_delimiter": "\""
+    },
+    "connection_grid_size": 50.0,
+    "drawing": {},
+    "page_layout_descr_file": ""
+  },
+  "sheets": [
+    [
+      "6c31b6c0-648b-4b1b-b97d-bc372622c933",
+      "Root"
+    ],
+    [
+      "792e40c2-bcbb-4404-9456-e2f0ee05dfe8",
+      "USB-C Connector"
+    ],
+    [
+      "a9dd006a-f0db-4a0b-9acd-67a5cc42e789",
+      "Power Supply (3.3V Buck)"
+    ],
+    [
+      "3ef722dc-ded3-4d94-9941-f74bbb0d358b",
+      "USB-to-I2C Bridge"
+    ],
+    [
+      "4cc6be6d-46c8-488a-aeed-4c2f5a34f131",
+      "BME280 Sensor"
+    ]
+  ],
+  "text_variables": {}
+}

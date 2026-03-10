@@ -1,0 +1,667 @@
+(kicad_sch
+	(version 20250114)
+	(generator "ChipChat_Gemini")
+	(generator_version "9.0")
+	(uuid "bfc4364e-f462-406e-8022-41c925fa8b9c")
+	(paper "A4")
+
+	(lib_symbols
+		(symbol "Capacitor"
+		(pin_numbers
+			(hide yes)
+		)
+		(pin_names
+			(offset 0.254)
+		)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(property "Reference" "C"
+			(at 0.635 2.54 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "Capacitor"
+			(at 0.635 -2.54 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" ""
+			(at 0.9652 -3.81 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Unpolarized capacitor"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "ki_keywords" "cap capacitor"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "ki_fp_filters" "C_*"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(symbol "Capacitor_0_1"
+			(polyline
+				(pts
+					(xy -2.032 0.762) (xy 2.032 0.762)
+				)
+				(stroke
+					(width 0.508)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy -2.032 -0.762) (xy 2.032 -0.762)
+				)
+				(stroke
+					(width 0.508)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+		)
+		(symbol "Capacitor_1_1"
+			(pin passive line
+				(at 0 3.81 270)
+				(length 2.794)
+				(name "~"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at 0 -3.81 90)
+				(length 2.794)
+				(name "~"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+		)
+		(embedded_fonts no)
+	)
+		(symbol "BME280" (pin_names (offset 1.016)) (in_bom yes) (on_board yes)
+    (property "Reference" "U" (id 0) (at -10.1662 13.3431 0)
+      (effects (font (size 1.27 1.27)) (justify bottom left))
+    )
+    (property "Value" "BME280" (id 1) (at -10.1683 -15.2524 0)
+      (effects (font (size 1.27 1.27)) (justify bottom left))
+    )
+    (property "Footprint" "BME280:PSON65P250X250X100-8N" (id 2) (at 0 0 0)
+      (effects (font (size 1.27 1.27)) (justify bottom) hide)
+    )
+    (property "MF" "Bosch" (id 4) (at 0 0 0)
+      (effects (font (size 1.27 1.27)) (justify bottom) hide)
+    )
+    (property "DESCRIPTION" "Integrated pressure, humidity and temperature sensor; 8-pin 2.5x2.5x0.93mm LGA" (id 5) (at 0 0 0)
+      (effects (font (size 1.27 1.27)) (justify bottom) hide)
+    )
+    (property "PACKAGE" "LGA-8 Bosch" (id 6) (at 0 0 0)
+      (effects (font (size 1.27 1.27)) (justify bottom) hide)
+    )
+    (property "PRICE" "4.94 USD" (id 7) (at 0 0 0)
+      (effects (font (size 1.27 1.27)) (justify bottom) hide)
+    )
+    (property "Package" "LGA-8 Bosch" (id 8) (at 0 0 0)
+      (effects (font (size 1.27 1.27)) (justify bottom) hide)
+    )
+    (property "Check_prices" "https://www.snapeda.com/parts/BME280/Bosch/view-part/?ref=eda" (id 9) (at 0 0 0)
+      (effects (font (size 1.27 1.27)) (justify bottom) hide)
+    )
+    (property "STANDARD" "IPC-7351B" (id 10) (at 0 0 0)
+      (effects (font (size 1.27 1.27)) (justify bottom) hide)
+    )
+    (property "SnapEDA_Link" "https://www.snapeda.com/parts/BME280/Bosch/view-part/?ref=snap" (id 11) (at 0 0 0)
+      (effects (font (size 1.27 1.27)) (justify bottom) hide)
+    )
+    (property "MP" "BME280" (id 12) (at 0 0 0)
+      (effects (font (size 1.27 1.27)) (justify bottom) hide)
+    )
+    (property "Purchase-URL" "https://www.snapeda.com/api/url_track_click_mouser/?unipart_id=49769&manufacturer=Bosch&part_name=BME280&search_term=None" (id 13) (at 0 0 0)
+      (effects (font (size 1.27 1.27)) (justify bottom) hide)
+    )
+    (property "Price" "None" (id 14) (at 0 0 0)
+      (effects (font (size 1.27 1.27)) (justify bottom) hide)
+    )
+    (property "Availability" "In Stock" (id 15) (at 0 0 0)
+      (effects (font (size 1.27 1.27)) (justify bottom) hide)
+    )
+    (property "AVAILABILITY" "Good" (id 16) (at 0 0 0)
+      (effects (font (size 1.27 1.27)) (justify bottom) hide)
+    )
+    (property "Description" "\n                        \n                            Board Mount Humidity Sensors MEMS humidity, pressure and temperature sensor\n                        \n" (id 17) (at 0 0 0)
+      (effects (font (size 1.27 1.27)) (justify bottom) hide)
+    )
+    (symbol "BME280_0_0"
+      (rectangle (start -10.16 -12.7) (end 10.16 12.7)
+        (stroke (width 0.4064)) (fill (type background))
+      )
+      (pin power_in line (at 15.24 7.62 180.0) (length 5.08)
+        (name "VDD"
+          (effects (font (size 1.016 1.016)))
+        )
+        (number "8"
+          (effects (font (size 1.016 1.016)))
+        )
+      )
+      (pin power_in line (at 15.24 -10.16 180.0) (length 5.08)
+        (name "GND"
+          (effects (font (size 1.016 1.016)))
+        )
+        (number "1"
+          (effects (font (size 1.016 1.016)))
+        )
+      )
+      (pin power_in line (at 15.24 -10.16 180.0) (length 5.08) hide
+        (name "GND"
+          (effects (font (size 1.016 1.016)))
+        )
+        (number "7"
+          (effects (font (size 1.016 1.016)))
+        )
+      )
+      (pin power_in line (at 15.24 10.16 180.0) (length 5.08)
+        (name "VDDIO"
+          (effects (font (size 1.016 1.016)))
+        )
+        (number "6"
+          (effects (font (size 1.016 1.016)))
+        )
+      )
+      (pin input line (at -15.24 2.54 0) (length 5.08)
+        (name "CSB"
+          (effects (font (size 1.016 1.016)))
+        )
+        (number "2"
+          (effects (font (size 1.016 1.016)))
+        )
+      )
+      (pin bidirectional line (at -15.24 -5.08 0) (length 5.08)
+        (name "SDO"
+          (effects (font (size 1.016 1.016)))
+        )
+        (number "5"
+          (effects (font (size 1.016 1.016)))
+        )
+      )
+      (pin bidirectional line (at -15.24 -2.54 0) (length 5.08)
+        (name "SDI"
+          (effects (font (size 1.016 1.016)))
+        )
+        (number "3"
+          (effects (font (size 1.016 1.016)))
+        )
+      )
+      (pin input clock (at -15.24 0.0 0) (length 5.08)
+        (name "SCK"
+          (effects (font (size 1.016 1.016)))
+        )
+        (number "4"
+          (effects (font (size 1.016 1.016)))
+        )
+      )
+    )
+  )
+	)
+
+	(symbol
+		(lib_id "BME280")
+		(at 200.0 100.0 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "bcf77dd8-1f0b-4dbd-84bc-c9007fc2d00a")
+		(property "Reference" "U3"
+			(at 200.0 97.46 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "BME280"
+			(at 200.0 102.54 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 200.0 100.0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 200.0 100.0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "b6df8732-30e8-4a3e-8bd7-a9e75e6b929f")
+		)
+		(pin "2"
+			(uuid "80d7732d-039a-49ad-93d3-d87108ed9281")
+		)
+		(pin "3"
+			(uuid "7beef6b2-a01e-434c-a3fc-086d533f79a8")
+		)
+		(pin "4"
+			(uuid "3e0f0faf-2273-4d40-9d16-2b025c113e8b")
+		)
+		(pin "5"
+			(uuid "0bf9e0c8-d565-45e0-99ce-db1154c1d1f4")
+		)
+		(pin "6"
+			(uuid "b39e0885-ee53-4a26-9ed4-f606a48ea372")
+		)
+		(pin "7"
+			(uuid "9e05047d-644e-4403-8be5-a0b04828e93d")
+		)
+		(pin "8"
+			(uuid "b7fcd3cd-0cbb-4721-9eca-de77c9a07da3")
+		)
+	)
+	(wire
+		(pts
+			(xy 215.24 110.16) (xy 222.86 110.16)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "46b9e97e-aa17-4db9-9bff-575bfa7adc8e")
+	)
+	(label "GND"
+		(at 222.86 110.16 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "762eee61-ebac-427a-8a02-673faea23c81")
+	)
+	(wire
+		(pts
+			(xy 184.76 97.46) (xy 177.14 97.46)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "81ecef42-b53d-416c-a338-c3138da4906f")
+	)
+	(hierarchical_label "3V3"
+		(shape bidirectional)
+		(at 177.14 97.46 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "56c0c64d-27d9-4739-abd7-2fa4a5052c84")
+	)
+	(wire
+		(pts
+			(xy 184.76 102.54) (xy 177.14 102.54)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e7b9236e-8b76-43b5-a69d-9caefb52473b")
+	)
+	(hierarchical_label "SDA_BUS"
+		(shape bidirectional)
+		(at 177.14 102.54 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "e668ff35-01fb-4b0d-a6d8-4c670049ee35")
+	)
+	(wire
+		(pts
+			(xy 184.76 100.0) (xy 177.14 100.0)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "38262fea-44a8-408a-9b74-2dbc3f61d628")
+	)
+	(hierarchical_label "SCL_BUS"
+		(shape bidirectional)
+		(at 177.14 100.0 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "b86e2bdd-f17d-4ec4-aae7-f5cad90a8229")
+	)
+	(wire
+		(pts
+			(xy 184.76 105.08) (xy 177.14 105.08)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "921a2b99-4f05-4ac6-bcaf-1a6cec5b4c41")
+	)
+	(label "SDO_ADDR"
+		(at 177.14 105.08 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "9ea0f092-29b0-4f9b-b102-3bd026432efc")
+	)
+	(wire
+		(pts
+			(xy 215.24 89.84) (xy 222.86 89.84)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "47645185-ae2f-458b-97d0-1541c232e785")
+	)
+	(hierarchical_label "3V3"
+		(shape bidirectional)
+		(at 222.86 89.84 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "ca05f6f8-71e1-43e2-9bf0-b65034c92783")
+	)
+	(wire
+		(pts
+			(xy 215.24 92.38) (xy 222.86 92.38)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "630ea76a-7271-477d-b7d2-c0eec2073b10")
+	)
+	(hierarchical_label "3V3"
+		(shape bidirectional)
+		(at 222.86 92.38 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "97b52d63-a9f7-4111-b15f-911ddfa85a3b")
+	)
+	(symbol
+		(lib_id "Capacitor")
+		(at 80.0 35.0 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "856ad02c-a51b-4001-9214-bf46e19336c8")
+		(property "Reference" "C9"
+			(at 80.0 32.46 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "0.1uF"
+			(at 80.0 37.54 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 80.0 35.0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 80.0 35.0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "fc3b3c49-42c0-4f39-a0cd-540f14883c7e")
+		)
+		(pin "2"
+			(uuid "823b1ee3-e728-4f03-99d7-95e6ad2bf1ba")
+		)
+	)
+	(wire
+		(pts
+			(xy 83.81 35.0) (xy 91.43 35.0)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a9f3b03b-b0ec-4fcf-b1e7-6f484cab2fdc")
+	)
+	(hierarchical_label "3V3"
+		(shape bidirectional)
+		(at 91.43 35.0 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "ec31da35-ae97-4ea7-8349-81ab68d6e598")
+	)
+	(wire
+		(pts
+			(xy 76.19 35.0) (xy 68.57 35.0)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d3268846-1290-4d05-b4fd-9548ddd4b932")
+	)
+	(label "GND"
+		(at 68.57 35.0 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "8061b64c-d0d2-408b-b00c-28546b2ae1a1")
+	)
+	(symbol
+		(lib_id "Capacitor")
+		(at 80.0 50.24 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "31e4d1f2-c5d8-4950-a3fe-cc152e31acd0")
+		(property "Reference" "C10"
+			(at 80.0 47.7 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "0.1uF"
+			(at 80.0 52.78 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 80.0 50.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 80.0 50.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "27368b8a-dbaf-49ac-8eaa-6ecf24d087b4")
+		)
+		(pin "2"
+			(uuid "835af1e7-4fa2-4ff2-b667-7f85b849b364")
+		)
+	)
+	(wire
+		(pts
+			(xy 83.81 50.24) (xy 91.43 50.24)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f5198a8a-2a07-4c23-8755-62eb03096f5f")
+	)
+	(hierarchical_label "3V3"
+		(shape bidirectional)
+		(at 91.43 50.24 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "cdb3d727-37c5-4978-8ecf-097fe77da174")
+	)
+	(wire
+		(pts
+			(xy 76.19 50.24) (xy 68.57 50.24)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5f4557bc-d6c5-4d6a-a9be-45d24a098966")
+	)
+	(label "GND"
+		(at 68.57 50.24 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "080efb85-2356-41b5-abdf-21426b54ca77")
+	)
+)

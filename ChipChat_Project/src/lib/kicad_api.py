@@ -1,8 +1,25 @@
+import re
 import uuid
 import os
 
 # Set a default path for the symbol library. This can be changed in the main script.
 DEFAULT_SYMBOL_PATH = "/Users/matthewgerges/Documents/AI-PCB/ChipChat_Gemini/KICAD_Library/Symbols/"
+
+# KiCad 10 fields that KiCad 9 doesn't understand — stripped during embedding.
+# Each pattern matches an entire line (leading whitespace through newline).
+_V10_ONLY_PATTERNS = [
+    re.compile(r'^[ \t]*\(in_pos_files\s+(yes|no)\)[ \t]*\n', re.MULTILINE),
+    re.compile(r'^[ \t]*\(duplicate_pin_numbers_are_jumpers\s+(yes|no)\)[ \t]*\n', re.MULTILINE),
+    re.compile(r'^[ \t]*\(show_name\s+(yes|no)\)[ \t]*\n', re.MULTILINE),
+    re.compile(r'^[ \t]*\(do_not_autoplace\s+(yes|no)\)[ \t]*\n', re.MULTILINE),
+]
+
+
+def _sanitize_v10_symbol(symbol_def):
+    """Strip KiCad-10-only S-expression fields so the symbol loads in KiCad 9."""
+    for pat in _V10_ONLY_PATTERNS:
+        symbol_def = pat.sub('', symbol_def)
+    return symbol_def
 
 def create_schematic_data(project_name, sheet_uuid):
     """Initializes a new schematic data structure."""
@@ -54,6 +71,7 @@ def embed_symbol_from_file(schematic_data, symbol_name, library_path=None):
         return None
     lib_id, symbol_definition = _extract_symbol_from_lib(content)
     if lib_id and symbol_definition:
+        symbol_definition = _sanitize_v10_symbol(symbol_definition)
         schematic_data["lib_symbols"].append(symbol_definition)
         print(f"Embedded symbol '{lib_id}' from {symbol_filepath}")
         return lib_id

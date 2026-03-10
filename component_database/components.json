@@ -109,7 +109,14 @@
         }
       }
     ],
-    "datasheet": "https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bme280-ds002.pdf"
+    "datasheet": "https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bme280-ds002.pdf",
+    "design_notes": {
+      "interface_config": "For I2C mode: connect CSB (pin 2) to VDDIO. For SPI mode: drive CSB low to select.",
+      "address_select": "SDO (pin 5) sets I2C address: connect to GND for 0x76, connect to VDDIO for 0x77.",
+      "required_passives": "0.1uF decoupling cap on VDD (pin 8) to GND. 0.1uF decoupling cap on VDDIO (pin 6) to GND.",
+      "typical_application": "VDD and VDDIO both connect to 3.3V rail. I2C pull-ups (4.7K) on SDA and SCL to VDDIO. Optional 0R series resistors on SDA/SCL for debug isolation.",
+      "critical_notes": "VDD is core power, VDDIO is I/O power — both must be in range 1.71-3.6V. GND pins 1 and 7 must both be connected."
+    }
   },
   "USB_C_Receptacle_USB2.0_16P": {
     "name": "USB_C_Receptacle_USB2.0_16P",
@@ -276,7 +283,14 @@
         }
       }
     ],
-    "datasheet": "https://www.usb.org/sites/default/files/documents/usb_type-c.zip"
+    "datasheet": "https://www.usb.org/sites/default/files/documents/usb_type-c.zip",
+    "design_notes": {
+      "cc_resistors": "For USB-C sink (device) mode: 5.1K pull-down resistor from CC1 to GND and 5.1K from CC2 to GND. Required for host to detect device and supply power.",
+      "best_practices": "Place a ferrite bead between VBUS and system 5V rail to filter high-frequency noise. Add TVS diodes on D+, D-, CC1, CC2, and VBUS for ESD protection. Add bulk capacitor (4.7-10uF) and decoupling cap (0.1uF) on VBUS after ferrite bead.",
+      "data_lines": "D+ and D- pairs (A6/B6 and A7/B7) should be tied together for USB 2.0. Route as differential pair if possible.",
+      "unused_pins": "SBU1 (A8) and SBU2 (B8) are unused in USB 2.0 — leave unconnected or tie to GND.",
+      "critical_notes": "A12 and B12 GND pins exist on some footprints — connect to GND if present. SHIELD (S1) should connect to GND, optionally through a 1M resistor + 4.7nF cap for chassis ground isolation."
+    }
   },
   "TPS628438DRL": {
     "name": "TPS628438DRL",
@@ -373,7 +387,15 @@
         }
       }
     ],
-    "datasheet": "https://www.ti.com/lit/ds/symlink/tps62843.pdf"
+    "datasheet": "https://www.ti.com/lit/ds/symlink/tps62843.pdf",
+    "design_notes": {
+      "vset_config": "VSET (pin 3) sets output voltage via resistor to GND. Resistor values: 249K -> 3.3V, 499K -> 2.5V, 1M -> 1.8V, VSET tied to GND -> 3.6V (max). For 3.3V output, use 249K resistor from VSET to GND.",
+      "recommended_inductor": "1.0uH inductor on SW pin (datasheet typical application). Connect SW (pin 5) through inductor to VOS (pin 6).",
+      "required_passives": "Input: 4.7uF + 0.1uF ceramic caps from VIN (pin 2) to GND. Output: 4.7uF ceramic cap from VOS (pin 6) to GND.",
+      "enable_pin": "EN (pin 4) must be pulled high to enable the converter. Typically connect to VIN for always-on operation.",
+      "typical_application": "VIN <- 5V input with decoupling caps. EN tied to VIN. VSET through 249K resistor to GND for 3.3V. SW through 1.0uH inductor to VOS. VOS is 3.3V output with output cap to GND.",
+      "critical_notes": "The inductor connects between SW and VOS — not between VIN and SW. VOS is both the output pin and the feedback sense pin."
+    }
   },
   "MCP2221A-I_SL": {
     "name": "MCP2221A-I_SL",
@@ -551,6 +573,14 @@
         }
       }
     ],
-    "datasheet": ""
+    "datasheet": "https://ww1.microchip.com/downloads/en/DeviceDoc/MCP2221A-Data-Sheet-DS20005565E.pdf",
+    "design_notes": {
+      "power_rails": "This IC has TWO separate power pins with DIFFERENT voltage requirements. VDD (pin 1) = 3.0-3.6V, this is the LOGIC power supply that sets I2C and GPIO voltage levels. VUSB (pin 11) = 4.75-5.25V, this is the USB transceiver power. These are DIFFERENT rails — do NOT swap them.",
+      "required_passives": "0.1uF decoupling cap on VDD (pin 1) to GND. 1uF bulk cap on VDD to GND. 0.47uF decoupling cap on VUSB (pin 11) to GND.",
+      "reset_pin": "RST (pin 4) is active-low. Connect 10K pull-up resistor from RST to VDD for normal operation.",
+      "i2c_bus": "SDA (pin 9) and SCL (pin 10) are open-drain I2C lines. Voltage level is set by VDD. Pull-up resistors (4.7K) should go to VDD (3.3V), NOT to VUSB (5V).",
+      "typical_application": "VDD connects to 3.3V rail. VUSB connects to 5V USB power rail. D- (pin 12) and D+ (pin 13) connect to USB connector data lines. SDA and SCL connect to I2C peripherals with 4.7K pull-ups to VDD.",
+      "critical_notes": "FATAL ERROR if VDD and VUSB are swapped: putting 5V on VDD will damage the IC or connected I2C devices. Putting 3.3V on VUSB will prevent USB communication. VDD sets I2C voltage levels — if BME280 runs at 3.3V, VDD must be 3.3V."
+    }
   }
 }

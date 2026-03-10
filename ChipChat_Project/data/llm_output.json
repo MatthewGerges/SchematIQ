@@ -1,24 +1,24 @@
 {
-  "project_name": "BME280_Tester_NoMCU",
-  "description": "PCB for testing BME280 humidity sensor via USB-to-I2C bridge, no MCU.",
+  "project_name": "USB_C_BME280_Sensor_Board",
+  "description": "USB-C powered board for BME280 temperature, humidity, and pressure sensing via I2C using MCP2221A bridge and TPS628438DRL buck converter.",
   "sheets": [
     {
-      "name": "USB_C_Connector",
+      "name": "USB-C Connector",
       "file": "USB_C_Connector.kicad_sch",
       "page": 1
     },
     {
-      "name": "Power_Supply",
-      "file": "Power_Supply.kicad_sch",
+      "name": "Power Supply (3.3V Buck)",
+      "file": "Power_Supply_3V3.kicad_sch",
       "page": 2
     },
     {
-      "name": "USB_to_I2C_Bridge",
+      "name": "USB-to-I2C Bridge",
       "file": "USB_to_I2C_Bridge.kicad_sch",
       "page": 3
     },
     {
-      "name": "BME280_Sensor",
+      "name": "BME280 Sensor",
       "file": "BME280_Sensor.kicad_sch",
       "page": 4
     }
@@ -27,8 +27,8 @@
     {
       "ref": "J1",
       "part": "USB_C_Receptacle_USB2.0_16P",
-      "sheet": "USB_C_Connector",
-      "note": "USB-C connector for power and data",
+      "sheet": "USB-C Connector",
+      "note": "USB 2.0 Type-C receptacle with CC pull-downs, VBUS filtering, and decoupling.",
       "connections": [
         {
           "pin": "A1",
@@ -38,27 +38,27 @@
         {
           "pin": "A4",
           "pin_name": "VBUS+",
-          "net": "VBUS_5V"
+          "net": "USB_5V"
         },
         {
           "pin": "A5",
           "pin_name": "CC1",
-          "net": "USB_CC1"
+          "net": "CC1"
         },
         {
           "pin": "A6",
           "pin_name": "D+",
-          "net": "USB_DP"
+          "net": "USB_D_P"
         },
         {
           "pin": "A7",
           "pin_name": "D-",
-          "net": "USB_DM"
+          "net": "USB_D_M"
         },
         {
           "pin": "A8",
           "pin_name": "SBU1",
-          "net": "UNCONNECTED"
+          "net": "NC_SBU1"
         },
         {
           "pin": "B1",
@@ -68,27 +68,27 @@
         {
           "pin": "B4",
           "pin_name": "VBUS+",
-          "net": "VBUS_5V"
+          "net": "USB_5V"
         },
         {
           "pin": "B5",
           "pin_name": "CC2",
-          "net": "USB_CC2"
+          "net": "CC2"
         },
         {
           "pin": "B6",
           "pin_name": "D+",
-          "net": "USB_DP"
+          "net": "USB_D_P"
         },
         {
           "pin": "B7",
           "pin_name": "D-",
-          "net": "USB_DM"
+          "net": "USB_D_M"
         },
         {
           "pin": "B8",
           "pin_name": "SBU2",
-          "net": "UNCONNECTED"
+          "net": "NC_SBU2"
         },
         {
           "pin": "S1",
@@ -100,8 +100,8 @@
     {
       "ref": "U1",
       "part": "TPS628438DRL",
-      "sheet": "Power_Supply",
-      "note": "600mA Step-Down Converter (5V to 3.3V)",
+      "sheet": "Power Supply (3.3V Buck)",
+      "note": "600mA Step-Down Converter providing 3.3V from USB 5V.",
       "connections": [
         {
           "pin": "1",
@@ -111,17 +111,17 @@
         {
           "pin": "2",
           "pin_name": "VIN",
-          "net": "VBUS_5V"
+          "net": "VBUS_CLEAN"
         },
         {
           "pin": "3",
           "pin_name": "VSET",
-          "net": "VBUS_5V"
+          "net": "VSET_3V3"
         },
         {
           "pin": "4",
           "pin_name": "EN",
-          "net": "VBUS_5V"
+          "net": "VBUS_CLEAN"
         },
         {
           "pin": "5",
@@ -131,80 +131,80 @@
         {
           "pin": "6",
           "pin_name": "VOS",
-          "net": "VCC_3V3"
+          "net": "3V3"
         }
       ]
     },
     {
       "ref": "U2",
       "part": "MCP2221A-I_SL",
-      "sheet": "USB_to_I2C_Bridge",
-      "note": "USB to I2C/UART Bridge",
+      "sheet": "USB-to-I2C Bridge",
+      "note": "USB to I2C bridge IC, connecting USB data to I2C bus and powered by 3.3V/5V.",
       "connections": [
         {
           "pin": "1",
           "pin_name": "VDD",
-          "net": "VCC_3V3"
+          "net": "3V3"
         },
         {
           "pin": "2",
           "pin_name": "GP0",
-          "net": "UNCONNECTED"
+          "net": "NC_GP0"
         },
         {
           "pin": "3",
           "pin_name": "GP1",
-          "net": "UNCONNECTED"
+          "net": "NC_GP1"
         },
         {
           "pin": "4",
           "pin_name": "RST",
-          "net": "MCP2221A_RST"
+          "net": "RST_N"
         },
         {
           "pin": "5",
           "pin_name": "URX",
-          "net": "UNCONNECTED"
+          "net": "NC_URX"
         },
         {
           "pin": "6",
           "pin_name": "UTX",
-          "net": "UNCONNECTED"
+          "net": "NC_UTX"
         },
         {
           "pin": "7",
           "pin_name": "GP2",
-          "net": "UNCONNECTED"
+          "net": "NC_GP2"
         },
         {
           "pin": "8",
           "pin_name": "GP3",
-          "net": "UNCONNECTED"
+          "net": "NC_GP3"
         },
         {
           "pin": "9",
           "pin_name": "SDA",
-          "net": "I2C_SDA"
+          "net": "SDA_BUS"
         },
         {
           "pin": "10",
           "pin_name": "SCL",
-          "net": "I2C_SCL"
+          "net": "SCL_BUS"
         },
         {
           "pin": "11",
           "pin_name": "VUSB",
-          "net": "VBUS_5V"
+          "net": "VBUS_CLEAN"
         },
         {
           "pin": "12",
           "pin_name": "D-",
-          "net": "USB_DM"
+          "net": "USB_D_M"
         },
         {
           "pin": "13",
           "pin_name": "D+",
-          "net": "USB_DP"
+          "net": "USB_D_P"
         },
         {
           "pin": "14",
@@ -216,8 +216,8 @@
     {
       "ref": "U3",
       "part": "BME280",
-      "sheet": "BME280_Sensor",
-      "note": "Humidity, Pressure, Temperature Sensor",
+      "sheet": "BME280 Sensor",
+      "note": "Temperature, Humidity, Pressure sensor connected via I2C to 3.3V supply.",
       "connections": [
         {
           "pin": "1",
@@ -227,27 +227,27 @@
         {
           "pin": "2",
           "pin_name": "CSB",
-          "net": "VCC_3V3"
+          "net": "3V3"
         },
         {
           "pin": "3",
           "pin_name": "SDI",
-          "net": "I2C_SDA"
+          "net": "SDA_BUS"
         },
         {
           "pin": "4",
           "pin_name": "SCK",
-          "net": "I2C_SCL"
+          "net": "SCL_BUS"
         },
         {
           "pin": "5",
           "pin_name": "SDO",
-          "net": "GND"
+          "net": "SDO_ADDR"
         },
         {
           "pin": "6",
           "pin_name": "VDDIO",
-          "net": "VCC_3V3"
+          "net": "3V3"
         },
         {
           "pin": "7",
@@ -257,7 +257,7 @@
         {
           "pin": "8",
           "pin_name": "VDD",
-          "net": "VCC_3V3"
+          "net": "3V3"
         }
       ]
     }
@@ -267,12 +267,12 @@
       "ref": "R1",
       "type": "R",
       "value": "5.1K",
-      "sheet": "USB_C_Connector",
+      "sheet": "USB-C Connector",
       "purpose": "CC1 pull-down for USB-C sink detection",
       "connections": [
         {
           "pin": "1",
-          "net": "USB_CC1"
+          "net": "CC1"
         },
         {
           "pin": "2",
@@ -284,12 +284,80 @@
       "ref": "R2",
       "type": "R",
       "value": "5.1K",
-      "sheet": "USB_C_Connector",
+      "sheet": "USB-C Connector",
       "purpose": "CC2 pull-down for USB-C sink detection",
       "connections": [
         {
           "pin": "1",
-          "net": "USB_CC2"
+          "net": "CC2"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "FB1",
+      "type": "FB",
+      "value": "600R@100MHz",
+      "sheet": "USB-C Connector",
+      "purpose": "Ferrite bead for VBUS noise filtering",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "USB_5V"
+        },
+        {
+          "pin": "2",
+          "net": "VBUS_CLEAN"
+        }
+      ]
+    },
+    {
+      "ref": "C1",
+      "type": "C",
+      "value": "4.7uF",
+      "sheet": "USB-C Connector",
+      "purpose": "Bulk capacitance for VBUS_CLEAN",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VBUS_CLEAN"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C2",
+      "type": "C",
+      "value": "0.1uF",
+      "sheet": "USB-C Connector",
+      "purpose": "Decoupling capacitance for VBUS_CLEAN",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VBUS_CLEAN"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "R3",
+      "type": "R",
+      "value": "249K",
+      "sheet": "Power Supply (3.3V Buck)",
+      "purpose": "VSET resistor for 3.3V output",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VSET_3V3"
         },
         {
           "pin": "2",
@@ -301,12 +369,12 @@
       "ref": "C3",
       "type": "C",
       "value": "4.7uF",
-      "sheet": "Power_Supply",
-      "purpose": "Input decoupling for U1",
+      "sheet": "Power Supply (3.3V Buck)",
+      "purpose": "Input bulk capacitor for VIN",
       "connections": [
         {
           "pin": "1",
-          "net": "VBUS_5V"
+          "net": "VBUS_CLEAN"
         },
         {
           "pin": "2",
@@ -318,12 +386,12 @@
       "ref": "C4",
       "type": "C",
       "value": "0.1uF",
-      "sheet": "Power_Supply",
-      "purpose": "High-frequency input decoupling for U1",
+      "sheet": "Power Supply (3.3V Buck)",
+      "purpose": "Input decoupling capacitor for VIN",
       "connections": [
         {
           "pin": "1",
-          "net": "VBUS_5V"
+          "net": "VBUS_CLEAN"
         },
         {
           "pin": "2",
@@ -334,9 +402,9 @@
     {
       "ref": "L1",
       "type": "L",
-      "value": "2.2uH",
-      "sheet": "Power_Supply",
-      "purpose": "Buck converter inductor",
+      "value": "1.0uH",
+      "sheet": "Power Supply (3.3V Buck)",
+      "purpose": "Switching inductor for buck converter",
       "connections": [
         {
           "pin": "1",
@@ -344,105 +412,20 @@
         },
         {
           "pin": "2",
-          "net": "VCC_3V3"
+          "net": "3V3"
         }
       ]
     },
     {
       "ref": "C5",
       "type": "C",
-      "value": "10uF",
-      "sheet": "Power_Supply",
-      "purpose": "Output smoothing for U1",
+      "value": "4.7uF",
+      "sheet": "Power Supply (3.3V Buck)",
+      "purpose": "Output bulk capacitor for 3.3V",
       "connections": [
         {
           "pin": "1",
-          "net": "VCC_3V3"
-        },
-        {
-          "pin": "2",
-          "net": "GND"
-        }
-      ]
-    },
-    {
-      "ref": "C6",
-      "type": "C",
-      "value": "0.1uF",
-      "sheet": "Power_Supply",
-      "purpose": "High-frequency output decoupling for U1",
-      "connections": [
-        {
-          "pin": "1",
-          "net": "VCC_3V3"
-        },
-        {
-          "pin": "2",
-          "net": "GND"
-        }
-      ]
-    },
-    {
-      "ref": "C7",
-      "type": "C",
-      "value": "0.1uF",
-      "sheet": "USB_to_I2C_Bridge",
-      "purpose": "VDD decoupling for U2",
-      "connections": [
-        {
-          "pin": "1",
-          "net": "VCC_3V3"
-        },
-        {
-          "pin": "2",
-          "net": "GND"
-        }
-      ]
-    },
-    {
-      "ref": "C8",
-      "type": "C",
-      "value": "0.1uF",
-      "sheet": "USB_to_I2C_Bridge",
-      "purpose": "VUSB decoupling for U2",
-      "connections": [
-        {
-          "pin": "1",
-          "net": "VBUS_5V"
-        },
-        {
-          "pin": "2",
-          "net": "GND"
-        }
-      ]
-    },
-    {
-      "ref": "R3",
-      "type": "R",
-      "value": "10K",
-      "sheet": "USB_to_I2C_Bridge",
-      "purpose": "RST pull-up for U2",
-      "connections": [
-        {
-          "pin": "1",
-          "net": "VCC_3V3"
-        },
-        {
-          "pin": "2",
-          "net": "MCP2221A_RST"
-        }
-      ]
-    },
-    {
-      "ref": "C9",
-      "type": "C",
-      "value": "0.1uF",
-      "sheet": "USB_to_I2C_Bridge",
-      "purpose": "RST capacitor for U2 power-on reset",
-      "connections": [
-        {
-          "pin": "1",
-          "net": "MCP2221A_RST"
+          "net": "3V3"
         },
         {
           "pin": "2",
@@ -453,17 +436,17 @@
     {
       "ref": "R4",
       "type": "R",
-      "value": "4.7K",
-      "sheet": "USB_to_I2C_Bridge",
-      "purpose": "I2C SDA pull-up resistor",
+      "value": "10K",
+      "sheet": "USB-to-I2C Bridge",
+      "purpose": "RST pin pull-up resistor",
       "connections": [
         {
           "pin": "1",
-          "net": "VCC_3V3"
+          "net": "RST_N"
         },
         {
           "pin": "2",
-          "net": "I2C_SDA"
+          "net": "3V3"
         }
       ]
     },
@@ -471,29 +454,46 @@
       "ref": "R5",
       "type": "R",
       "value": "4.7K",
-      "sheet": "USB_to_I2C_Bridge",
-      "purpose": "I2C SCL pull-up resistor",
+      "sheet": "USB-to-I2C Bridge",
+      "purpose": "I2C SDA pull-up resistor",
       "connections": [
         {
           "pin": "1",
-          "net": "VCC_3V3"
+          "net": "SDA_BUS"
         },
         {
           "pin": "2",
-          "net": "I2C_SCL"
+          "net": "3V3"
         }
       ]
     },
     {
-      "ref": "C10",
-      "type": "C",
-      "value": "0.1uF",
-      "sheet": "BME280_Sensor",
-      "purpose": "VDD decoupling for U3",
+      "ref": "R6",
+      "type": "R",
+      "value": "4.7K",
+      "sheet": "USB-to-I2C Bridge",
+      "purpose": "I2C SCL pull-up resistor",
       "connections": [
         {
           "pin": "1",
-          "net": "VCC_3V3"
+          "net": "SCL_BUS"
+        },
+        {
+          "pin": "2",
+          "net": "3V3"
+        }
+      ]
+    },
+    {
+      "ref": "C6",
+      "type": "C",
+      "value": "0.1uF",
+      "sheet": "USB-to-I2C Bridge",
+      "purpose": "VDD decoupling capacitor",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "3V3"
         },
         {
           "pin": "2",
@@ -502,15 +502,66 @@
       ]
     },
     {
-      "ref": "C11",
+      "ref": "C7",
       "type": "C",
-      "value": "0.1uF",
-      "sheet": "BME280_Sensor",
-      "purpose": "VDDIO decoupling for U3",
+      "value": "1uF",
+      "sheet": "USB-to-I2C Bridge",
+      "purpose": "VDD bulk capacitor",
       "connections": [
         {
           "pin": "1",
-          "net": "VCC_3V3"
+          "net": "3V3"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C8",
+      "type": "C",
+      "value": "0.47uF",
+      "sheet": "USB-to-I2C Bridge",
+      "purpose": "VUSB decoupling capacitor",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VBUS_CLEAN"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C9",
+      "type": "C",
+      "value": "0.1uF",
+      "sheet": "BME280 Sensor",
+      "purpose": "VDD decoupling capacitor",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "3V3"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C10",
+      "type": "C",
+      "value": "0.1uF",
+      "sheet": "BME280 Sensor",
+      "purpose": "VDDIO decoupling capacitor",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "3V3"
         },
         {
           "pin": "2",
@@ -521,65 +572,81 @@
   ],
   "nets": [
     {
-      "name": "VBUS_5V",
-      "type": "hierarchical",
-      "sheet": "USB_C_Connector",
-      "connections": [
-        {
-          "ref": "J1",
-          "pin": "A4",
-          "pin_name": "VBUS+"
-        },
-        {
-          "ref": "J1",
-          "pin": "B4",
-          "pin_name": "VBUS+"
-        }
-      ]
-    },
-    {
-      "name": "USB_DP",
-      "type": "hierarchical",
-      "sheet": "USB_C_Connector",
-      "connections": [
-        {
-          "ref": "J1",
-          "pin": "A6",
-          "pin_name": "D+"
-        },
-        {
-          "ref": "J1",
-          "pin": "B6",
-          "pin_name": "D+"
-        }
-      ]
-    },
-    {
-      "name": "USB_DM",
-      "type": "hierarchical",
-      "sheet": "USB_C_Connector",
-      "connections": [
-        {
-          "ref": "J1",
-          "pin": "A7",
-          "pin_name": "D-"
-        },
-        {
-          "ref": "J1",
-          "pin": "B7",
-          "pin_name": "D-"
-        }
-      ]
-    },
-    {
-      "name": "USB_CC1",
+      "name": "USB_5V",
       "type": "local",
-      "sheet": "USB_C_Connector",
+      "sheet": "USB-C Connector",
       "connections": [
         {
           "ref": "J1",
-          "pin": "A5",
-          "pin_name": "CC1"
+          "pin": "A4"
+        },
+        {
+          "ref": "J1",
+          "pin": "B4"
+        },
+        {
+          "ref": "FB1",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "VBUS_CLEAN",
+      "type": "hierarchical",
+      "sheet": "USB-C Connector",
+      "connections": [
+        {
+          "ref": "FB1",
+          "pin": "2"
+        },
+        {
+          "ref": "C1",
+          "pin": "1"
+        },
+        {
+          "ref": "C2",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "USB_D_P",
+      "type": "hierarchical",
+      "sheet": "USB-C Connector",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "A6"
+        },
+        {
+          "ref": "J1",
+          "pin": "B6"
+        }
+      ]
+    },
+    {
+      "name": "USB_D_M",
+      "type": "hierarchical",
+      "sheet": "USB-C Connector",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "A7"
+        },
+        {
+          "ref": "J1",
+          "pin": "B7"
+        }
+      ]
+    },
+    {
+      "name": "CC1",
+      "type": "local",
+      "sheet": "USB-C Connector",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "A5"
         },
         {
           "ref": "R1",
@@ -588,14 +655,13 @@
       ]
     },
     {
-      "name": "USB_CC2",
+      "name": "CC2",
       "type": "local",
-      "sheet": "USB_C_Connector",
+      "sheet": "USB-C Connector",
       "connections": [
         {
           "ref": "J1",
-          "pin": "B5",
-          "pin_name": "CC2"
+          "pin": "B5"
         },
         {
           "ref": "R2",
@@ -604,31 +670,50 @@
       ]
     },
     {
-      "name": "UNCONNECTED",
+      "name": "NC_SBU1",
       "type": "local",
-      "sheet": "USB_C_Connector",
+      "sheet": "USB-C Connector",
       "connections": [
         {
           "ref": "J1",
-          "pin": "A8",
-          "pin_name": "SBU1"
-        },
+          "pin": "A8"
+        }
+      ]
+    },
+    {
+      "name": "NC_SBU2",
+      "type": "local",
+      "sheet": "USB-C Connector",
+      "connections": [
         {
           "ref": "J1",
-          "pin": "B8",
-          "pin_name": "SBU2"
+          "pin": "B8"
+        }
+      ]
+    },
+    {
+      "name": "VSET_3V3",
+      "type": "local",
+      "sheet": "Power Supply (3.3V Buck)",
+      "connections": [
+        {
+          "ref": "U1",
+          "pin": "3"
+        },
+        {
+          "ref": "R3",
+          "pin": "1"
         }
       ]
     },
     {
       "name": "SW_NODE",
       "type": "local",
-      "sheet": "Power_Supply",
+      "sheet": "Power Supply (3.3V Buck)",
       "connections": [
         {
           "ref": "U1",
-          "pin": "5",
-          "pin_name": "SW"
+          "pin": "5"
         },
         {
           "ref": "L1",
@@ -637,14 +722,13 @@
       ]
     },
     {
-      "name": "VCC_3V3",
+      "name": "3V3",
       "type": "hierarchical",
-      "sheet": "Power_Supply",
+      "sheet": "Power Supply (3.3V Buck)",
       "connections": [
         {
           "ref": "U1",
-          "pin": "6",
-          "pin_name": "VOS"
+          "pin": "6"
         },
         {
           "ref": "L1",
@@ -653,440 +737,128 @@
         {
           "ref": "C5",
           "pin": "1"
-        },
-        {
-          "ref": "C6",
-          "pin": "1"
         }
       ]
     },
     {
-      "name": "MCP2221A_RST",
+      "name": "RST_N",
       "type": "local",
-      "sheet": "USB_to_I2C_Bridge",
+      "sheet": "USB-to-I2C Bridge",
       "connections": [
         {
           "ref": "U2",
-          "pin": "4",
-          "pin_name": "RST"
+          "pin": "4"
         },
         {
-          "ref": "R3",
-          "pin": "2"
-        },
-        {
-          "ref": "C9",
+          "ref": "R4",
           "pin": "1"
         }
       ]
     },
     {
-      "name": "I2C_SDA",
+      "name": "SDA_BUS",
       "type": "hierarchical",
-      "sheet": "USB_to_I2C_Bridge",
+      "sheet": "USB-to-I2C Bridge",
       "connections": [
         {
           "ref": "U2",
-          "pin": "9",
-          "pin_name": "SDA"
-        },
-        {
-          "ref": "R4",
-          "pin": "2"
-        }
-      ]
-    },
-    {
-      "name": "I2C_SCL",
-      "type": "hierarchical",
-      "sheet": "USB_to_I2C_Bridge",
-      "connections": [
-        {
-          "ref": "U2",
-          "pin": "10",
-          "pin_name": "SCL"
+          "pin": "9"
         },
         {
           "ref": "R5",
-          "pin": "2"
+          "pin": "1"
         }
       ]
     },
     {
-      "name": "UNCONNECTED",
+      "name": "SCL_BUS",
+      "type": "hierarchical",
+      "sheet": "USB-to-I2C Bridge",
+      "connections": [
+        {
+          "ref": "U2",
+          "pin": "10"
+        },
+        {
+          "ref": "R6",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "NC_GP0",
       "type": "local",
-      "sheet": "USB_to_I2C_Bridge",
+      "sheet": "USB-to-I2C Bridge",
       "connections": [
         {
           "ref": "U2",
-          "pin": "2",
-          "pin_name": "GP0"
-        },
-        {
-          "ref": "U2",
-          "pin": "3",
-          "pin_name": "GP1"
-        },
-        {
-          "ref": "U2",
-          "pin": "5",
-          "pin_name": "URX"
-        },
-        {
-          "ref": "U2",
-          "pin": "6",
-          "pin_name": "UTX"
-        },
-        {
-          "ref": "U2",
-          "pin": "7",
-          "pin_name": "GP2"
-        },
-        {
-          "ref": "U2",
-          "pin": "8",
-          "pin_name": "GP3"
+          "pin": "2"
         }
       ]
     },
     {
-      "name": "VBUS_5V",
-      "type": "hierarchical",
+      "name": "NC_GP1",
+      "type": "local",
+      "sheet": "USB-to-I2C Bridge",
       "connections": [
         {
-          "ref": "J1",
-          "pin": "A4",
-          "pin_name": "VBUS+",
-          "sheet": "USB_C_Connector"
-        },
-        {
-          "ref": "J1",
-          "pin": "B4",
-          "pin_name": "VBUS+",
-          "sheet": "USB_C_Connector"
-        },
-        {
-          "ref": "U1",
-          "pin": "2",
-          "pin_name": "VIN",
-          "sheet": "Power_Supply"
-        },
-        {
-          "ref": "U1",
-          "pin": "3",
-          "pin_name": "VSET",
-          "sheet": "Power_Supply"
-        },
-        {
-          "ref": "U1",
-          "pin": "4",
-          "pin_name": "EN",
-          "sheet": "Power_Supply"
-        },
-        {
-          "ref": "C3",
-          "pin": "1",
-          "sheet": "Power_Supply"
-        },
-        {
-          "ref": "C4",
-          "pin": "1",
-          "sheet": "Power_Supply"
-        },
-        {
           "ref": "U2",
-          "pin": "11",
-          "pin_name": "VUSB",
-          "sheet": "USB_to_I2C_Bridge"
-        },
-        {
-          "ref": "C8",
-          "pin": "1",
-          "sheet": "USB_to_I2C_Bridge"
+          "pin": "3"
         }
       ]
     },
     {
-      "name": "VCC_3V3",
-      "type": "hierarchical",
+      "name": "NC_URX",
+      "type": "local",
+      "sheet": "USB-to-I2C Bridge",
       "connections": [
         {
-          "ref": "U1",
-          "pin": "6",
-          "pin_name": "VOS",
-          "sheet": "Power_Supply"
-        },
-        {
-          "ref": "L1",
-          "pin": "2",
-          "sheet": "Power_Supply"
-        },
-        {
-          "ref": "C5",
-          "pin": "1",
-          "sheet": "Power_Supply"
-        },
-        {
-          "ref": "C6",
-          "pin": "1",
-          "sheet": "Power_Supply"
-        },
-        {
           "ref": "U2",
-          "pin": "1",
-          "pin_name": "VDD",
-          "sheet": "USB_to_I2C_Bridge"
-        },
-        {
-          "ref": "C7",
-          "pin": "1",
-          "sheet": "USB_to_I2C_Bridge"
-        },
-        {
-          "ref": "R3",
-          "pin": "1",
-          "sheet": "USB_to_I2C_Bridge"
-        },
-        {
-          "ref": "R4",
-          "pin": "1",
-          "sheet": "USB_to_I2C_Bridge"
-        },
-        {
-          "ref": "R5",
-          "pin": "1",
-          "sheet": "USB_to_I2C_Bridge"
-        },
-        {
-          "ref": "U3",
-          "pin": "2",
-          "pin_name": "CSB",
-          "sheet": "BME280_Sensor"
-        },
-        {
-          "ref": "U3",
-          "pin": "6",
-          "pin_name": "VDDIO",
-          "sheet": "BME280_Sensor"
-        },
-        {
-          "ref": "U3",
-          "pin": "8",
-          "pin_name": "VDD",
-          "sheet": "BME280_Sensor"
-        },
-        {
-          "ref": "C10",
-          "pin": "1",
-          "sheet": "BME280_Sensor"
-        },
-        {
-          "ref": "C11",
-          "pin": "1",
-          "sheet": "BME280_Sensor"
+          "pin": "5"
         }
       ]
     },
     {
-      "name": "USB_DP",
-      "type": "hierarchical",
+      "name": "NC_UTX",
+      "type": "local",
+      "sheet": "USB-to-I2C Bridge",
       "connections": [
         {
-          "ref": "J1",
-          "pin": "A6",
-          "pin_name": "D+",
-          "sheet": "USB_C_Connector"
-        },
-        {
-          "ref": "J1",
-          "pin": "B6",
-          "pin_name": "D+",
-          "sheet": "USB_C_Connector"
-        },
-        {
           "ref": "U2",
-          "pin": "13",
-          "pin_name": "D+",
-          "sheet": "USB_to_I2C_Bridge"
+          "pin": "6"
         }
       ]
     },
     {
-      "name": "USB_DM",
-      "type": "hierarchical",
+      "name": "NC_GP2",
+      "type": "local",
+      "sheet": "USB-to-I2C Bridge",
       "connections": [
         {
-          "ref": "J1",
-          "pin": "A7",
-          "pin_name": "D-",
-          "sheet": "USB_C_Connector"
-        },
-        {
-          "ref": "J1",
-          "pin": "B7",
-          "pin_name": "D-",
-          "sheet": "USB_C_Connector"
-        },
-        {
           "ref": "U2",
-          "pin": "12",
-          "pin_name": "D-",
-          "sheet": "USB_to_I2C_Bridge"
+          "pin": "7"
         }
       ]
     },
     {
-      "name": "I2C_SDA",
-      "type": "hierarchical",
+      "name": "NC_GP3",
+      "type": "local",
+      "sheet": "USB-to-I2C Bridge",
       "connections": [
         {
           "ref": "U2",
-          "pin": "9",
-          "pin_name": "SDA",
-          "sheet": "USB_to_I2C_Bridge"
-        },
-        {
-          "ref": "R4",
-          "pin": "2",
-          "sheet": "USB_to_I2C_Bridge"
-        },
-        {
-          "ref": "U3",
-          "pin": "3",
-          "pin_name": "SDI",
-          "sheet": "BME280_Sensor"
+          "pin": "8"
         }
       ]
     },
     {
-      "name": "I2C_SCL",
-      "type": "hierarchical",
+      "name": "SDO_ADDR",
+      "type": "local",
+      "sheet": "BME280 Sensor",
       "connections": [
         {
-          "ref": "U2",
-          "pin": "10",
-          "pin_name": "SCL",
-          "sheet": "USB_to_I2C_Bridge"
-        },
-        {
-          "ref": "R5",
-          "pin": "2",
-          "sheet": "USB_to_I2C_Bridge"
-        },
-        {
           "ref": "U3",
-          "pin": "4",
-          "pin_name": "SCK",
-          "sheet": "BME280_Sensor"
-        }
-      ]
-    },
-    {
-      "name": "GND",
-      "type": "global",
-      "connections": [
-        {
-          "ref": "J1",
-          "pin": "A1",
-          "pin_name": "GND",
-          "sheet": "USB_C_Connector"
-        },
-        {
-          "ref": "J1",
-          "pin": "B1",
-          "pin_name": "GND",
-          "sheet": "USB_C_Connector"
-        },
-        {
-          "ref": "J1",
-          "pin": "S1",
-          "pin_name": "SHIELD",
-          "sheet": "USB_C_Connector"
-        },
-        {
-          "ref": "R1",
-          "pin": "2",
-          "sheet": "USB_C_Connector"
-        },
-        {
-          "ref": "R2",
-          "pin": "2",
-          "sheet": "USB_C_Connector"
-        },
-        {
-          "ref": "U1",
-          "pin": "1",
-          "pin_name": "GND",
-          "sheet": "Power_Supply"
-        },
-        {
-          "ref": "C3",
-          "pin": "2",
-          "sheet": "Power_Supply"
-        },
-        {
-          "ref": "C4",
-          "pin": "2",
-          "sheet": "Power_Supply"
-        },
-        {
-          "ref": "C5",
-          "pin": "2",
-          "sheet": "Power_Supply"
-        },
-        {
-          "ref": "C6",
-          "pin": "2",
-          "sheet": "Power_Supply"
-        },
-        {
-          "ref": "U2",
-          "pin": "14",
-          "pin_name": "VSS",
-          "sheet": "USB_to_I2C_Bridge"
-        },
-        {
-          "ref": "C7",
-          "pin": "2",
-          "sheet": "USB_to_I2C_Bridge"
-        },
-        {
-          "ref": "C8",
-          "pin": "2",
-          "sheet": "USB_to_I2C_Bridge"
-        },
-        {
-          "ref": "C9",
-          "pin": "2",
-          "sheet": "USB_to_I2C_Bridge"
-        },
-        {
-          "ref": "U3",
-          "pin": "1",
-          "pin_name": "GND",
-          "sheet": "BME280_Sensor"
-        },
-        {
-          "ref": "U3",
-          "pin": "5",
-          "pin_name": "SDO",
-          "sheet": "BME280_Sensor"
-        },
-        {
-          "ref": "U3",
-          "pin": "7",
-          "pin_name": "GND",
-          "sheet": "BME280_Sensor"
-        },
-        {
-          "ref": "C10",
-          "pin": "2",
-          "sheet": "BME280_Sensor"
-        },
-        {
-          "ref": "C11",
-          "pin": "2",
-          "sheet": "BME280_Sensor"
+          "pin": "5"
         }
       ]
     }

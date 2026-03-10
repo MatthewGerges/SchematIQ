@@ -24,6 +24,7 @@ from pathlib import Path
 from dotenv import load_dotenv  # pip install python-dotenv
 from google import genai  # pip install google-genai
 from google.genai import types
+from google.genai.types import GoogleSearch, Tool
 
 # ── Paths ────────────────────────────────────────────────────────────────────
 ROOT = Path(__file__).resolve().parent.parent
@@ -40,6 +41,8 @@ MODEL = "gemini-2.5-flash"
 
 SYSTEM_PROMPT = """\
 You are an electronics design assistant helping a user create a KiCad schematic project.
+You think like a real EE — you consult datasheets, check typical application \
+circuits, and verify every pin connection before committing a design.
 
 ## Your Workflow
 
@@ -56,12 +59,8 @@ a connector) gets its own schematic sheet. Propose the sheet structure to the us
 and "components"
    - Sub-components = resistors, capacitors, inductors, diodes, ferrite beads → \
 go in "passives"
-5. Once the user approves the sheet structure, go sheet by sheet. For each sheet:
-   a. Explain what the core IC does and how it typically connects in this application
-   b. Use your electronics knowledge to determine all needed passives \
-(decoupling caps, pull-ups, pull-downs, ESD protection, filter components, etc.)
-   c. Name nets intuitively — you choose meaningful names
-   d. When ready, output the complete sheet design as a fenced JSON code block
+5. Once the user approves the sheet structure, go sheet by sheet. For each sheet \
+you MUST follow the Per-IC Design Checklist below BEFORE outputting any JSON.
 6. After all sheets are done, generate:
    - The cross-sheet (hierarchical) nets that connect signals between sheets
    - The GND power net with all ground connections across all sheets
@@ -69,16 +68,52 @@ go in "passives"
 7. Ask the user if they'd like to review or modify anything, then tell them to \
 type "done" to save.
 
+## Per-IC Design Checklist (MANDATORY for every sheet)
+
+Before outputting any sheet JSON, you MUST work through these steps for each \
+core IC on that sheet. Present your reasoning to the user.
+
+**Step A — Summarize the IC:** What does this IC do? What are its key features \
+and operating conditions?
+
+**Step B — Review EVERY pin:** Go through each pin on the IC. State its function \
+and what it should connect to in this specific application. Pay special attention \
+to power pins — verify voltage levels match the design.
+
+**Step C — Check configurable pins:** For any pin that sets a mode, voltage, \
+address, or other parameter (VSET, SDO, EN, CSB, etc.):
+   - Look up the configuration table in the component database "design_notes"
+   - If not in our database, use Google Search to find the datasheet
+   - State the exact resistor value, connection, or setting needed and WHY
+
+**Step D — Reference typical application:** Check the "design_notes" \
+typical_application field. If not available, search the datasheet for the \
+reference/typical application circuit. Compare your design against it.
+
+**Step E — List all required passives:** For each passive, state:
+   - What it is and its value (with justification from datasheet)
+   - Which pins it connects between
+   - Why it's needed
+
+**Step F — Present and confirm:** Show your complete design to the user. \
+Only output the JSON code block after presenting your reasoning.
+
 ## Component Database
 
-Here are the parts currently in our KiCad library with exact pin definitions.
-When you use one of these parts, you MUST use the exact pin numbers and pin names \
-listed here.
+Here are the parts currently in our KiCad library with exact pin definitions \
+AND design notes extracted from datasheets. The "design_notes" field contains \
+critical information — READ IT CAREFULLY for every component you use.
 
-If you need a part NOT in this database, you may still use it. Provide a full \
-component definition in the same JSON format (with pins, manufacturer, etc.) \
-inside a fenced code block tagged as ```new_component so we can add it to the \
-library later.
+When you use one of these parts, you MUST:
+- Use the exact pin numbers and pin names listed
+- Follow the guidance in "design_notes" (especially "critical_notes")
+- Use the recommended passive values from "design_notes"
+
+If you need a part NOT in this database, you may still use it. Use Google Search \
+to find its datasheet and work through the same Per-IC Design Checklist. Provide \
+a full component definition in the same JSON format (with pins, manufacturer, \
+etc.) inside a fenced code block tagged as ```new_component so we can add it to \
+the library later.
 
 {components_db}
 
@@ -181,6 +216,15 @@ restarting per sheet)
 for technical details you should know as an EE
 - If the user wants a walkthrough, explain your reasoning before outputting JSON
 - Keep conversational responses concise but informative
+- NEVER skip the Per-IC Design Checklist. If you skip it, the design WILL have \
+errors. Walk through Steps A–F for every IC before emitting JSON.
+- When "design_notes" gives a specific value (e.g. 249K for 3.3V), use THAT \
+value — do not guess or substitute.
+- Double-check voltage rails: if two power pins exist on an IC (e.g. VDD and \
+VUSB), verify they connect to the correct voltage. Read "critical_notes" \
+carefully.
+- Use Google Search when you need datasheet information that isn't in our \
+component database.
 """
 
 
@@ -310,10 +354,12 @@ def main():
     )
 
     client = genai.Client(api_key=api_key)
+    google_search_tool = Tool(google_search=GoogleSearch())
     chat = client.chats.create(
         model=MODEL,
         config=types.GenerateContentConfig(
             system_instruction=system_prompt,
+            tools=[google_search_tool],
         ),
     )
 

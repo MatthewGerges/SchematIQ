@@ -1,0 +1,1146 @@
+(kicad_sch
+	(version 20250114)
+	(generator "ChipChat_Gemini")
+	(generator_version "9.0")
+	(uuid "a8864f98-f4de-4dc2-8f93-f7abd260e15c")
+	(paper "A4")
+
+	(lib_symbols
+		(symbol "Capacitor"
+		(pin_numbers
+			(hide yes)
+		)
+		(pin_names
+			(offset 0.254)
+		)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(property "Reference" "C"
+			(at 0.635 2.54 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "Capacitor"
+			(at 0.635 -2.54 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" ""
+			(at 0.9652 -3.81 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Unpolarized capacitor"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "ki_keywords" "cap capacitor"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "ki_fp_filters" "C_*"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(symbol "Capacitor_0_1"
+			(polyline
+				(pts
+					(xy -2.032 0.762) (xy 2.032 0.762)
+				)
+				(stroke
+					(width 0.508)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy -2.032 -0.762) (xy 2.032 -0.762)
+				)
+				(stroke
+					(width 0.508)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+		)
+		(symbol "Capacitor_1_1"
+			(pin passive line
+				(at 0 3.81 270)
+				(length 2.794)
+				(name "~"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at 0 -3.81 90)
+				(length 2.794)
+				(name "~"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+		)
+		(embedded_fonts no)
+	)
+		(symbol "L"
+		(pin_numbers
+			(hide yes)
+		)
+		(pin_names
+			(offset 1.016)
+			(hide yes)
+		)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(property "Reference" "L"
+			(at -1.27 0 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "L"
+			(at 1.905 0 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Inductor"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "ki_keywords" "inductor choke coil reactor magnetic"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "ki_fp_filters" "Choke_* *Coil* Inductor_* L_*"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(symbol "L_0_1"
+			(arc
+				(start 0 2.54)
+				(mid 0.6323 1.905)
+				(end 0 1.27)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(arc
+				(start 0 1.27)
+				(mid 0.6323 0.635)
+				(end 0 0)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(arc
+				(start 0 0)
+				(mid 0.6323 -0.635)
+				(end 0 -1.27)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(arc
+				(start 0 -1.27)
+				(mid 0.6323 -1.905)
+				(end 0 -2.54)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+		)
+		(symbol "L_1_1"
+			(pin passive line
+				(at 0 3.81 270)
+				(length 1.27)
+				(name "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at 0 -3.81 90)
+				(length 1.27)
+				(name "2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+		)
+		(embedded_fonts no)
+	)
+		(symbol "TPS628436DRL"
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(property "Reference" "U"
+			(at -7.62 11.43 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "TPS628436DRL"
+			(at -1.27 11.43 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-563"
+			(at 3.81 -8.89 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "https://www.ti.com/lit/ds/symlink/tps62843.pdf"
+			(at 0 13.97 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "600mA Step-Down Converter with DCS-Control, ultra-low Iq, 1.8-5.5 Vin, 0.4-0.8 Vout, SOT-563"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "ki_keywords" "TI buck regulator"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "ki_fp_filters" "SOT?563*"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(symbol "TPS628436DRL_0_1"
+			(rectangle
+				(start -7.62 10.16)
+				(end 7.62 -7.62)
+				(stroke
+					(width 0.254)
+					(type default)
+				)
+				(fill
+					(type background)
+				)
+			)
+		)
+		(symbol "TPS628436DRL_1_1"
+			(pin power_in line
+				(at -10.16 7.62 0)
+				(length 2.54)
+				(name "VIN"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin input line
+				(at -10.16 5.08 0)
+				(length 2.54)
+				(name "EN"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "4"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin input line
+				(at -10.16 0 0)
+				(length 2.54)
+				(name "VSET"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "3"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin power_in line
+				(at 0 -10.16 90)
+				(length 2.54)
+				(name "GND"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin power_out line
+				(at 10.16 7.62 180)
+				(length 2.54)
+				(name "SW"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "5"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin input line
+				(at 10.16 5.08 180)
+				(length 2.54)
+				(name "VOS"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "6"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+		)
+		(embedded_fonts no)
+	)
+	)
+
+	(symbol
+		(lib_id "TPS628436DRL")
+		(at 200.0 100.0 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "07716b94-d3d5-43d6-aad0-598daf615c18")
+		(property "Reference" "U1"
+			(at 200.0 97.46 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "TPS628438DRL"
+			(at 200.0 102.54 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 200.0 100.0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 200.0 100.0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "17f6b766-e81c-47f0-8104-659df0eeebb1")
+		)
+		(pin "2"
+			(uuid "b8895b04-9d1b-4f7a-8090-b9c745eb7ab4")
+		)
+		(pin "3"
+			(uuid "1f6efab7-39d6-4900-846c-d2fc4a99c779")
+		)
+		(pin "4"
+			(uuid "5ba387c5-9f39-41ef-9263-ed55865892d0")
+		)
+		(pin "5"
+			(uuid "7b573432-f731-4b59-8fc4-17b8098cc5cb")
+		)
+		(pin "6"
+			(uuid "850c5334-8c37-4edd-a883-a4c438733a6d")
+		)
+	)
+	(wire
+		(pts
+			(xy 200.0 110.16) (xy 200.0 120.32)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "46aa0743-2b1b-481f-890a-6183b6ca6c23")
+	)
+	(label "GND"
+		(at 200.0 120.32 90)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "8d5d138c-8492-47ef-bd7a-54c42ba2f721")
+	)
+	(wire
+		(pts
+			(xy 189.84 92.38) (xy 182.22 92.38)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c25be8c9-2a28-4227-983e-5cdbbba9f536")
+	)
+	(hierarchical_label "VBUS_5V"
+		(shape bidirectional)
+		(at 182.22 92.38 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "c76b6072-5c41-4fb8-bbbd-ca27390f825a")
+	)
+	(wire
+		(pts
+			(xy 189.84 100.0) (xy 182.22 100.0)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9ee316a7-8ce7-452d-8e20-d36d491c0190")
+	)
+	(hierarchical_label "VBUS_5V"
+		(shape bidirectional)
+		(at 182.22 100.0 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "62070fcd-8cec-4735-bef1-a4bf9024003c")
+	)
+	(wire
+		(pts
+			(xy 189.84 94.92) (xy 182.22 94.92)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b0e76503-7677-433e-a314-557f8045adb7")
+	)
+	(hierarchical_label "VBUS_5V"
+		(shape bidirectional)
+		(at 182.22 94.92 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "4d2f084f-de05-448b-809e-3310ce7b51b2")
+	)
+	(wire
+		(pts
+			(xy 210.16 92.38) (xy 217.78 92.38)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "dc3fd67c-0391-43a7-a549-e468e2362721")
+	)
+	(label "SW_NODE"
+		(at 217.78 92.38 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "47f647ec-265a-489a-9a2c-bb98f0cebc36")
+	)
+	(wire
+		(pts
+			(xy 210.16 94.92) (xy 217.78 94.92)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "63e80da1-5b8a-4ffe-8151-89a4235c3374")
+	)
+	(hierarchical_label "VCC_3V3"
+		(shape bidirectional)
+		(at 217.78 94.92 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "8500d70e-0aa2-480a-bbd6-2d5fe21c9c57")
+	)
+	(symbol
+		(lib_id "Capacitor")
+		(at 80.0 35.0 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "d1c7019d-e5a7-419c-b42f-eee6252991c5")
+		(property "Reference" "C3"
+			(at 80.0 32.46 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "4.7uF"
+			(at 80.0 37.54 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 80.0 35.0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 80.0 35.0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "d009bf34-a462-4a21-bd9b-1d11351bff98")
+		)
+		(pin "2"
+			(uuid "8f96c15a-eae4-47a2-9a7f-4334e775ff20")
+		)
+	)
+	(wire
+		(pts
+			(xy 83.81 35.0) (xy 91.43 35.0)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d5f37fdc-e84f-4f86-a43a-5f2ff8dfc0b9")
+	)
+	(hierarchical_label "VBUS_5V"
+		(shape bidirectional)
+		(at 91.43 35.0 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "b17ad63b-83a2-4ce2-9fd5-a87e5a0cd405")
+	)
+	(wire
+		(pts
+			(xy 76.19 35.0) (xy 68.57 35.0)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f896d57c-13a7-46fb-acf5-6bf174ebb16d")
+	)
+	(label "GND"
+		(at 68.57 35.0 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "c6700442-1354-4fc8-b3b3-ac8f4dbf495b")
+	)
+	(symbol
+		(lib_id "Capacitor")
+		(at 80.0 50.24 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "21da2dd6-dec2-44f2-b922-943b0f2442c1")
+		(property "Reference" "C4"
+			(at 80.0 47.7 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "0.1uF"
+			(at 80.0 52.78 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 80.0 50.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 80.0 50.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "649f4637-1aa3-4b78-ac1d-60297ac68fb1")
+		)
+		(pin "2"
+			(uuid "376fa57b-f84e-4108-bed9-b374dcacb7b5")
+		)
+	)
+	(wire
+		(pts
+			(xy 83.81 50.24) (xy 91.43 50.24)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "54294de9-9f47-4c23-a60b-aaa45245621c")
+	)
+	(hierarchical_label "VBUS_5V"
+		(shape bidirectional)
+		(at 91.43 50.24 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "8924860c-a99c-4a6d-8c92-9efab2d86bc9")
+	)
+	(wire
+		(pts
+			(xy 76.19 50.24) (xy 68.57 50.24)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d67ae505-4a28-4ced-9367-f05ea93eedbd")
+	)
+	(label "GND"
+		(at 68.57 50.24 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "0b9f72f9-f427-4ac9-b159-796edb419590")
+	)
+	(symbol
+		(lib_id "L")
+		(at 80.0 65.48 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "bdc0f29c-6d93-4d39-80f5-747ddf21dbdb")
+		(property "Reference" "L1"
+			(at 80.0 62.940000000000005 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "2.2uH"
+			(at 80.0 68.02000000000001 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 80.0 65.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 80.0 65.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "bad439fa-b2b4-4cf5-9218-e1afe99faedc")
+		)
+		(pin "2"
+			(uuid "ba33baff-9103-45c4-a4a5-4a8f9e2e9bac")
+		)
+	)
+	(wire
+		(pts
+			(xy 83.81 65.48) (xy 91.43 65.48)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "42b28cb3-423e-4fbb-8c22-bdfb407b6ba9")
+	)
+	(label "SW_NODE"
+		(at 91.43 65.48 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "c94d2438-634e-426a-84f0-8162400565d3")
+	)
+	(wire
+		(pts
+			(xy 76.19 65.48) (xy 68.57 65.48)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a0a0ee79-5cce-47bc-bfaf-699e3f3bc0c0")
+	)
+	(hierarchical_label "VCC_3V3"
+		(shape bidirectional)
+		(at 68.57 65.48 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "6e74b83a-41e3-4927-a664-441f738e68b6")
+	)
+	(symbol
+		(lib_id "Capacitor")
+		(at 80.0 80.72 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "a27b96f7-8e94-44a2-b82b-53f4a3f142b8")
+		(property "Reference" "C5"
+			(at 80.0 78.17999999999999 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "10uF"
+			(at 80.0 83.26 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 80.0 80.72 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 80.0 80.72 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "ccd7d448-fef5-45c1-a4a9-240a1ed0a27e")
+		)
+		(pin "2"
+			(uuid "f15b8753-ea58-4ed5-9fef-2fa184c3050f")
+		)
+	)
+	(wire
+		(pts
+			(xy 83.81 80.72) (xy 91.43 80.72)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0062d719-93ec-48e7-9269-2a8ecbbf403c")
+	)
+	(hierarchical_label "VCC_3V3"
+		(shape bidirectional)
+		(at 91.43 80.72 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "93c4d777-321f-48b8-90f0-287b8edd0d82")
+	)
+	(wire
+		(pts
+			(xy 76.19 80.72) (xy 68.57 80.72)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8cb850c4-bf01-49ba-a243-08958d50cea1")
+	)
+	(label "GND"
+		(at 68.57 80.72 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "976868b5-18e3-4279-8b11-c9c2f41e5441")
+	)
+	(symbol
+		(lib_id "Capacitor")
+		(at 80.0 95.96 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "a66589d1-fb20-48ac-9c00-3085288f18bd")
+		(property "Reference" "C6"
+			(at 80.0 93.41999999999999 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "0.1uF"
+			(at 80.0 98.5 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 80.0 95.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 80.0 95.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "e873825e-94f9-41a8-b5a6-7be88e29fdf3")
+		)
+		(pin "2"
+			(uuid "5c68c821-2cc8-4276-92a8-f33163cc60fa")
+		)
+	)
+	(wire
+		(pts
+			(xy 83.81 95.96) (xy 91.43 95.96)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7334c8d6-2596-43aa-81b6-ee88821e4696")
+	)
+	(hierarchical_label "VCC_3V3"
+		(shape bidirectional)
+		(at 91.43 95.96 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "1ebb6cfd-0710-464f-92fc-350acf041cab")
+	)
+	(wire
+		(pts
+			(xy 76.19 95.96) (xy 68.57 95.96)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "da8aebb2-7657-4a54-9e12-cff026007568")
+	)
+	(label "GND"
+		(at 68.57 95.96 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "0a3fefa7-f41f-4d03-b926-85b69095ae89")
+	)
+)

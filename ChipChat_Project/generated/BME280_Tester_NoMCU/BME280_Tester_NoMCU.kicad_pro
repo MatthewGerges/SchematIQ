@@ -1,0 +1,41 @@
+{
+  "meta": {
+    "filename": "BME280_Tester_NoMCU.kicad_pro",
+    "version": 2
+  },
+  "schematic": {
+    "annotate_start_num": 0,
+    "bom_fmt_settings": {
+      "field_delimiter": ",",
+      "name": "CSV",
+      "ref_delimiter": ",",
+      "string_delimiter": "\""
+    },
+    "connection_grid_size": 50.0,
+    "drawing": {},
+    "page_layout_descr_file": ""
+  },
+  "sheets": [
+    [
+      "bdbfca04-54ca-4c3f-97fc-e129addc0d97",
+      "Root"
+    ],
+    [
+      "82feb136-3675-40cb-8eb8-468268e65f9b",
+      "USB_C_Connector"
+    ],
+    [
+      "35b6d83f-bccc-49cd-883e-8321e4e695eb",
+      "Power_Supply"
+    ],
+    [
+      "05f06a29-5b48-4fc8-aa46-4058dc602218",
+      "USB_to_I2C_Bridge"
+    ],
+    [
+      "b2693f79-7160-4730-83dc-bfb3b41a0ac7",
+      "BME280_Sensor"
+    ]
+  ],
+  "text_variables": {}
+}

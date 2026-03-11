@@ -10,7 +10,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from src.lib import kicad_api
+from src.lib import kicad_api, symbol_resolver
 
 # =============================================================================
 # Constants
@@ -461,18 +461,19 @@ def _parse_symbol_pins(symbol_file_path):
     """
     with open(symbol_file_path, "r", encoding="utf-8") as f:
         content = f.read()
+    return _parse_symbol_pins_from_content(content)
 
+
+def _parse_symbol_pins_from_content(content):
+    """Parse pin tip positions from symbol content (file or single symbol block)."""
     pins = {}
-    for block in content.split("(pin ")[1:]:       # skip preamble
+    for block in content.split("(pin ")[1:]:
         at_m = re.search(r"\(at\s+([-\d.]+)\s+([-\d.]+)\s+([-\d.]+)\)", block)
         num_m = re.search(r'\(number\s+"([^"]+)"', block)
         name_m = re.search(r'\(name\s+"([^"]*)"', block)
         if not at_m or not num_m:
             continue
-
-        # "hide" keyword before (name ...) means the pin is invisible
         hidden = "hide" in block.split("(name")[0] if "(name" in block else False
-
         pins[num_m.group(1)] = {
             "x": float(at_m.group(1)),
             "y": float(at_m.group(2)),
@@ -480,7 +481,6 @@ def _parse_symbol_pins(symbol_file_path):
             "name": name_m.group(1) if name_m else "",
             "hidden": hidden,
         }
-
     return pins
 
 
@@ -627,11 +627,39 @@ def generate_from_json(output_path, json_path, sheet_name="BME280_Sensor"):
     # 5. Place main component(s) at center-right and wire their pins
     for comp in main_comps:
         part_name = comp["part"]
-        lib_id = kicad_api.embed_symbol_from_file(
-            schematic_data, part_name, library_path=SYMBOL_LIB_PATH
-        )
+        lib_id = None
+        resolved_name = part_name
+        sym_file_for_pins = None
+        packed_file_and_name = None
+
+        # Try custom Symbols folder first (exact match, for components.json parts)
+        custom_path = os.path.join(SYMBOL_LIB_PATH, f"{part_name}.kicad_sym")
+        if os.path.exists(custom_path):
+            lib_id = kicad_api.embed_symbol_from_file(
+                schematic_data, part_name, library_path=SYMBOL_LIB_PATH
+            )
+            if lib_id:
+                sym_file_for_pins = custom_path
+
+        # If not in custom, resolve by name (prefix / first-6-chars) in custom + official libs
+        if not lib_id:
+            resolved = symbol_resolver.resolve_symbol(part_name)
+            if resolved:
+                resolved_name, kind, path = resolved
+                if kind == "packed":
+                    lib_id = kicad_api.embed_symbol_from_packed_lib(
+                        schematic_data, resolved_name, path
+                    )
+                    if lib_id:
+                        packed_file_and_name = (path, resolved_name)
+                else:
+                    lib_id = kicad_api.embed_symbol_from_file(
+                        schematic_data, resolved_name, library_path=path
+                    )
+                    if lib_id:
+                        sym_file_for_pins = os.path.join(path, f"{resolved_name}.kicad_sym")
+
         if lib_id:
-            # Figure out pin count from connections
             pin_nums = [c["pin"] for c in comp.get("connections", [])]
             max_pin = max((int(p) for p in pin_nums if p.isdigit()), default=1)
             all_pins = [str(i) for i in range(1, max_pin + 1)]
@@ -642,15 +670,23 @@ def generate_from_json(output_path, json_path, sheet_name="BME280_Sensor"):
                 footprint="", pins=all_pins
             )
 
-            # Parse pin positions from symbol file and wire connections
-            sym_file = os.path.join(SYMBOL_LIB_PATH, f"{part_name}.kicad_sym")
-            if os.path.exists(sym_file):
-                symbol_pins = _parse_symbol_pins(sym_file)
+            symbol_pins = None
+            if sym_file_for_pins and os.path.exists(sym_file_for_pins):
+                symbol_pins = _parse_symbol_pins(sym_file_for_pins)
+            elif packed_file_and_name:
+                with open(packed_file_and_name[0], "r", encoding="utf-8") as f:
+                    block = kicad_api.get_symbol_block(f.read(), packed_file_and_name[1])
+                if block:
+                    symbol_pins = _parse_symbol_pins_from_content(block)
+
+            if symbol_pins:
                 _wire_component_pins(
                     schematic_data, MAIN_COMP_X, MAIN_COMP_Y,
                     comp.get("connections", []), symbol_pins, net_types
                 )
                 print(f"  Wired {len(comp.get('connections', []))} pins on {comp['ref']}")
+            if resolved_name != part_name:
+                print(f"  Resolved '{part_name}' → '{resolved_name}' from library")
 
     # 6. Place passives — all horizontal, column grid
     placed_idx = 0

@@ -109,11 +109,14 @@ When you use one of these parts, you MUST:
 - Follow the guidance in "design_notes" (especially "critical_notes")
 - Use the recommended passive values from "design_notes"
 
-If you need a part NOT in this database, you may still use it. Use Google Search \
-to find its datasheet and work through the same Per-IC Design Checklist. Provide \
-a full component definition in the same JSON format (with pins, manufacturer, \
-etc.) inside a fenced code block tagged as ```new_component so we can add it to \
-the library later.
+If you need a part NOT in this database, you may still use it. We will look up \
+symbols by name in the KiCad library (custom + official): exact match, then prefix \
+match, then first-6-characters match (e.g. tape/reel suffixes often differ). Use \
+the exact KiCad symbol name when you know it (e.g. LM1117DT-3.3, nRF5340-QKxx); \
+otherwise a descriptive base name often matches. Use Google Search to find \
+datasheets and work through the Per-IC Design Checklist. For parts not in the \
+database, provide a full component definition in a fenced ```new_component block \
+so we can add it to the library later.
 
 {components_db}
 

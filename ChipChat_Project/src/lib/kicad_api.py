@@ -54,11 +54,56 @@ def _extract_symbol_from_lib(lib_content):
     lib_id = symbol_def[id_start:id_end]
     return lib_id, symbol_def
 
+def _extract_named_symbol(lib_content, target_name):
+    """Extract a specific top-level symbol by name from a packed library file.
+
+    In packed KiCad 9 libraries, one .kicad_sym contains many symbols.
+    Sub-symbols (e.g. "NE555D_0_1") are nested inside the parent and are
+    captured automatically by the balanced-paren extraction.
+
+    The closing quote + newline in the search pattern guarantees we won't
+    match sub-symbols whose names are longer (e.g. searching "NE555D"
+    won't match "NE555D_0_1" because the quote closes the name exactly).
+
+    Returns (lib_id, symbol_def) or (None, None).
+    """
+    search_for = f'(symbol "{target_name}"\n'
+    idx = lib_content.find(search_for)
+    if idx == -1:
+        return None, None
+
+    start = idx
+    balance = 0
+    end = -1
+    for i in range(start, len(lib_content)):
+        if lib_content[i] == '(':
+            balance += 1
+        elif lib_content[i] == ')':
+            balance -= 1
+        if balance == 0:
+            end = i + 1
+            break
+    if end == -1:
+        return None, None
+    return target_name, lib_content[start:end]
+
+
+def get_symbol_block(content, symbol_name):
+    """Return the (symbol ...) block for a named symbol from library content, or None.
+    Used e.g. to parse pin positions from a packed .kicad_sym file."""
+    _, block = _extract_named_symbol(content, symbol_name)
+    return block
+
+
 def embed_symbol_from_file(schematic_data, symbol_name, library_path=None):
     """
     Reads a .kicad_sym file, extracts the symbol definition, and adds it
     to the schematic data's embedded library.
     Returns the lib_id of the embedded symbol.
+
+    Supports both:
+      - Single-symbol files (custom library, one symbol per .kicad_sym)
+      - Packed library files (official KiCad 9, many symbols per .kicad_sym)
     """
     if library_path is None:
         library_path = DEFAULT_SYMBOL_PATH
@@ -78,6 +123,59 @@ def embed_symbol_from_file(schematic_data, symbol_name, library_path=None):
     else:
         print(f"Error: Could not extract symbol from {symbol_filepath}")
         return None
+
+
+def embed_symbol_from_packed_lib(schematic_data, symbol_name, library_file):
+    """Extract and embed a named symbol from a packed (multi-symbol) .kicad_sym.
+
+    Automatically resolves `(extends "ParentName")` by also embedding the
+    parent symbol (and its parent, recursively) from the same library file.
+
+    Args:
+        symbol_name: e.g. "NE555D"
+        library_file: full path to the packed .kicad_sym file, e.g. Timer.kicad_sym
+    """
+    try:
+        with open(library_file, 'r', encoding='utf-8') as f:
+            content = f.read()
+    except FileNotFoundError:
+        print(f"Error: Library file not found at {library_file}")
+        return None
+
+    already_embedded = {s_name for s_name in _get_embedded_names(schematic_data)}
+
+    def _embed_with_deps(name):
+        if name in already_embedded:
+            return True
+        lib_id, sym_def = _extract_named_symbol(content, name)
+        if not lib_id:
+            print(f"Error: Symbol '{name}' not found in {library_file}")
+            return False
+        # Check for (extends "ParentName") and embed parent first
+        extends_match = re.search(r'\(extends\s+"([^"]+)"\)', sym_def)
+        if extends_match:
+            parent_name = extends_match.group(1)
+            if not _embed_with_deps(parent_name):
+                return False
+        sym_def = _sanitize_v10_symbol(sym_def)
+        schematic_data["lib_symbols"].append(sym_def)
+        already_embedded.add(name)
+        print(f"Embedded symbol '{name}' from {library_file}")
+        return True
+
+    if _embed_with_deps(symbol_name):
+        return symbol_name
+    return None
+
+
+def _get_embedded_names(schematic_data):
+    """Return set of symbol names already in the embedded library."""
+    names = set()
+    for sym_def in schematic_data["lib_symbols"]:
+        match = re.search(r'\(symbol\s+"([^"]+)"', sym_def)
+        if match:
+            names.add(match.group(1))
+    return names
 
 def place_component(schematic_data, lib_id, reference, value, position, angle=0, footprint="", pins=None):
     """Adds a component instance to the schematic data.

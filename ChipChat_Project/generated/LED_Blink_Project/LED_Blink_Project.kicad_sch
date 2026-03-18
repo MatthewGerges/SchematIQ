@@ -2,7 +2,7 @@
 	(version 20250114)
 	(generator "ChipChat_Gemini")
 	(generator_version "9.0")
-	(uuid "9359b16e-7ee6-4377-8c23-9141d4e46a81")
+	(uuid "dafe288d-46eb-4d13-8ffa-2126747e4f20")
 	(paper "A4")
 	(lib_symbols)
 
@@ -20,7 +20,7 @@
 		(fill
 			(color 0 0 0 0.0000)
 		)
-		(uuid "acbd14d7-bbd5-4ff4-b80f-71ad590295ab")
+		(uuid "8aad1bb9-6716-463b-bea1-214f0c1ad5e9")
 		(property "Sheetname" "LED_Blink_Circuit"
 			(at 25.0 24.32 0)
 			(effects
@@ -45,7 +45,7 @@
 		(path "/"
 			(page "1")
 		)
-		(path "/acbd14d7-bbd5-4ff4-b80f-71ad590295ab"
+		(path "/8aad1bb9-6716-463b-bea1-214f0c1ad5e9"
 			(page "1")
 		)
 	)

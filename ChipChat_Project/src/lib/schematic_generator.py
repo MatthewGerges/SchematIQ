@@ -27,9 +27,11 @@ PASSIVE_Y_SPACING = 15.24    # mm between rows
 PASSIVE_MAX_ROWS = 10        # rows per column before wrapping
 PASSIVE_COL_SPACING = 80.0   # mm between columns
 
-# Main component position
+# Main component baseline position (center row)
 MAIN_COMP_X = 200.0
 MAIN_COMP_Y = 100.0
+# Horizontal spacing between main components when there are several
+MAIN_COMP_X_SPACING = 40.0
 
 
 # =============================================================================
@@ -338,10 +340,22 @@ def _save_schematic(schematic_data, file_path):
     text += f'\t(paper "{schematic_data["paper"]}")\n\n'
     
     if schematic_data["lib_symbols"]:
-        text += "\t(lib_symbols\n"
+        # Filter out extended symbols (those that use `(extends ...)`) because
+        # KiCad 9 expects the full parent chain to be present. For our use
+        # case we only need the final concrete symbols (e.g. BS170), and
+        # keeping the intermediate "BS107 extends BS170" entries can cause
+        # load errors like "No parent for extended symbol BS107".
+        lib_syms = []
         for sym in schematic_data["lib_symbols"]:
-            text += f"\t\t{sym}\n"
-        text += "\t)\n\n"
+            if "(extends " in sym:
+                continue
+            lib_syms.append(sym)
+
+        if lib_syms:
+            text += "\t(lib_symbols\n"
+            for sym in lib_syms:
+                text += f"\t\t{sym}\n"
+            text += "\t)\n\n"
     
     for item in schematic_data["items"]:
         t = item["type"]
@@ -506,12 +520,33 @@ def _wire_component_pins(schematic_data, comp_x, comp_y,
     wired_positions = set()
 
     for conn in connections:
-        pin_num = conn["pin"]
+        original_pin = conn["pin"]
         net_name = conn.get("net", "")
-        if not net_name or pin_num not in symbol_pins:
+        if not net_name:
             continue
 
-        pin = symbol_pins[pin_num]
+        # Look up pin geometry. If the JSON pin number/name doesn't exist on
+        # the symbol (common for LEDs that use A/C vs 1/2 or FETs that use
+        # G/D/S vs 1/2/3), fall back to a simple mapping so we still wire it.
+        pin_key = original_pin
+        if pin_key not in symbol_pins:
+            # Generic LED from Device:LED → 1 = K, 2 = A
+            if original_pin in ("A", "ANODE") and "2" in symbol_pins:
+                pin_key = "2"
+            elif original_pin in ("C", "K", "CATHODE") and "1" in symbol_pins:
+                pin_key = "1"
+            # Generic NMOS Q_NMOS_GDS → 1 = G, 2 = D, 3 = S
+            elif original_pin in ("G", "GATE") and "1" in symbol_pins:
+                pin_key = "1"
+            elif original_pin in ("D", "DRAIN") and "2" in symbol_pins:
+                pin_key = "2"
+            elif original_pin in ("S", "SOURCE") and "3" in symbol_pins:
+                pin_key = "3"
+
+        if pin_key not in symbol_pins:
+            continue
+
+        pin = symbol_pins[pin_key]
 
         # Convert symbol coords → schematic coords
         #   X is the same (right = positive in both)
@@ -624,26 +659,65 @@ def generate_from_json(output_path, json_path, sheet_name="BME280_Sensor"):
         if lib_id:
             passive_lib_ids[ptype] = lib_id
 
-    # 5. Place main component(s) at center-right and wire their pins
-    for comp in main_comps:
+    # 5. Place main component(s) and wire their pins
+    #
+    # Previously we assumed there was a single "main" IC and stacked
+    # everything at (MAIN_COMP_X, MAIN_COMP_Y). For small single-sheet
+    # designs like the LED blink example this results in all connectors,
+    # LEDs, FETs, etc. overlapping. Instead, spread all main components
+    # horizontally on a simple row, keeping passives in their own grid.
+    main_count = len(main_comps)
+    for idx, comp in enumerate(main_comps):
         part_name = comp["part"]
+
+        # Choose which symbol name to look up in the libraries.
+        # For now we intentionally map some LLM-style library names to
+        # simple generic KiCad symbols:
+        #
+        #   - Any LED_* or LED_TH:*  → Device:LED (generic diode LED)
+        #   - Any Transistor_FET:*   → Transistor_FET:Q_NMOS_GDS (generic NMOS)
+        #
+        # We still keep the original `part_name` as the VALUE text so the
+        # schematic shows BS170 / LED_TH:LED_D5.0mm, but the graphics come
+        # from stable generic symbols.
+        symbol_lookup = part_name
+        if part_name.startswith("LED_") or part_name.startswith("LED_TH:"):
+            symbol_lookup = "Device:LED"
+        elif part_name.startswith("Transistor_FET:"):
+            symbol_lookup = "Transistor_FET:Q_NMOS_GDS"
+
         lib_id = None
-        resolved_name = part_name
+        resolved_name = symbol_lookup
         sym_file_for_pins = None
         packed_file_and_name = None
 
         # Try custom Symbols folder first (exact match, for components.json parts)
-        custom_path = os.path.join(SYMBOL_LIB_PATH, f"{part_name}.kicad_sym")
+        custom_path = os.path.join(SYMBOL_LIB_PATH, f"{symbol_lookup}.kicad_sym")
         if os.path.exists(custom_path):
             lib_id = kicad_api.embed_symbol_from_file(
-                schematic_data, part_name, library_path=SYMBOL_LIB_PATH
+                schematic_data, symbol_lookup, library_path=SYMBOL_LIB_PATH
             )
             if lib_id:
                 sym_file_for_pins = custom_path
 
-        # If not in custom, resolve by name (prefix / first-6-chars) in custom + official libs
+        # If not in custom, try explicit KiCad-style "lib:symbol" reference
+        # against the official kicad-symbols libs before fuzzy matching.
+        if not lib_id and ":" in symbol_lookup:
+            lib_name, sym_name = symbol_lookup.split(":", 1)
+            base = os.path.dirname(os.path.dirname(os.path.dirname(
+                os.path.dirname(os.path.abspath(__file__)))))
+            packed_lib = os.path.join(base, "KICAD_Library", "kicad-symbols", f"{lib_name}.kicad_sym")
+            if os.path.exists(packed_lib):
+                lib_id = kicad_api.embed_symbol_from_packed_lib(
+                    schematic_data, sym_name, packed_lib
+                )
+                if lib_id:
+                    resolved_name = sym_name
+                    packed_file_and_name = (packed_lib, sym_name)
+
+        # If still not found, resolve by name (prefix / first-6-chars) in custom + official libs
         if not lib_id:
-            resolved = symbol_resolver.resolve_symbol(part_name)
+            resolved = symbol_resolver.resolve_symbol(symbol_lookup)
             if resolved:
                 resolved_name, kind, path = resolved
                 if kind == "packed":
@@ -664,9 +738,14 @@ def generate_from_json(output_path, json_path, sheet_name="BME280_Sensor"):
             max_pin = max((int(p) for p in pin_nums if p.isdigit()), default=1)
             all_pins = [str(i) for i in range(1, max_pin + 1)]
 
+            # Evenly space components around MAIN_COMP_X on a single row.
+            offset = idx - (main_count - 1) / 2.0
+            comp_x = round(MAIN_COMP_X + offset * MAIN_COMP_X_SPACING, 2)
+            comp_y = MAIN_COMP_Y
+
             kicad_api.place_component(
                 schematic_data, lib_id, comp["ref"], part_name,
-                (MAIN_COMP_X, MAIN_COMP_Y), angle=0,
+                (comp_x, comp_y), angle=0,
                 footprint="", pins=all_pins
             )
 
@@ -681,7 +760,7 @@ def generate_from_json(output_path, json_path, sheet_name="BME280_Sensor"):
 
             if symbol_pins:
                 _wire_component_pins(
-                    schematic_data, MAIN_COMP_X, MAIN_COMP_Y,
+                    schematic_data, comp_x, comp_y,
                     comp.get("connections", []), symbol_pins, net_types
                 )
                 print(f"  Wired {len(comp.get('connections', []))} pins on {comp['ref']}")
@@ -718,8 +797,11 @@ def generate_from_json(output_path, json_path, sheet_name="BME280_Sensor"):
     print(f"\n✓ Schematic generated from {os.path.basename(json_path)}")
     print(f"  Sheet: {sheet_name}")
     if main_comps:
-        for c in main_comps:
-            print(f"  Component: {c['ref']} ({c['part']}) at ({MAIN_COMP_X}, {MAIN_COMP_Y})")
+        for idx, c in enumerate(main_comps):
+            offset = idx - (len(main_comps) - 1) / 2.0
+            comp_x = round(MAIN_COMP_X + offset * MAIN_COMP_X_SPACING, 2)
+            comp_y = MAIN_COMP_Y
+            print(f"  Component: {c['ref']} ({c['part']}) at ({comp_x}, {comp_y})")
     print(f"  {len(passives)} passives (horizontal, column grid):")
     for p in passives:
         print(f"    {p['ref']:>3s} ({p['value']:>5s}):  {p['pin2_net']} ←[{p['ref']}]→ {p['pin1_net']}")

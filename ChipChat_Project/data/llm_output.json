@@ -23,10 +23,10 @@
       "ref": "J2",
       "part": "Connector_Generic:Conn_01x02",
       "sheet": "LED_Blink_Circuit",
-      "note": "2-pin header for signal generator input",
+      "note": "2-pin header for signal generator input (off-board)",
       "connections": [
-        { "pin": "1", "pin_name": "Pin_1", "net": "GATE_SIGNAL" },
-        { "pin": "2", "pin_name": "Pin_2", "net": "GND" }
+        { "pin": "1", "pin_name": "Pin_1", "net": "SIGNAL_IN" },
+        { "pin": "2", "pin_name": "Pin_2", "net": "GATE_SIGNAL" }
       ]
     },
     {
@@ -101,9 +101,17 @@
       "type": "local",
       "sheet": "LED_Blink_Circuit",
       "connections": [
-        { "ref": "J2", "pin": "1" },
+        { "ref": "J2", "pin": "2" },
         { "ref": "Q1", "pin": "G" },
         { "ref": "R2", "pin": "1" }
+      ]
+    },
+    {
+      "name": "SIGNAL_IN",
+      "type": "local",
+      "sheet": "LED_Blink_Circuit",
+      "connections": [
+        { "ref": "J2", "pin": "1" }
       ]
     },
     {

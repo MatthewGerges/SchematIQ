@@ -2,7 +2,7 @@
 	(version 20250114)
 	(generator "ChipChat_Gemini")
 	(generator_version "9.0")
-	(uuid "48705547-f01d-4af4-b7b6-8c1455170cca")
+	(uuid "f8e1d5e0-81c0-4117-bb3c-bc41a6177a2c")
 	(paper "A4")
 
 	(lib_symbols
@@ -272,7 +272,7 @@
 		)
 		(embedded_fonts no)
 	)
-		(symbol "LED"
+		(symbol "L"
 		(pin_numbers
 			(hide yes)
 		)
@@ -283,16 +283,16 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(property "Reference" "D"
-			(at 0 2.54 0)
+		(property "Reference" "L"
+			(at -1.27 0 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "LED"
-			(at 0 -2.54 0)
+		(property "Value" "L"
+			(at 1.905 0 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -317,7 +317,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Light emitting diode"
+		(property "Description" "Inductor"
 			(at 0 0 0)
 			(effects
 				(font
@@ -326,7 +326,7 @@
 				(hide yes)
 			)
 		)
-		(property "Sim.Pins" "1=K 2=A"
+		(property "ki_keywords" "inductor choke coil reactor magnetic"
 			(at 0 0 0)
 			(effects
 				(font
@@ -335,7 +335,7 @@
 				(hide yes)
 			)
 		)
-		(property "ki_keywords" "LED diode"
+		(property "ki_fp_filters" "Choke_* *Coil* Inductor_* L_*"
 			(at 0 0 0)
 			(effects
 				(font
@@ -344,20 +344,11 @@
 				(hide yes)
 			)
 		)
-		(property "ki_fp_filters" "LED* LED_SMD:* LED_THT:*"
-			(at 0 0 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(symbol "LED_0_1"
-			(polyline
-				(pts
-					(xy -3.048 -0.762) (xy -4.572 -2.286) (xy -3.81 -2.286) (xy -4.572 -2.286) (xy -4.572 -1.524)
-				)
+		(symbol "L_0_1"
+			(arc
+				(start 0 2.54)
+				(mid 0.6323 1.905)
+				(end 0 1.27)
 				(stroke
 					(width 0)
 					(type default)
@@ -366,10 +357,10 @@
 					(type none)
 				)
 			)
-			(polyline
-				(pts
-					(xy -1.778 -0.762) (xy -3.302 -2.286) (xy -2.54 -2.286) (xy -3.302 -2.286) (xy -3.302 -1.524)
-				)
+			(arc
+				(start 0 1.27)
+				(mid 0.6323 0.635)
+				(end 0 0)
 				(stroke
 					(width 0)
 					(type default)
@@ -378,10 +369,10 @@
 					(type none)
 				)
 			)
-			(polyline
-				(pts
-					(xy -1.27 0) (xy 1.27 0)
-				)
+			(arc
+				(start 0 0)
+				(mid 0.6323 -0.635)
+				(end 0 -1.27)
 				(stroke
 					(width 0)
 					(type default)
@@ -390,24 +381,12 @@
 					(type none)
 				)
 			)
-			(polyline
-				(pts
-					(xy -1.27 -1.27) (xy -1.27 1.27)
-				)
+			(arc
+				(start 0 -1.27)
+				(mid 0.6323 -1.905)
+				(end 0 -2.54)
 				(stroke
-					(width 0.254)
-					(type default)
-				)
-				(fill
-					(type none)
-				)
-			)
-			(polyline
-				(pts
-					(xy 1.27 -1.27) (xy 1.27 1.27) (xy -1.27 0) (xy 1.27 -1.27)
-				)
-				(stroke
-					(width 0.254)
+					(width 0)
 					(type default)
 				)
 				(fill
@@ -415,11 +394,11 @@
 				)
 			)
 		)
-		(symbol "LED_1_1"
+		(symbol "L_1_1"
 			(pin passive line
-				(at -3.81 0 0)
-				(length 2.54)
-				(name "K"
+				(at 0 3.81 270)
+				(length 1.27)
+				(name "1"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -435,9 +414,9 @@
 				)
 			)
 			(pin passive line
-				(at 3.81 0 180)
-				(length 2.54)
-				(name "A"
+				(at 0 -3.81 90)
+				(length 1.27)
+				(name "2"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -455,9 +434,8 @@
 		)
 		(embedded_fonts no)
 	)
-		(symbol "Q_NMOS_GDS"
+		(symbol "BS107"
 		(pin_names
-			(offset 0)
 			(hide yes)
 		)
 		(exclude_from_sim no)
@@ -472,7 +450,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "Q_NMOS_GDS"
+		(property "Value" "BS107"
 			(at 5.08 0 0)
 			(effects
 				(font
@@ -481,16 +459,28 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
-			(at 5.08 2.54 0)
+		(property "Footprint" "Package_TO_SOT_THT:TO-92_Inline"
+			(at 5.08 -1.905 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "http://www.onsemi.com/pub_link/Collateral/BS107-D.PDF"
+			(at 5.08 -3.81 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(justify left)
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Description" "0.25A Id, 200V Vds, N-Channel MOSFET, TO-92"
 			(at 0 0 0)
 			(effects
 				(font
@@ -499,7 +489,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "N-MOSFET transistor, gate/drain/source"
+		(property "ki_keywords" "N-Channel MOSFET"
 			(at 0 0 0)
 			(effects
 				(font
@@ -508,7 +498,7 @@
 				(hide yes)
 			)
 		)
-		(property "ki_keywords" "transistor NMOS N-MOS N-MOSFET"
+		(property "ki_fp_filters" "TO?92*"
 			(at 0 0 0)
 			(effects
 				(font
@@ -517,7 +507,7 @@
 				(hide yes)
 			)
 		)
-		(symbol "Q_NMOS_GDS_0_1"
+		(symbol "BS107_0_1"
 			(polyline
 				(pts
 					(xy 0.254 1.905) (xy 0.254 -1.905)
@@ -661,7 +651,7 @@
 			)
 			(polyline
 				(pts
-					(xy 2.921 0.381) (xy 3.683 0.381)
+					(xy 2.794 0.508) (xy 2.921 0.381) (xy 3.683 0.381) (xy 3.81 0.254)
 				)
 				(stroke
 					(width 0)
@@ -684,7 +674,7 @@
 				)
 			)
 		)
-		(symbol "Q_NMOS_GDS_1_1"
+		(symbol "BS107_1_1"
 			(pin input line
 				(at -5.08 0 0)
 				(length 2.54)
@@ -695,7 +685,7 @@
 						)
 					)
 				)
-				(number "1"
+				(number "2"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -713,7 +703,7 @@
 						)
 					)
 				)
-				(number "2"
+				(number "1"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -752,7 +742,7 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "859a1793-eac8-4994-82ee-8bf41703180b")
+		(uuid "da787ea4-a4df-41a5-8cb6-10b1af2ccf14")
 		(property "Reference" "J1"
 			(at 140.0 97.46 0)
 			(effects
@@ -788,10 +778,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "49172746-4aa5-4941-9ef3-0b5308bcbcbf")
+			(uuid "7b7e6760-e107-482c-964d-37d9e5b1fae1")
 		)
 		(pin "2"
-			(uuid "20cc53b3-f0f2-44fa-8b68-e80fe57ca54f")
+			(uuid "a6ca7555-8045-4b94-a3a6-df9389267ece")
 		)
 	)
 	(wire
@@ -802,7 +792,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "4627d750-cafa-43b5-9d0c-1679061e16db")
+		(uuid "0cf9348d-b8c9-4767-bdb7-cca8e4dd3b09")
 	)
 	(label "VCC_5V"
 		(at 127.3 100.0 0)
@@ -812,7 +802,7 @@
 			)
 			(justify right bottom)
 		)
-		(uuid "615650a9-7814-4265-b74d-34dc5618a7c6")
+		(uuid "5a7a12bf-396e-41f6-a06d-8c4fb4866a76")
 	)
 	(wire
 		(pts
@@ -822,7 +812,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "99a9fd76-3fbd-40c2-8631-7e88c21695ae")
+		(uuid "01a54959-294a-4618-aa88-5dcfb6d33a80")
 	)
 	(label "GND"
 		(at 127.3 102.54 0)
@@ -832,7 +822,7 @@
 			)
 			(justify right bottom)
 		)
-		(uuid "7c34158e-5c6b-4699-be5e-e635f507c0cb")
+		(uuid "b863b88b-4067-4505-b25e-acb18a001a7d")
 	)
 	(symbol
 		(lib_id "Conn_01x02")
@@ -842,7 +832,7 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "aa8a4b77-596a-486f-b6f5-9c1102169e3f")
+		(uuid "abab8c68-afa4-4c51-afdf-067e457f3647")
 		(property "Reference" "J2"
 			(at 180.0 97.46 0)
 			(effects
@@ -878,10 +868,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "8de0f759-966c-4260-9b18-de748a28d028")
+			(uuid "4f9e7a77-3184-4d47-9d18-89965c0a0aa7")
 		)
 		(pin "2"
-			(uuid "27fb91ad-5e04-4144-8d61-0ce2ddbcd1d3")
+			(uuid "98361486-73f3-41af-ac48-d8e184b2419d")
 		)
 	)
 	(wire
@@ -892,7 +882,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "04a84eeb-0314-419b-9d0b-6126a08c3690")
+		(uuid "0c1d6488-233e-42b4-b3ea-fce0b5a7f340")
 	)
 	(label "SIGNAL_IN"
 		(at 167.3 100.0 0)
@@ -902,7 +892,7 @@
 			)
 			(justify right bottom)
 		)
-		(uuid "4d901f35-e3cd-4378-98ae-1d24c03d9a9a")
+		(uuid "71494993-f479-476d-b09c-0f97115ea6f3")
 	)
 	(wire
 		(pts
@@ -912,7 +902,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "389f6b1e-c48e-47da-8b29-b7724e837e51")
+		(uuid "cd0fd1c4-11c0-4180-b179-afbaf6e102f5")
 	)
 	(label "GATE_SIGNAL"
 		(at 167.3 102.54 0)
@@ -922,17 +912,17 @@
 			)
 			(justify right bottom)
 		)
-		(uuid "41362214-3a06-4afe-be8d-bea8f525fffb")
+		(uuid "ddbf2bb6-b950-4a48-b4da-ec718ef494b9")
 	)
 	(symbol
-		(lib_id "LED")
+		(lib_id "L")
 		(at 220.0 100.0 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "c755ecfd-74b8-44dc-8867-5c316a523193")
+		(uuid "786ef049-4343-4792-be33-30dbfd0299d8")
 		(property "Reference" "LED1"
 			(at 220.0 97.46 0)
 			(effects
@@ -968,58 +958,58 @@
 			)
 		)
 		(pin "1"
-			(uuid "4d4da4b3-f4b6-4fb9-8a22-66e28521387b")
+			(uuid "8f04655d-2cdb-4a84-809b-64772e4e3e9b")
 		)
 	)
 	(wire
 		(pts
-			(xy 223.81 100.0) (xy 231.43 100.0)
+			(xy 220.0 96.19) (xy 220.0 86.03)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "63333d2c-3ff5-4ff3-84b2-03cfbf95717e")
+		(uuid "a51323b6-82b8-411d-843d-1ce8bc16010f")
 	)
 	(label "LED_DRIVE"
-		(at 231.43 100.0 0)
+		(at 220.0 86.03 90)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify left bottom)
 		)
-		(uuid "f85af94a-8b36-436f-bdfb-77168d1cb753")
+		(uuid "f363571c-37dd-4af3-aa6a-85e9b59ef554")
 	)
 	(wire
 		(pts
-			(xy 216.19 100.0) (xy 208.57 100.0)
+			(xy 220.0 103.81) (xy 220.0 113.97)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "ba911ba5-e00f-4ea3-9d72-feb72eeb771a")
+		(uuid "272add0b-e319-4e41-8e17-0140cdefc02d")
 	)
 	(label "FET_DRAIN"
-		(at 208.57 100.0 0)
+		(at 220.0 113.97 90)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify right bottom)
 		)
-		(uuid "a7127c78-be9a-4d04-81ea-68a18c3955a1")
+		(uuid "9799fede-2462-4ab7-9772-719c85a3c159")
 	)
 	(symbol
-		(lib_id "Q_NMOS_GDS")
+		(lib_id "BS170")
 		(at 260.0 100.0 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "897e2534-2aba-45be-859e-6d464ed5ca97")
+		(uuid "eb6f6250-275a-4ced-a6a3-21e7f6b0055c")
 		(property "Reference" "Q1"
 			(at 260.0 97.46 0)
 			(effects
@@ -1055,68 +1045,8 @@
 			)
 		)
 		(pin "1"
-			(uuid "1392b0b2-a6d9-41f9-ab72-92c1a3e958d0")
+			(uuid "430cc71d-222f-4e9e-8e84-dc39a9650775")
 		)
-	)
-	(wire
-		(pts
-			(xy 254.92 100.0) (xy 247.3 100.0)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "b3e74de1-5bce-47a5-b320-fcf1be78efc4")
-	)
-	(label "GATE_SIGNAL"
-		(at 247.3 100.0 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right bottom)
-		)
-		(uuid "5f505b68-6b8c-4e36-801f-1aa5daa259d4")
-	)
-	(wire
-		(pts
-			(xy 262.54 94.92) (xy 262.54 84.76)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "8b2b399c-a018-4196-acb3-1fcd5ad7652c")
-	)
-	(label "FET_DRAIN"
-		(at 262.54 84.76 90)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "b002a2de-5e12-4575-bf17-852ecabfd169")
-	)
-	(wire
-		(pts
-			(xy 262.54 105.08) (xy 262.54 115.24)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "85114715-b2bf-4edb-b92e-7dba6235497e")
-	)
-	(label "GND"
-		(at 262.54 115.24 90)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right bottom)
-		)
-		(uuid "70d4e926-b090-4eea-9847-8dea7c7f4bd3")
 	)
 	(symbol
 		(lib_id "Resistor")
@@ -1126,7 +1056,7 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "e0dfd669-1276-4cec-824e-fb23532bd8f6")
+		(uuid "372cfc8d-bd04-4a8f-8caf-0d4418a646b0")
 		(property "Reference" "R1"
 			(at 80.0 32.46 90)
 			(effects
@@ -1162,10 +1092,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "4a9648a7-6ef3-4e7f-b3b0-1aac9b94f5ff")
+			(uuid "2318b83f-4c6e-465f-beb1-0c130d0d90f7")
 		)
 		(pin "2"
-			(uuid "f651bf95-3ba9-4aa9-8ee2-429e67ca59f7")
+			(uuid "63cc287e-9dac-44c0-87f0-eedf95ae29e3")
 		)
 	)
 	(wire
@@ -1176,7 +1106,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "022ac026-4185-46ac-9c04-32687a1d5174")
+		(uuid "a07a9299-1635-4688-88a5-f7e54e2f6da4")
 	)
 	(label "VCC_5V"
 		(at 91.43 35.0 0)
@@ -1186,7 +1116,7 @@
 			)
 			(justify left bottom)
 		)
-		(uuid "139de39e-7347-4aa5-994a-3822a65f7449")
+		(uuid "a7c07cf7-9c1f-4bf5-98d3-ca097c85c042")
 	)
 	(wire
 		(pts
@@ -1196,7 +1126,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "8b15a9f1-ace5-4c3f-ac9c-5ce88a8321e5")
+		(uuid "5c78f562-842c-4526-bae9-9e285502b967")
 	)
 	(label "LED_DRIVE"
 		(at 68.57 35.0 0)
@@ -1206,7 +1136,7 @@
 			)
 			(justify right bottom)
 		)
-		(uuid "5783ff67-653c-4a0d-b10b-c2c373c89ee2")
+		(uuid "3b2e9ddd-3814-47e0-bfbc-9052f6de3f33")
 	)
 	(symbol
 		(lib_id "Resistor")
@@ -1216,7 +1146,7 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "77d0a865-2118-44bf-81cd-08ea2f63662d")
+		(uuid "f1beb7b1-740b-45ac-8170-05bd5239a77c")
 		(property "Reference" "R2"
 			(at 80.0 47.7 90)
 			(effects
@@ -1252,10 +1182,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "d02b5ebb-bc2c-48d0-b400-ee8091fe9b6a")
+			(uuid "843a8d9d-e080-44c4-9366-932f0ff51dd1")
 		)
 		(pin "2"
-			(uuid "d25f68e1-d690-4295-9192-b5be445b22a4")
+			(uuid "e31d069d-4bb0-4efd-b603-99f81f0de0c0")
 		)
 	)
 	(wire
@@ -1266,7 +1196,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "c6dcdf4b-6196-40d6-95b7-46b87adf7c09")
+		(uuid "50c246ac-4707-4e28-a55f-39340d193617")
 	)
 	(label "GATE_SIGNAL"
 		(at 91.43 50.24 0)
@@ -1276,7 +1206,7 @@
 			)
 			(justify left bottom)
 		)
-		(uuid "8e83e509-8fe5-47b5-a12e-f8eb82efcc09")
+		(uuid "491f4124-60ed-4e0f-8ee0-87782d45d4d8")
 	)
 	(wire
 		(pts
@@ -1286,7 +1216,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "d4ac8269-d909-4f67-a506-43f6d2f81575")
+		(uuid "7612229c-19be-477a-a032-4dabaf601d15")
 	)
 	(label "GND"
 		(at 68.57 50.24 0)
@@ -1296,6 +1226,6 @@
 			)
 			(justify right bottom)
 		)
-		(uuid "fb1b082a-3f6b-4dc7-933d-c4abd18f1e72")
+		(uuid "12d48d50-14c4-46a8-890b-19d938e65d68")
 	)
 )

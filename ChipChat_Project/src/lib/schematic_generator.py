@@ -525,23 +525,27 @@ def _wire_component_pins(schematic_data, comp_x, comp_y,
         if not net_name:
             continue
 
-        # Look up pin geometry. If the JSON pin number/name doesn't exist on
-        # the symbol (common for LEDs that use A/C vs 1/2 or FETs that use
-        # G/D/S vs 1/2/3), fall back to a simple mapping so we still wire it.
-        pin_key = original_pin
-        if pin_key not in symbol_pins:
-            # Generic LED from Device:LED → 1 = K, 2 = A
-            if original_pin in ("A", "ANODE") and "2" in symbol_pins:
-                pin_key = "2"
-            elif original_pin in ("C", "K", "CATHODE") and "1" in symbol_pins:
-                pin_key = "1"
-            # Generic NMOS Q_NMOS_GDS → 1 = G, 2 = D, 3 = S
-            elif original_pin in ("G", "GATE") and "1" in symbol_pins:
-                pin_key = "1"
-            elif original_pin in ("D", "DRAIN") and "2" in symbol_pins:
-                pin_key = "2"
-            elif original_pin in ("S", "SOURCE") and "3" in symbol_pins:
-                pin_key = "3"
+        # Prefer mapping by pin_name when available (e.g. G/D/S, A/K), then
+        # fall back to the numeric pin from JSON.
+        pin_name = str(conn.get("pin_name", "")).upper()
+        pin_key = None
+
+        # Generic LED from Device:LED → 1 = K, 2 = A
+        if pin_name in ("A", "ANODE") and "2" in symbol_pins:
+            pin_key = "2"
+        elif pin_name in ("K", "C", "CATHODE") and "1" in symbol_pins:
+            pin_key = "1"
+        # Generic NMOS Q_NMOS_GDS → 1 = G, 2 = D, 3 = S
+        elif pin_name in ("G", "GATE") and "1" in symbol_pins:
+            pin_key = "1"
+        elif pin_name in ("D", "DRAIN") and "2" in symbol_pins:
+            pin_key = "2"
+        elif pin_name in ("S", "SOURCE") and "3" in symbol_pins:
+            pin_key = "3"
+
+        # If name-based mapping failed, fall back to numeric pin from JSON.
+        if pin_key is None:
+            pin_key = original_pin
 
         if pin_key not in symbol_pins:
             continue
@@ -671,20 +675,23 @@ def generate_from_json(output_path, json_path, sheet_name="BME280_Sensor"):
         part_name = comp["part"]
 
         # Choose which symbol name to look up in the libraries.
-        # For now we intentionally map some LLM-style library names to
-        # simple generic KiCad symbols:
+        # Map common LLM-style names to real KiCad symbols:
         #
-        #   - Any LED_* or LED_TH:*  → Device:LED (generic diode LED)
-        #   - Any Transistor_FET:*   → Transistor_FET:Q_NMOS_GDS (generic NMOS)
+        #   - Any LED_* or LED_TH:*      → Device:LED (generic diode LED)
+        #   - Any Transistor_FET:*       → Transistor_FET:Q_NMOS_GDS (generic NMOS)
+        #   - Connector:1x01 / 1x02      → Connector_Generic:Conn_01x01 / Conn_01x02
         #
         # We still keep the original `part_name` as the VALUE text so the
-        # schematic shows BS170 / LED_TH:LED_D5.0mm, but the graphics come
-        # from stable generic symbols.
+        # schematic shows the user's logical part (e.g. BSS138, LED_TH...).
         symbol_lookup = part_name
         if part_name.startswith("LED_") or part_name.startswith("LED_TH:"):
             symbol_lookup = "Device:LED"
         elif part_name.startswith("Transistor_FET:"):
             symbol_lookup = "Transistor_FET:Q_NMOS_GDS"
+        elif part_name == "Connector:1x01":
+            symbol_lookup = "Connector_Generic:Conn_01x01"
+        elif part_name == "Connector:1x02":
+            symbol_lookup = "Connector_Generic:Conn_01x02"
 
         lib_id = None
         resolved_name = symbol_lookup

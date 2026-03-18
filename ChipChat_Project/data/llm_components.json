@@ -1,0 +1,40 @@
+{
+  "MOSFET_N": {
+    "name": "MOSFET_N",
+    "manufacturer": "Generic",
+    "part_number": "Logic_Level_N_FET_SOT23",
+    "type": "transistor",
+    "description": "Generic N-channel Logic-Level MOSFET (SOT-23)",
+    "interfaces": [],
+    "voltage_range": {
+      "min": 0,
+      "max": 20,
+      "unit": "V"
+    },
+    "pins": [
+      {
+        "number": "1",
+        "name": "G",
+        "type": "input",
+        "function": "gate"
+      },
+      {
+        "number": "2",
+        "name": "S",
+        "type": "power_in",
+        "function": "source"
+      },
+      {
+        "number": "3",
+        "name": "D",
+        "type": "power_out",
+        "function": "drain"
+      }
+    ],
+    "datasheet": "N/A_Generic",
+    "design_notes": {
+      "typical_application": "Used as a low-side switch. Gate controlled by logic signal, Source to GND, Drain to load.",
+      "critical_notes": "Ensure Gate voltage is sufficient to fully turn on ('logic-level') for selected VCC. Vgs_th should be well below control signal low and well above control signal high."
+    }
+  }
+}

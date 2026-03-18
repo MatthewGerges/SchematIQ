@@ -37,8 +37,11 @@ ROOT = Path(__file__).resolve().parent.parent
 load_dotenv(ROOT / ".env")
 
 COMP_DB_PATH = ROOT.parent / "component_database" / "components.json"
-OUTPUT_PATH = ROOT / "data" / "llm_output.json"
-NEW_COMP_PATH = ROOT / "data" / "llm_components.json"
+# Default filenames live under ROOT/data but we now generate unique names per
+# project (e.g. llm_output_LED_Blink_Project.json) instead of always
+# overwriting llm_output.json.
+OUTPUT_DIR = ROOT / "data"
+NEW_COMP_PATH = OUTPUT_DIR / "llm_components.json"
 
 # ── Model (see test_gemini_api.py for full list of options) ──────────────────
 MODEL = "gemini-2.5-flash"
@@ -250,6 +253,11 @@ class ProjectState:
         self.passives = []
         self.nets = []
         self.new_components = {}
+        # Track which items we've already ingested to avoid duplicates when
+        # the LLM repeats the same JSON blocks (common at the end of a chat).
+        self._component_keys = set()  # (sheet, ref)
+        self._passive_keys = set()    # (sheet, ref)
+        self._net_keys = set()        # (sheet, name)
 
     def ingest(self, data: dict):
         """Parse a JSON block from the LLM and merge it into state."""
@@ -260,13 +268,44 @@ class ProjectState:
             return "sheets"
 
         if "sheet_design" in data:
-            self.components.extend(data.get("components", []))
-            self.passives.extend(data.get("passives", []))
-            self.nets.extend(data.get("nets", []))
+            sheet = data["sheet_design"]
+            # If the model never emitted the sheet list block, infer it from the
+            # first per-sheet design block so generation doesn't crash.
+            if not self.sheets:
+                self.sheets = [{"name": sheet, "file": f"{sheet}.kicad_sch", "page": 1}]
+            if not self.project_name:
+                # Best-effort default so filenames are meaningful.
+                self.project_name = sheet
+
+            for comp in data.get("components", []):
+                key = (comp.get("sheet", sheet), comp.get("ref"))
+                if key in self._component_keys:
+                    continue
+                self._component_keys.add(key)
+                self.components.append(comp)
+
+            for p in data.get("passives", []):
+                key = (p.get("sheet", sheet), p.get("ref"))
+                if key in self._passive_keys:
+                    continue
+                self._passive_keys.add(key)
+                self.passives.append(p)
+
+            for n in data.get("nets", []):
+                key = (n.get("sheet", sheet), n.get("name"))
+                if key in self._net_keys:
+                    continue
+                self._net_keys.add(key)
+                self.nets.append(n)
             return f"sheet:{data['sheet_design']}"
 
         if "cross_sheet_nets" in data:
-            self.nets.extend(data["cross_sheet_nets"])
+            for n in data["cross_sheet_nets"]:
+                key = (n.get("sheet", ""), n.get("name"))
+                if key in self._net_keys:
+                    continue
+                self._net_keys.add(key)
+                self.nets.append(n)
             return "cross_sheet_nets"
 
         return None
@@ -333,11 +372,39 @@ def load_components_db() -> dict:
         return json.load(f)
 
 
-def save_project(state: ProjectState):
-    OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    with open(OUTPUT_PATH, "w") as f:
+def _build_output_path(state: ProjectState) -> Path:
+    """Choose a unique JSON filename based on the project name.
+
+    Examples:
+      LED_Blink_Project → data/llm_output_LED_Blink_Project.json
+      Untitled          → data/llm_output.json, llm_output_1.json, ...
+    """
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+
+    base_name = state.project_name or "llm_output"
+    slug = re.sub(r"[^A-Za-z0-9_]+", "_", base_name).strip("_") or "llm_output"
+
+    # First try without a numeric suffix
+    candidate = OUTPUT_DIR / f"llm_output_{slug}.json"
+    if not candidate.exists():
+        return candidate
+
+    # Fall back to numbered suffixes
+    idx = 1
+    while True:
+        candidate = OUTPUT_DIR / f"llm_output_{slug}_{idx}.json"
+        if not candidate.exists():
+            return candidate
+        idx += 1
+
+
+def save_project(state: ProjectState) -> Path:
+    """Persist the current project state and return the JSON path."""
+    out_path = _build_output_path(state)
+    with open(out_path, "w") as f:
         json.dump(state.to_dict(), f, indent=2)
-    print(f"\n  Project saved to: {OUTPUT_PATH}")
+    print(f"\n  Project saved to: {out_path}")
+    return out_path
 
 
 def save_new_components(state: ProjectState):
@@ -399,9 +466,24 @@ def main():
             continue
 
         if user_input.lower() in ("quit", "done", "exit"):
-            save_project(state)
+            json_path = save_project(state)
             save_new_components(state)
             print(f"\n  Final state:\n{state.summary()}")
+
+            # Automatically run the KiCad generator so the user can open the
+            # result immediately in KiCad.
+            try:
+                print("\n  Running generate_from_llm.py to build KiCad project...")
+                import subprocess
+
+                subprocess.run(
+                    [sys.executable, "scripts/generate_from_llm.py", str(json_path)],
+                    cwd=ROOT,
+                    check=False,
+                )
+            except Exception as e:
+                print(f"  (Skipped KiCad generation: {e})")
+
             print("\n  Goodbye!")
             break
 

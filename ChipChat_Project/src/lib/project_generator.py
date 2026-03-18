@@ -34,6 +34,8 @@ def generate_root_schematic(json_path, output_dir, project_name=None):
 
     sheets_def = data["sheets"]
     n = len(sheets_def)
+    if n == 0:
+        raise ValueError("No sheets found in JSON. Ensure the project JSON includes a non-empty 'sheets' list.")
 
     # Compute grid dimensions
     max_cols = max(1, int((PAGE_W - 2 * X_MARGIN) / X_SPACING))

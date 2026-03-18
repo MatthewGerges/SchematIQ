@@ -1,0 +1,305 @@
+{
+  "project_name": "Signal_Generator_LED_Test",
+  "description": "A simple board to test a signal generator by toggling an LED with an nFET.",
+  "sheets": [
+    {
+      "name": "Signal_Generator_Test_Board",
+      "file": "Signal_Generator_Test_Board.kicad_sch",
+      "page": 1
+    }
+  ],
+  "components": [
+    {
+      "ref": "J1",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "Signal_Generator_Test_Board",
+      "note": "Input for signal generator (gate drive)",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "Pin_1",
+          "net": "SIG_GEN_IN"
+        },
+        {
+          "pin": "2",
+          "pin_name": "Pin_2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "J2",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "Signal_Generator_Test_Board",
+      "note": "Input for LED power supply",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "Pin_1",
+          "net": "LED_VCC"
+        },
+        {
+          "pin": "2",
+          "pin_name": "Pin_2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "Q1",
+      "part": "Transistor_FET:BS170",
+      "sheet": "Signal_Generator_Test_Board",
+      "note": "N-Channel MOSFET for low-side LED switching",
+      "connections": [
+        {
+          "pin": "G",
+          "pin_name": "G",
+          "net": "FET_GATE"
+        },
+        {
+          "pin": "D",
+          "pin_name": "D",
+          "net": "LED_CATHODE"
+        },
+        {
+          "pin": "S",
+          "pin_name": "S",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "D1",
+      "part": "Diode:LED",
+      "sheet": "Signal_Generator_Test_Board",
+      "note": "LED indicator",
+      "connections": [
+        {
+          "pin": "A",
+          "pin_name": "A",
+          "net": "LED_ANODE"
+        },
+        {
+          "pin": "K",
+          "pin_name": "K",
+          "net": "LED_CATHODE"
+        }
+      ]
+    }
+  ],
+  "passives": [
+    {
+      "ref": "C1",
+      "type": "C",
+      "value": "10uF",
+      "sheet": "Signal_Generator_Test_Board",
+      "purpose": "LED_VCC bulk decoupling",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "LED_VCC"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C2",
+      "type": "C",
+      "value": "0.1uF",
+      "sheet": "Signal_Generator_Test_Board",
+      "purpose": "LED_VCC decoupling",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "LED_VCC"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "R1",
+      "type": "R",
+      "value": "330",
+      "sheet": "Signal_Generator_Test_Board",
+      "purpose": "LED current-limiting resistor (adjust based on LED_VCC and LED specs)",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "LED_VCC"
+        },
+        {
+          "pin": "2",
+          "net": "LED_ANODE"
+        }
+      ]
+    },
+    {
+      "ref": "R2",
+      "type": "R",
+      "value": "100",
+      "sheet": "Signal_Generator_Test_Board",
+      "purpose": "Q1 gate series resistor",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "SIG_GEN_IN"
+        },
+        {
+          "pin": "2",
+          "net": "FET_GATE"
+        }
+      ]
+    },
+    {
+      "ref": "R3",
+      "type": "R",
+      "value": "10K",
+      "sheet": "Signal_Generator_Test_Board",
+      "purpose": "Q1 gate pulldown resistor",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "FET_GATE"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    }
+  ],
+  "nets": [
+    {
+      "name": "SIG_GEN_IN",
+      "type": "local",
+      "sheet": "Signal_Generator_Test_Board",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "1"
+        },
+        {
+          "ref": "R2",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "LED_VCC",
+      "type": "local",
+      "sheet": "Signal_Generator_Test_Board",
+      "connections": [
+        {
+          "ref": "J2",
+          "pin": "1"
+        },
+        {
+          "ref": "C1",
+          "pin": "1"
+        },
+        {
+          "ref": "C2",
+          "pin": "1"
+        },
+        {
+          "ref": "R1",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "FET_GATE",
+      "type": "local",
+      "sheet": "Signal_Generator_Test_Board",
+      "connections": [
+        {
+          "ref": "Q1",
+          "pin": "G"
+        },
+        {
+          "ref": "R2",
+          "pin": "2"
+        },
+        {
+          "ref": "R3",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "LED_ANODE",
+      "type": "local",
+      "sheet": "Signal_Generator_Test_Board",
+      "connections": [
+        {
+          "ref": "D1",
+          "pin": "A"
+        },
+        {
+          "ref": "R1",
+          "pin": "2"
+        }
+      ]
+    },
+    {
+      "name": "LED_CATHODE",
+      "type": "local",
+      "sheet": "Signal_Generator_Test_Board",
+      "connections": [
+        {
+          "ref": "D1",
+          "pin": "K"
+        },
+        {
+          "ref": "Q1",
+          "pin": "D"
+        }
+      ]
+    },
+    {
+      "name": "GND",
+      "type": "power",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "2",
+          "pin_name": "Pin_2",
+          "sheet": "Signal_Generator_Test_Board"
+        },
+        {
+          "ref": "J2",
+          "pin": "2",
+          "pin_name": "Pin_2",
+          "sheet": "Signal_Generator_Test_Board"
+        },
+        {
+          "ref": "Q1",
+          "pin": "S",
+          "pin_name": "S",
+          "sheet": "Signal_Generator_Test_Board"
+        },
+        {
+          "ref": "C1",
+          "pin": "2",
+          "sheet": "Signal_Generator_Test_Board"
+        },
+        {
+          "ref": "C2",
+          "pin": "2",
+          "sheet": "Signal_Generator_Test_Board"
+        },
+        {
+          "ref": "R3",
+          "pin": "2",
+          "sheet": "Signal_Generator_Test_Board"
+        }
+      ]
+    }
+  ]
+}

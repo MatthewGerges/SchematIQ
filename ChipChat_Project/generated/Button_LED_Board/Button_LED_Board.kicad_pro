@@ -241,7 +241,7 @@
     "pinned_symbol_libs": []
   },
   "meta": {
-    "filename": "Signal_Generator_LED_Test.kicad_pro",
+    "filename": "Button_LED_Board.kicad_pro",
     "version": 3
   },
   "net_settings": {
@@ -401,12 +401,12 @@
   },
   "sheets": [
     [
-      "7f9cd48a-b8f4-4b3b-b6cf-344fcce82bc8",
+      "929acaf1-6e86-4a25-9855-703fe04d2982",
       "Root"
     ],
     [
-      "358006d7-8835-4fcc-88b5-0cb4473ab1a6",
-      "Signal_Generator_Test_Board"
+      "d3628e81-22d1-4ffc-b2fc-a6737d44ad3e",
+      "Main_Circuit"
     ]
   ],
   "text_variables": {}

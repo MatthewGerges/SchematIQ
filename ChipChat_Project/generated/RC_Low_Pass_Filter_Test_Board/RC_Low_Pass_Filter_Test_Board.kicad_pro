@@ -1,0 +1,29 @@
+{
+  "meta": {
+    "filename": "RC_Low_Pass_Filter_Test_Board.kicad_pro",
+    "version": 2
+  },
+  "schematic": {
+    "annotate_start_num": 0,
+    "bom_fmt_settings": {
+      "field_delimiter": ",",
+      "name": "CSV",
+      "ref_delimiter": ",",
+      "string_delimiter": "\""
+    },
+    "connection_grid_size": 50.0,
+    "drawing": {},
+    "page_layout_descr_file": ""
+  },
+  "sheets": [
+    [
+      "7d8201b4-89d4-45b9-a307-88dd5326a8d1",
+      "Root"
+    ],
+    [
+      "f2be0415-f12d-40b1-aa58-fd30270aab95",
+      "RC_Filter"
+    ]
+  ],
+  "text_variables": {}
+}

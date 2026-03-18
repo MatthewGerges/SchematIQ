@@ -530,11 +530,27 @@ def _wire_component_pins(schematic_data, comp_x, comp_y,
         pin_name = str(conn.get("pin_name", "")).upper()
         pin_key = None
 
+        sym_pin1_name = str(symbol_pins.get("1", {}).get("name", "")).upper()
+        sym_pin2_name = str(symbol_pins.get("2", {}).get("name", "")).upper()
+
+        # Only apply LED A/K mapping when the symbol actually looks like the
+        # Device:LED convention (pin names K/A). This prevents mis-mapping
+        # switch pins labeled A/B.
+        is_led_symbol = (sym_pin1_name == "K" and sym_pin2_name == "A")
+
         # Generic LED from Device:LED → 1 = K, 2 = A
-        if pin_name in ("A", "ANODE") and "2" in symbol_pins:
+        if is_led_symbol and pin_name in ("A", "ANODE") and "2" in symbol_pins:
             pin_key = "2"
-        elif pin_name in ("K", "C", "CATHODE") and "1" in symbol_pins:
+        elif is_led_symbol and pin_name in ("K", "C", "CATHODE") and "1" in symbol_pins:
             pin_key = "1"
+        # Switch SW_Push uses pin *names* "1"/"2". LLMs sometimes label
+        # switch pins as A/B; only apply this mapping when the symbol's pin
+        # names are also "1"/"2" (so we don't confuse LED Anode "A").
+        elif sym_pin1_name == "1" and sym_pin2_name == "2":
+            if pin_name in ("A", "1") and "1" in symbol_pins:
+                pin_key = "1"
+            elif pin_name in ("B", "2") and "2" in symbol_pins:
+                pin_key = "2"
         # Generic NMOS Q_NMOS_GDS → 1 = G, 2 = D, 3 = S
         elif pin_name in ("G", "GATE") and "1" in symbol_pins:
             pin_key = "1"
@@ -558,7 +574,10 @@ def _wire_component_pins(schematic_data, comp_x, comp_y,
         abs_x = round(comp_x + pin["x"], 2)
         abs_y = round(comp_y - pin["y"], 2)       # ← negate Y
 
-        # Skip duplicate positions (e.g. hidden GND pin 7 overlaps pin 1)
+        # Skip duplicate positions. If we truly have two different connections
+        # mapped onto the same physical pin coordinate, don't draw a second
+        # stub/label on top of the first (it becomes unreadable and can look
+        # like two nets are shorted).
         pos_key = (abs_x, abs_y)
         if pos_key in wired_positions:
             continue
@@ -692,6 +711,8 @@ def generate_from_json(output_path, json_path, sheet_name="BME280_Sensor"):
             symbol_lookup = "Connector_Generic:Conn_01x01"
         elif part_name == "Connector:1x02":
             symbol_lookup = "Connector_Generic:Conn_01x02"
+        elif part_name == "Button_Switch_SMD" or "Button_Switch" in part_name:
+            symbol_lookup = "Switch:SW_Push"
 
         lib_id = None
         resolved_name = symbol_lookup

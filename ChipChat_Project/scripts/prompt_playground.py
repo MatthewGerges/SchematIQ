@@ -22,7 +22,13 @@ import sys
 from pathlib import Path
 
 from dotenv import load_dotenv  # pip install python-dotenv
-from google import genai  # pip install google-genai
+try:
+    from google import genai  # pip install google-genai
+except ImportError as e:
+    print("ImportError: google-genai is required. From ChipChat_Project directory:")
+    print("  source .venv/bin/activate")
+    print("  pip install google-genai python-dotenv")
+    sys.exit(1)
 from google.genai import types
 from google.genai.types import GoogleSearch, Tool
 

@@ -2,7 +2,7 @@
 	(version 20250114)
 	(generator "ChipChat_Gemini")
 	(generator_version "9.0")
-	(uuid "bfc4364e-f462-406e-8022-41c925fa8b9c")
+	(uuid "6fde2acc-f9b8-4b3e-a10e-e358663ddbd0")
 	(paper "A4")
 
 	(lib_symbols
@@ -277,7 +277,7 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "bcf77dd8-1f0b-4dbd-84bc-c9007fc2d00a")
+		(uuid "2af8e958-b482-4ceb-8f1f-bff0b8803e20")
 		(property "Reference" "U3"
 			(at 200.0 97.46 0)
 			(effects
@@ -313,28 +313,28 @@
 			)
 		)
 		(pin "1"
-			(uuid "b6df8732-30e8-4a3e-8bd7-a9e75e6b929f")
+			(uuid "749e5115-e9ec-44fc-a192-ff395297109a")
 		)
 		(pin "2"
-			(uuid "80d7732d-039a-49ad-93d3-d87108ed9281")
+			(uuid "08e58c44-c37c-4724-a8d6-ae966b6b3edc")
 		)
 		(pin "3"
-			(uuid "7beef6b2-a01e-434c-a3fc-086d533f79a8")
+			(uuid "ece7d8b3-5eb9-48d9-946e-ecaccbd4c432")
 		)
 		(pin "4"
-			(uuid "3e0f0faf-2273-4d40-9d16-2b025c113e8b")
+			(uuid "1abbf245-c7d3-4a12-be56-4f395dd01173")
 		)
 		(pin "5"
-			(uuid "0bf9e0c8-d565-45e0-99ce-db1154c1d1f4")
+			(uuid "41807e34-31c4-4e15-9f73-edaf9ed7613c")
 		)
 		(pin "6"
-			(uuid "b39e0885-ee53-4a26-9ed4-f606a48ea372")
+			(uuid "fcc01b7b-2486-4ff6-bb67-5b8c3c280928")
 		)
 		(pin "7"
-			(uuid "9e05047d-644e-4403-8be5-a0b04828e93d")
+			(uuid "8bb153d4-bb40-4dce-ba81-2db3bdc0fc96")
 		)
 		(pin "8"
-			(uuid "b7fcd3cd-0cbb-4721-9eca-de77c9a07da3")
+			(uuid "353e0eb8-8ade-470a-aae3-3a342270549b")
 		)
 	)
 	(wire
@@ -345,7 +345,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "46b9e97e-aa17-4db9-9bff-575bfa7adc8e")
+		(uuid "09709c71-5956-4898-8e99-2899349421a3")
 	)
 	(label "GND"
 		(at 222.86 110.16 0)
@@ -355,7 +355,7 @@
 			)
 			(justify left bottom)
 		)
-		(uuid "762eee61-ebac-427a-8a02-673faea23c81")
+		(uuid "94eac1fb-5b63-493a-a0a2-547de42dfee2")
 	)
 	(wire
 		(pts
@@ -365,7 +365,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "81ecef42-b53d-416c-a338-c3138da4906f")
+		(uuid "85913178-d863-455a-8f38-ee54b4c6c8a2")
 	)
 	(hierarchical_label "3V3"
 		(shape bidirectional)
@@ -376,7 +376,7 @@
 			)
 			(justify right)
 		)
-		(uuid "56c0c64d-27d9-4739-abd7-2fa4a5052c84")
+		(uuid "0bb87e83-e935-4445-801d-11dbf2f91ab6")
 	)
 	(wire
 		(pts
@@ -386,7 +386,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "e7b9236e-8b76-43b5-a69d-9caefb52473b")
+		(uuid "c342ea5a-cef5-41c9-90ed-a0ca023d04d5")
 	)
 	(hierarchical_label "SDA_BUS"
 		(shape bidirectional)
@@ -397,7 +397,7 @@
 			)
 			(justify right)
 		)
-		(uuid "e668ff35-01fb-4b0d-a6d8-4c670049ee35")
+		(uuid "104b644e-92d4-49bd-ba80-ad0e460ea1bf")
 	)
 	(wire
 		(pts
@@ -407,7 +407,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "38262fea-44a8-408a-9b74-2dbc3f61d628")
+		(uuid "478d5295-0dbf-4787-bb3d-de8426f4ff0e")
 	)
 	(hierarchical_label "SCL_BUS"
 		(shape bidirectional)
@@ -418,7 +418,7 @@
 			)
 			(justify right)
 		)
-		(uuid "b86e2bdd-f17d-4ec4-aae7-f5cad90a8229")
+		(uuid "31488c49-36e8-4346-b2e9-192966461b38")
 	)
 	(wire
 		(pts
@@ -428,7 +428,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "921a2b99-4f05-4ac6-bcaf-1a6cec5b4c41")
+		(uuid "9b5dfecc-fae5-4d21-b268-d67b7e3bf356")
 	)
 	(label "SDO_ADDR"
 		(at 177.14 105.08 0)
@@ -438,7 +438,7 @@
 			)
 			(justify right bottom)
 		)
-		(uuid "9ea0f092-29b0-4f9b-b102-3bd026432efc")
+		(uuid "564ad099-d7ba-461a-8eb3-1bf00bed954c")
 	)
 	(wire
 		(pts
@@ -448,7 +448,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "47645185-ae2f-458b-97d0-1541c232e785")
+		(uuid "6ea7229f-d0b4-48cf-a096-2ec572d15b3e")
 	)
 	(hierarchical_label "3V3"
 		(shape bidirectional)
@@ -459,7 +459,7 @@
 			)
 			(justify left)
 		)
-		(uuid "ca05f6f8-71e1-43e2-9bf0-b65034c92783")
+		(uuid "a5a1f56d-1b4b-453f-bf79-ec68a5604cf5")
 	)
 	(wire
 		(pts
@@ -469,7 +469,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "630ea76a-7271-477d-b7d2-c0eec2073b10")
+		(uuid "3efd8908-dbdc-4b5d-87e2-63d3d2d69547")
 	)
 	(hierarchical_label "3V3"
 		(shape bidirectional)
@@ -480,7 +480,7 @@
 			)
 			(justify left)
 		)
-		(uuid "97b52d63-a9f7-4111-b15f-911ddfa85a3b")
+		(uuid "378c04a8-2c89-4de0-afc1-eb3d43141028")
 	)
 	(symbol
 		(lib_id "Capacitor")
@@ -490,7 +490,7 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "856ad02c-a51b-4001-9214-bf46e19336c8")
+		(uuid "1f411339-536d-46aa-b252-b985a32f57c8")
 		(property "Reference" "C9"
 			(at 80.0 32.46 90)
 			(effects
@@ -526,10 +526,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "fc3b3c49-42c0-4f39-a0cd-540f14883c7e")
+			(uuid "da21c498-3875-4c54-84f8-4c531b106b90")
 		)
 		(pin "2"
-			(uuid "823b1ee3-e728-4f03-99d7-95e6ad2bf1ba")
+			(uuid "e4990a32-5c03-496e-905f-7f9a95581d2d")
 		)
 	)
 	(wire
@@ -540,7 +540,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "a9f3b03b-b0ec-4fcf-b1e7-6f484cab2fdc")
+		(uuid "061cb98c-bd6f-4142-a7e3-d0e5eff16b77")
 	)
 	(hierarchical_label "3V3"
 		(shape bidirectional)
@@ -551,7 +551,7 @@
 			)
 			(justify left)
 		)
-		(uuid "ec31da35-ae97-4ea7-8349-81ab68d6e598")
+		(uuid "4699254e-1c68-42e7-abb0-e65dc84b29ee")
 	)
 	(wire
 		(pts
@@ -561,7 +561,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "d3268846-1290-4d05-b4fd-9548ddd4b932")
+		(uuid "8ee5467d-a50a-4ec5-8364-8ad401cc6098")
 	)
 	(label "GND"
 		(at 68.57 35.0 0)
@@ -571,7 +571,7 @@
 			)
 			(justify right bottom)
 		)
-		(uuid "8061b64c-d0d2-408b-b00c-28546b2ae1a1")
+		(uuid "5d54c8ef-ff8d-401d-8762-ff085f5f6f26")
 	)
 	(symbol
 		(lib_id "Capacitor")
@@ -581,7 +581,7 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "31e4d1f2-c5d8-4950-a3fe-cc152e31acd0")
+		(uuid "e970e953-7f1d-42fe-b0f9-1380d21d1811")
 		(property "Reference" "C10"
 			(at 80.0 47.7 90)
 			(effects
@@ -617,10 +617,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "27368b8a-dbaf-49ac-8eaa-6ecf24d087b4")
+			(uuid "2f70f768-225c-4d78-ab5c-5e13f9f43600")
 		)
 		(pin "2"
-			(uuid "835af1e7-4fa2-4ff2-b667-7f85b849b364")
+			(uuid "869ddb8d-7720-42ae-aac3-2d97401567de")
 		)
 	)
 	(wire
@@ -631,7 +631,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "f5198a8a-2a07-4c23-8755-62eb03096f5f")
+		(uuid "44ac8190-bd4d-4575-bf39-596a6ec6b19f")
 	)
 	(hierarchical_label "3V3"
 		(shape bidirectional)
@@ -642,7 +642,7 @@
 			)
 			(justify left)
 		)
-		(uuid "cdb3d727-37c5-4978-8ecf-097fe77da174")
+		(uuid "87d73108-cd29-43be-9af8-e68ed545134b")
 	)
 	(wire
 		(pts
@@ -652,7 +652,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "5f4557bc-d6c5-4d6a-a9be-45d24a098966")
+		(uuid "886a4554-fa0b-4a8f-9ab5-1be96af8bec8")
 	)
 	(label "GND"
 		(at 68.57 50.24 0)
@@ -662,6 +662,6 @@
 			)
 			(justify right bottom)
 		)
-		(uuid "080efb85-2356-41b5-abdf-21426b54ca77")
+		(uuid "0075e0e1-b99a-4b62-afbe-6404a9a496f1")
 	)
 )

@@ -2,7 +2,7 @@
 	(version 20250114)
 	(generator "ChipChat_Gemini")
 	(generator_version "9.0")
-	(uuid "e343d923-732e-4731-b2b6-9a8fdffde947")
+	(uuid "b66c1078-2c59-4838-8d0c-b498a92c9695")
 	(paper "A4")
 
 	(lib_symbols
@@ -1125,7 +1125,7 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "bd51b675-1690-4e6a-a6e2-b84ef26073d6")
+		(uuid "52ea413a-24c0-402e-85b3-24db7da1e9f2")
 		(property "Reference" "J1"
 			(at 200.0 97.46 0)
 			(effects
@@ -1161,7 +1161,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "49baaab6-3798-4980-be24-6f2c2249e858")
+			(uuid "a59ccaa0-7060-4879-95f7-193ab9950a67")
 		)
 	)
 	(wire
@@ -1172,7 +1172,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "476b86f6-3c20-4493-9c48-36fd40b78088")
+		(uuid "32c40e45-b3da-448d-ac0d-2623c54c97d2")
 	)
 	(label "GND"
 		(at 200.0 133.02 90)
@@ -1182,7 +1182,7 @@
 			)
 			(justify right bottom)
 		)
-		(uuid "0be849e7-d992-4ca7-93fe-41d539789070")
+		(uuid "feab334b-3945-4f47-81f6-972aabfacd20")
 	)
 	(wire
 		(pts
@@ -1192,7 +1192,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "89753fad-83cd-423e-983e-6667f5ff3e00")
+		(uuid "913f7da0-bd05-448e-b45f-2fa2ae754704")
 	)
 	(label "USB_5V"
 		(at 222.86 84.76 0)
@@ -1202,7 +1202,7 @@
 			)
 			(justify left bottom)
 		)
-		(uuid "7f0b437b-0b27-4a73-8bb7-6d97705fd5be")
+		(uuid "20379d33-e692-4fd1-af5f-d423b2c95102")
 	)
 	(wire
 		(pts
@@ -1212,7 +1212,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "dbaad9a7-a803-4d87-a159-4f551215e8f3")
+		(uuid "37a6058f-9d27-41cf-85eb-b732319e9453")
 	)
 	(label "CC1"
 		(at 222.86 89.84 0)
@@ -1222,7 +1222,7 @@
 			)
 			(justify left bottom)
 		)
-		(uuid "f10abdc9-48d0-424c-a064-4dcbfa2c14ef")
+		(uuid "2330fa12-1866-4221-93a1-0dc7815ba9ef")
 	)
 	(wire
 		(pts
@@ -1232,7 +1232,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "e02505cb-6b8a-4a48-98b5-49eda4ee7f9e")
+		(uuid "aeac263c-6218-40ab-a5cc-ec0b7fe03f83")
 	)
 	(hierarchical_label "USB_D_P"
 		(shape bidirectional)
@@ -1243,7 +1243,7 @@
 			)
 			(justify left)
 		)
-		(uuid "106e0933-9b0d-423a-ae20-4d4b7d3ecac4")
+		(uuid "8a747948-6f0a-4dec-adca-1169856b689f")
 	)
 	(wire
 		(pts
@@ -1253,7 +1253,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "8312bbf6-54e0-4932-97d5-5cfaac6549f9")
+		(uuid "b3e592bd-8ecf-41d1-a80c-affe252ba78f")
 	)
 	(hierarchical_label "USB_D_M"
 		(shape bidirectional)
@@ -1264,7 +1264,7 @@
 			)
 			(justify left)
 		)
-		(uuid "d2111f30-8d0e-419b-872d-ae8b7b7e2af9")
+		(uuid "fae62352-91ab-4564-bc1a-1f37ca8c231f")
 	)
 	(wire
 		(pts
@@ -1274,7 +1274,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "1893fa5e-c4ee-42ad-88d6-df6b7ee3b086")
+		(uuid "126f8932-302e-4363-8a79-c96d70928a13")
 	)
 	(label "NC_SBU1"
 		(at 222.86 112.7 0)
@@ -1284,7 +1284,7 @@
 			)
 			(justify left bottom)
 		)
-		(uuid "ee7ffbb1-4cf8-45c6-8638-9f3b48db9a49")
+		(uuid "57ff8196-d2ed-4ec0-9554-91f23e2bb852")
 	)
 	(wire
 		(pts
@@ -1294,7 +1294,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "25f6330d-5ad7-4b00-88d3-d22090f48bfb")
+		(uuid "a463488d-4d76-4fe6-af03-50b11d203ebf")
 	)
 	(label "CC2"
 		(at 222.86 92.38 0)
@@ -1304,7 +1304,7 @@
 			)
 			(justify left bottom)
 		)
-		(uuid "779b7493-748a-44c2-840d-ac593e8bb9a6")
+		(uuid "de410380-2e14-44dc-a702-ab8a2b485adb")
 	)
 	(wire
 		(pts
@@ -1314,7 +1314,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "21a81bd7-5d9d-4451-a215-a3e8a9e9c6bb")
+		(uuid "46a95b0a-911e-4cc3-825b-9c97678d56b8")
 	)
 	(hierarchical_label "USB_D_P"
 		(shape bidirectional)
@@ -1325,7 +1325,7 @@
 			)
 			(justify left)
 		)
-		(uuid "ba1be549-bd81-4f41-b9b4-55c9d66f0e6b")
+		(uuid "4b25ddf7-5cd5-4f80-ad8d-6221ed959ec9")
 	)
 	(wire
 		(pts
@@ -1335,7 +1335,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "3ad596d3-7733-4814-ad6a-904ca6959193")
+		(uuid "0d9aa7b1-47c7-43b0-a54c-208453b00686")
 	)
 	(hierarchical_label "USB_D_M"
 		(shape bidirectional)
@@ -1346,7 +1346,7 @@
 			)
 			(justify left)
 		)
-		(uuid "016c72bd-71d1-49a3-b95f-29e59fcd203e")
+		(uuid "d504579a-e0c2-49f9-bbce-5dd8c8c9f0da")
 	)
 	(wire
 		(pts
@@ -1356,7 +1356,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "a7731060-df49-4420-a486-2fb46e1fe258")
+		(uuid "65d3cb10-64de-4147-bad5-6ea0bfa27af3")
 	)
 	(label "NC_SBU2"
 		(at 222.86 115.24 0)
@@ -1366,7 +1366,7 @@
 			)
 			(justify left bottom)
 		)
-		(uuid "b298012b-2759-401d-bb52-1322a7d7cba2")
+		(uuid "c61adc48-642d-41d2-afd8-bc0414c1c382")
 	)
 	(wire
 		(pts
@@ -1376,7 +1376,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "b3073002-a875-4a94-a157-bdef041ed146")
+		(uuid "7e2c68cc-65be-4d93-8326-35794b7f0c59")
 	)
 	(label "GND"
 		(at 192.38 133.02 90)
@@ -1386,7 +1386,7 @@
 			)
 			(justify right bottom)
 		)
-		(uuid "bb12fd90-4149-4f54-9f4e-bb7f7a9f1f32")
+		(uuid "7d24ee5b-1845-4b07-987e-97e78cf996a6")
 	)
 	(symbol
 		(lib_id "Resistor")
@@ -1396,7 +1396,7 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "d1e45010-1a78-4a66-ae09-0eb0df916af9")
+		(uuid "ccb152db-a8c0-43c8-bcee-0dcf439a0bc4")
 		(property "Reference" "R1"
 			(at 80.0 32.46 90)
 			(effects
@@ -1432,10 +1432,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "0a91e021-08aa-4f06-a88f-eca0de65b1c8")
+			(uuid "e1d13824-d953-4180-bdde-faf6ed55d364")
 		)
 		(pin "2"
-			(uuid "a2c3c635-ba8e-4ec5-b739-448a70f805d4")
+			(uuid "a55e35a4-3327-466b-bfc2-6b71110365a1")
 		)
 	)
 	(wire
@@ -1446,7 +1446,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "f78d1801-9219-4d0a-bd10-dc9e316313ae")
+		(uuid "0087769d-005e-4e83-9406-de3d26055699")
 	)
 	(label "CC1"
 		(at 91.43 35.0 0)
@@ -1456,7 +1456,7 @@
 			)
 			(justify left bottom)
 		)
-		(uuid "d8602626-151e-477d-8c2b-a5905ba20958")
+		(uuid "4e3ed342-2d09-43ab-8cea-601861f829af")
 	)
 	(wire
 		(pts
@@ -1466,7 +1466,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "300ee042-093a-49c6-a97f-4afd6241a4ca")
+		(uuid "bdc287a8-4939-48bc-83b5-18dda565596d")
 	)
 	(label "GND"
 		(at 68.57 35.0 0)
@@ -1476,7 +1476,7 @@
 			)
 			(justify right bottom)
 		)
-		(uuid "d54bc5c9-ea05-4e67-af73-8c8c9ad527ce")
+		(uuid "ee7ed9c5-d72b-4712-9b50-720a9df33c28")
 	)
 	(symbol
 		(lib_id "Resistor")
@@ -1486,7 +1486,7 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "f7bc5d3b-142d-4fbc-ae73-5bb16a4aa768")
+		(uuid "3c84e78b-7732-40c6-a6a5-6ad9da0e48b4")
 		(property "Reference" "R2"
 			(at 80.0 47.7 90)
 			(effects
@@ -1522,10 +1522,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "2520ed77-5c79-45fb-85cf-b5c4da3edc90")
+			(uuid "f0a1058a-6c92-46f8-88d3-62b40d6108b2")
 		)
 		(pin "2"
-			(uuid "ea31ba35-321c-491a-8307-789dc224eae0")
+			(uuid "e793eef1-f8d4-44b2-9274-2ea1bf1e394f")
 		)
 	)
 	(wire
@@ -1536,7 +1536,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "2878a7fd-0f3e-4ecd-b294-863a70398d8b")
+		(uuid "8e3aa200-b421-45d9-b9a2-174c820fb7d5")
 	)
 	(label "CC2"
 		(at 91.43 50.24 0)
@@ -1546,7 +1546,7 @@
 			)
 			(justify left bottom)
 		)
-		(uuid "bfa4c90e-29c2-4a0b-9a4b-aa58acddc7cc")
+		(uuid "9f33f717-d91f-4c60-b41b-8c18cb5de951")
 	)
 	(wire
 		(pts
@@ -1556,7 +1556,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "7e1d6f16-787c-4a05-92df-7e151ddfb938")
+		(uuid "2cdea290-33e6-458d-8f3b-b25188cddc54")
 	)
 	(label "GND"
 		(at 68.57 50.24 0)
@@ -1566,7 +1566,7 @@
 			)
 			(justify right bottom)
 		)
-		(uuid "1de3a9d2-23cd-4c57-a5e5-ee69e4cc8878")
+		(uuid "9edfaa03-af29-436e-ac4b-ce27739d07ff")
 	)
 	(symbol
 		(lib_id "FerriteBead")
@@ -1576,7 +1576,7 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "57719eea-80ef-470b-b7bb-8f7f7c1eb3db")
+		(uuid "b5176d5e-99f6-40f8-bb3c-a0a52931dde6")
 		(property "Reference" "FB1"
 			(at 80.0 62.940000000000005 90)
 			(effects
@@ -1612,10 +1612,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "90e88617-108f-46a1-ad87-1115c9502fee")
+			(uuid "e2a1a193-b5a8-4c40-85e3-a9e741edfdba")
 		)
 		(pin "2"
-			(uuid "263d7af8-7deb-4c16-8234-846ee60d4b33")
+			(uuid "59ebd614-b409-4a28-9890-0defeffcea59")
 		)
 	)
 	(wire
@@ -1626,7 +1626,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "fc293edd-3d9f-408d-95e7-60ad27222cb0")
+		(uuid "e5a5b42b-e922-4a59-8a8a-0835129b9ae4")
 	)
 	(label "USB_5V"
 		(at 91.43 65.48 0)
@@ -1636,7 +1636,7 @@
 			)
 			(justify left bottom)
 		)
-		(uuid "2e813704-05f0-4c56-b902-4c5e8303f203")
+		(uuid "045cd323-501a-47a3-9b36-28c48167d685")
 	)
 	(wire
 		(pts
@@ -1646,7 +1646,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "b6817c06-8e0d-42f9-a29e-90ef00a6eb51")
+		(uuid "5a057f7e-36c8-4820-aae9-bc41ba55b857")
 	)
 	(hierarchical_label "VBUS_CLEAN"
 		(shape bidirectional)
@@ -1657,7 +1657,7 @@
 			)
 			(justify right)
 		)
-		(uuid "72662b77-a462-43e8-958d-ab10f300a71b")
+		(uuid "e805f076-b44e-4f61-bed8-e2d06880d96e")
 	)
 	(symbol
 		(lib_id "Capacitor")
@@ -1667,7 +1667,7 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "38355905-20fb-4a10-97f3-e2468b2b114a")
+		(uuid "ecb6ad46-dcec-4b70-ae9a-0f20735d4321")
 		(property "Reference" "C1"
 			(at 80.0 78.17999999999999 90)
 			(effects
@@ -1703,10 +1703,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "3b7b0569-6659-4a08-8f41-de1665d494b8")
+			(uuid "b3679c55-91f9-4063-a685-26c308fa2036")
 		)
 		(pin "2"
-			(uuid "093f6637-ec02-44dd-bb5b-986815d7afca")
+			(uuid "4d6d63d1-5649-459b-bc20-e8b3f267e1fa")
 		)
 	)
 	(wire
@@ -1717,7 +1717,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "8d457ac8-cbb0-4d07-857b-bfb34ee37022")
+		(uuid "2c5078ed-53ba-4dd0-b353-cebc7cd9580d")
 	)
 	(hierarchical_label "VBUS_CLEAN"
 		(shape bidirectional)
@@ -1728,7 +1728,7 @@
 			)
 			(justify left)
 		)
-		(uuid "90c8433c-8325-4a59-91c1-7f6fac3deb56")
+		(uuid "4eb1e9ee-c637-4397-8517-82e0abc46192")
 	)
 	(wire
 		(pts
@@ -1738,7 +1738,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "2b32281c-83a3-4289-9a47-3b1186dc7f82")
+		(uuid "8e0f2e1d-5dae-4df2-b9e1-570fa49d5917")
 	)
 	(label "GND"
 		(at 68.57 80.72 0)
@@ -1748,7 +1748,7 @@
 			)
 			(justify right bottom)
 		)
-		(uuid "98b9dd78-3d40-4a2a-a072-3190ed2c9afb")
+		(uuid "d2b29238-81ed-4471-a5ce-bc61fb541970")
 	)
 	(symbol
 		(lib_id "Capacitor")
@@ -1758,7 +1758,7 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "48c382f3-909b-471d-a5f7-8f01b0d5a10c")
+		(uuid "c6c6746b-5527-466c-85f2-589448dd6da4")
 		(property "Reference" "C2"
 			(at 80.0 93.41999999999999 90)
 			(effects
@@ -1794,10 +1794,10 @@
 			)
 		)
 		(pin "1"
-			(uuid "725916be-735b-4e4a-90a2-212008fca105")
+			(uuid "965f4c5f-185e-4f52-9bea-6dfd9dcde3fd")
 		)
 		(pin "2"
-			(uuid "883aae2c-0862-4549-86a9-249663ce9c57")
+			(uuid "e91433c7-e8fa-4376-93d3-547c7eb24d53")
 		)
 	)
 	(wire
@@ -1808,7 +1808,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "f61de250-2ea9-45bb-b12b-a4240ed870a0")
+		(uuid "b5b6db71-2332-4b75-844b-74a9a181bae2")
 	)
 	(hierarchical_label "VBUS_CLEAN"
 		(shape bidirectional)
@@ -1819,7 +1819,7 @@
 			)
 			(justify left)
 		)
-		(uuid "102f598d-ed7e-42fc-87d6-f448eccaafc5")
+		(uuid "2c45eca0-78ec-4cff-a9ee-520545bd5b83")
 	)
 	(wire
 		(pts
@@ -1829,7 +1829,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "9bf89ffe-6d0e-4466-b720-c3b9d116bc47")
+		(uuid "452cba86-385b-4d4a-946c-78c8d3d4f48b")
 	)
 	(label "GND"
 		(at 68.57 95.96 0)
@@ -1839,6 +1839,6 @@
 			)
 			(justify right bottom)
 		)
-		(uuid "4d23eada-1d54-45a1-a5f6-75d5346ca286")
+		(uuid "8e420612-97b8-4545-a66d-e7d64035802e")
 	)
 )

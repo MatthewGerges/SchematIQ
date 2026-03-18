@@ -24,4 +24,6 @@ venv/
 # Official KiCad libraries (cloned repos — too large for git)
 KICAD_Library/kicad-symbols/
 KICAD_Library/kicad-footprints/
-KICAD_Library/kicad-packages3D/
+
+# External projects (cloned for experimentation; not part of this repo)
+tscircuit/

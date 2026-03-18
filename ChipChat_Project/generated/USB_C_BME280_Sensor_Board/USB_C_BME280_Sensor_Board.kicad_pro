@@ -17,23 +17,23 @@
   },
   "sheets": [
     [
-      "6c31b6c0-648b-4b1b-b97d-bc372622c933",
+      "66444886-b6fb-477e-bff3-41cd6f3ddc65",
       "Root"
     ],
     [
-      "792e40c2-bcbb-4404-9456-e2f0ee05dfe8",
+      "2b2babf4-e29a-4ecc-835d-656d1de2c5a1",
       "USB-C Connector"
     ],
     [
-      "a9dd006a-f0db-4a0b-9acd-67a5cc42e789",
+      "3a48f948-2245-4bfb-846f-46637d860846",
       "Power Supply (3.3V Buck)"
     ],
     [
-      "3ef722dc-ded3-4d94-9941-f74bbb0d358b",
+      "c72d3ae1-3b1a-48ff-8a19-9224f9857405",
       "USB-to-I2C Bridge"
     ],
     [
-      "4cc6be6d-46c8-488a-aeed-4c2f5a34f131",
+      "ed0ab16e-1e32-4eac-ba60-ffb63d9deec4",
       "BME280 Sensor"
     ]
   ],

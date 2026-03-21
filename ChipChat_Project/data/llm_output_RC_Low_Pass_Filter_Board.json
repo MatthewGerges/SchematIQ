@@ -1,0 +1,185 @@
+{
+  "project_name": "RC_Low_Pass_Filter_Board",
+  "description": "A small test board for a passive RC low-pass filter with ~1kHz cutoff.",
+  "sheets": [
+    {
+      "name": "RC_Filter",
+      "file": "RC_Filter.kicad_sch",
+      "page": 1
+    }
+  ],
+  "components": [
+    {
+      "ref": "J1",
+      "part": "Connector_Generic:Conn_01x02_Pin",
+      "sheet": "RC_Filter",
+      "note": "2-pin input connector for SIG_IN and GND",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "Pin_1",
+          "net": "SIG_IN"
+        },
+        {
+          "pin": "2",
+          "pin_name": "Pin_2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "R1",
+      "part": "Device:R",
+      "sheet": "RC_Filter",
+      "note": "Series resistor for low-pass filter",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "SIG_IN"
+        },
+        {
+          "pin": "2",
+          "net": "SIG_OUT_RAW"
+        }
+      ]
+    },
+    {
+      "ref": "C1",
+      "part": "Device:C",
+      "sheet": "RC_Filter",
+      "note": "Shunt capacitor for low-pass filter",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "SIG_OUT_RAW"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "J2",
+      "part": "Connector_Generic:Conn_01x02_Pin",
+      "sheet": "RC_Filter",
+      "note": "2-pin output connector for SIG_OUT and GND",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "Pin_1",
+          "net": "SIG_OUT"
+        },
+        {
+          "pin": "2",
+          "pin_name": "Pin_2",
+          "net": "GND"
+        }
+      ]
+    }
+  ],
+  "passives": [
+    {
+      "ref": "R1",
+      "type": "R",
+      "value": "10K",
+      "sheet": "RC_Filter",
+      "purpose": "Series resistor for 1kHz low-pass filter",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "SIG_IN"
+        },
+        {
+          "pin": "2",
+          "net": "SIG_OUT_RAW"
+        }
+      ]
+    },
+    {
+      "ref": "C1",
+      "type": "C",
+      "value": "15nF",
+      "sheet": "RC_Filter",
+      "purpose": "Shunt capacitor for 1kHz low-pass filter",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "SIG_OUT_RAW"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    }
+  ],
+  "nets": [
+    {
+      "name": "SIG_IN",
+      "type": "local",
+      "sheet": "RC_Filter",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "1"
+        },
+        {
+          "ref": "R1",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "GND",
+      "type": "power",
+      "sheet": "RC_Filter",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "2"
+        },
+        {
+          "ref": "C1",
+          "pin": "2"
+        },
+        {
+          "ref": "J2",
+          "pin": "2"
+        }
+      ]
+    },
+    {
+      "name": "SIG_OUT_RAW",
+      "type": "local",
+      "sheet": "RC_Filter",
+      "connections": [
+        {
+          "ref": "R1",
+          "pin": "2"
+        },
+        {
+          "ref": "C1",
+          "pin": "1"
+        },
+        {
+          "ref": "J2",
+          "pin": "1",
+          "pin_name": "Pin_1"
+        }
+      ]
+    },
+    {
+      "name": "SIG_OUT",
+      "type": "local",
+      "sheet": "RC_Filter",
+      "connections": [
+        {
+          "ref": "J2",
+          "pin": "1",
+          "pin_name": "Pin_1"
+        }
+      ]
+    }
+  ]
+}

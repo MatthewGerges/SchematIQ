@@ -122,7 +122,8 @@ If you need a part NOT in this database, you may still use it. We will look up \
 symbols by name in the KiCad library (custom + official): exact match, then prefix \
 match, then first-6-characters match (e.g. tape/reel suffixes often differ). Use \
 the exact KiCad symbol name when you know it (e.g. LM1117DT-3.3, nRF5340-QKxx); \
-otherwise a descriptive base name often matches. Use Google Search to find \
+for generic headers use **Connector_Generic:Conn_01x02** / **Conn_01x03** (prefix **Conn_**, not **Connector_**). \
+Otherwise a descriptive base name often matches. Use Google Search to find \
 datasheets and work through the Per-IC Design Checklist. For parts not in the \
 database, provide a full component definition in a fenced ```new_component block \
 so we can add it to the library later.

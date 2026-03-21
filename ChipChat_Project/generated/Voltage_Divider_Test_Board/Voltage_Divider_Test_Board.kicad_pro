@@ -21,7 +21,7 @@
     "pinned_symbol_libs": []
   },
   "meta": {
-    "filename": "RC_Low_Pass_Filter_Test_Board.kicad_pro",
+    "filename": "Voltage_Divider_Test_Board.kicad_pro",
     "version": 3
   },
   "net_settings": {
@@ -82,12 +82,12 @@
   },
   "sheets": [
     [
-      "7d8201b4-89d4-45b9-a307-88dd5326a8d1",
+      "e64b9a30-f24f-4cb5-933d-736149a759fc",
       "Root"
     ],
     [
-      "f2be0415-f12d-40b1-aa58-fd30270aab95",
-      "RC_Filter"
+      "deca8b7c-dcc0-448a-8a7a-2391ebcf6f5a",
+      "Voltage_Divider"
     ]
   ],
   "text_variables": {}

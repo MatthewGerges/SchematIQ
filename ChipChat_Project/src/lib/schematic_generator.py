@@ -713,6 +713,11 @@ def generate_from_json(output_path, json_path, sheet_name="BME280_Sensor"):
             symbol_lookup = "Connector_Generic:Conn_01x02"
         elif part_name == "Button_Switch_SMD" or "Button_Switch" in part_name:
             symbol_lookup = "Switch:SW_Push"
+        elif part_name.startswith("Connector_Generic:"):
+            # LLM often emits Connector_01x02 / Connector_01x03; KiCad uses Conn_01x02.
+            _cg_lib, _cg_sym = part_name.split(":", 1)
+            if _cg_sym.startswith("Connector_"):
+                symbol_lookup = f"Connector_Generic:Conn_{_cg_sym[len('Connector_'):]}"
 
         lib_id = None
         resolved_name = symbol_lookup

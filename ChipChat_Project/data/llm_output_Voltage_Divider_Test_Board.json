@@ -1,0 +1,154 @@
+{
+  "project_name": "Voltage_Divider_Test_Board",
+  "description": "A simple board to test voltage division with configurable input and exposed output.",
+  "sheets": [
+    {
+      "name": "Voltage_Divider",
+      "file": "Voltage_Divider.kicad_sch",
+      "page": 1
+    }
+  ],
+  "components": [
+    {
+      "ref": "J1",
+      "part": "Connector_Generic:Connector_01x02",
+      "sheet": "Voltage_Divider",
+      "note": "2-pin input header for VIN and GND",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "Pin_1",
+          "net": "VIN"
+        },
+        {
+          "pin": "2",
+          "pin_name": "Pin_2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "J2",
+      "part": "Connector_Generic:Connector_01x03",
+      "sheet": "Voltage_Divider",
+      "note": "3-pin output header for VIN, VOUT, and GND",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "Pin_1",
+          "net": "VIN"
+        },
+        {
+          "pin": "2",
+          "pin_name": "Pin_2",
+          "net": "VOUT"
+        },
+        {
+          "pin": "3",
+          "pin_name": "Pin_3",
+          "net": "GND"
+        }
+      ]
+    }
+  ],
+  "passives": [
+    {
+      "ref": "R1",
+      "type": "R",
+      "value": "10K",
+      "sheet": "Voltage_Divider",
+      "purpose": "Upper leg of voltage divider",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VIN"
+        },
+        {
+          "pin": "2",
+          "net": "VOUT"
+        }
+      ]
+    },
+    {
+      "ref": "R2",
+      "type": "R",
+      "value": "10K",
+      "sheet": "Voltage_Divider",
+      "purpose": "Lower leg of voltage divider",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VOUT"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    }
+  ],
+  "nets": [
+    {
+      "name": "VIN",
+      "type": "local",
+      "sheet": "Voltage_Divider",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "1",
+          "pin_name": "Pin_1"
+        },
+        {
+          "ref": "J2",
+          "pin": "1",
+          "pin_name": "Pin_1"
+        },
+        {
+          "ref": "R1",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "VOUT",
+      "type": "local",
+      "sheet": "Voltage_Divider",
+      "connections": [
+        {
+          "ref": "J2",
+          "pin": "2",
+          "pin_name": "Pin_2"
+        },
+        {
+          "ref": "R1",
+          "pin": "2"
+        },
+        {
+          "ref": "R2",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "GND",
+      "type": "power_net",
+      "sheet": "Voltage_Divider",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "2",
+          "pin_name": "Pin_2"
+        },
+        {
+          "ref": "J2",
+          "pin": "3",
+          "pin_name": "Pin_3"
+        },
+        {
+          "ref": "R2",
+          "pin": "2"
+        }
+      ]
+    }
+  ]
+}

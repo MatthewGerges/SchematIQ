@@ -221,6 +221,10 @@ When you're ready to commit a design section, output it as a fenced JSON code bl
 
 ## Important Rules
 - Passive pin 1 = signal side, pin 2 = power/ground side
+- Allowed passive **type** strings: **R**, **C**, **L**, **FB**, **Diode** \
+(generic rectifier / Schottky OR-ing → KiCad `Device:D`; pin **1 = anode**, \
+**2 = cathode**), and **D** (TVS only — special symbol). Use **Diode** for \
+normal diodes, not **D**.
 - Reference designators: J=connector, U=IC, R=resistor, C=capacitor, \
 L=inductor, D=diode, FB=ferrite bead
 - Number passives sequentially across ALL sheets (R1, R2... C1, C2... not \

@@ -1,40 +1,87 @@
 {
-  "MOSFET_N": {
-    "name": "MOSFET_N",
-    "manufacturer": "Generic",
-    "part_number": "Logic_Level_N_FET_SOT23",
-    "type": "transistor",
-    "description": "Generic N-channel Logic-Level MOSFET (SOT-23)",
+  "MCP6001": {
+    "name": "MCP6001",
+    "manufacturer": "Microchip",
+    "part_number": "MCP6001-I/P",
+    "type": "op_amp",
+    "description": "1 MHz Rail-to-Rail Input/Output Op Amp, Single, PDIP-8 / SOT-23-5",
     "interfaces": [],
     "voltage_range": {
-      "min": 0,
-      "max": 20,
+      "min": 1.8,
+      "max": 5.5,
       "unit": "V"
+    },
+    "symbol": {
+      "library": "Amplifier_Operational",
+      "lib_id": "Amplifier_Operational:MCP6001"
+    },
+    "footprint": {
+      "library": "Package_TO_SOT_SMD",
+      "name": "SOT-23-5"
     },
     "pins": [
       {
         "number": "1",
-        "name": "G",
-        "type": "input",
-        "function": "gate"
+        "name": "OUT",
+        "type": "output",
+        "function": "amplifier_output",
+        "voltage": {
+          "min": 0,
+          "max": 5.5,
+          "unit": "V"
+        }
       },
       {
         "number": "2",
-        "name": "S",
-        "type": "power_in",
-        "function": "source"
+        "name": "IN-",
+        "type": "input",
+        "function": "inverting_input",
+        "voltage": {
+          "min": 0,
+          "max": 5.5,
+          "unit": "V"
+        }
       },
       {
         "number": "3",
-        "name": "D",
-        "type": "power_out",
-        "function": "drain"
+        "name": "IN+",
+        "type": "input",
+        "function": "non_inverting_input",
+        "voltage": {
+          "min": 0,
+          "max": 5.5,
+          "unit": "V"
+        }
+      },
+      {
+        "number": "4",
+        "name": "VSS",
+        "type": "power_in",
+        "function": "negative_supply",
+        "voltage": {
+          "min": 0,
+          "max": 0,
+          "unit": "V"
+        }
+      },
+      {
+        "number": "5",
+        "name": "VDD",
+        "type": "power_in",
+        "function": "positive_supply",
+        "voltage": {
+          "min": 1.8,
+          "max": 5.5,
+          "unit": "V"
+        }
       }
     ],
-    "datasheet": "N/A_Generic",
+    "datasheet": "https://ww1.microchip.com/downloads/en/DeviceDoc/21733C.pdf",
     "design_notes": {
-      "typical_application": "Used as a low-side switch. Gate controlled by logic signal, Source to GND, Drain to load.",
-      "critical_notes": "Ensure Gate voltage is sufficient to fully turn on ('logic-level') for selected VCC. Vgs_th should be well below control signal low and well above control signal high."
+      "power_supply": "Single supply operation from 1.8V to 5.5V. VDD to positive supply, VSS to ground.",
+      "required_passives": "0.1uF ceramic decoupling capacitor on VDD (pin 5) to VSS (pin 4), placed close to the IC.",
+      "typical_application": "For a voltage buffer, OUT connects to IN-, and the input signal connects to IN+. Rail-to-rail input/output allows signals to swing from VSS to VDD.",
+      "critical_notes": "Ensure VDD is within the 1.8V-5.5V operating range. Maintain proper decoupling for stable operation."
     }
   }
 }

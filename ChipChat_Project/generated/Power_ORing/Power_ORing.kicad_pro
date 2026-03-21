@@ -241,7 +241,7 @@
     "pinned_symbol_libs": []
   },
   "meta": {
-    "filename": "Voltage_Divider_Test_Board.kicad_pro",
+    "filename": "Power_ORing.kicad_pro",
     "version": 3
   },
   "net_settings": {
@@ -401,12 +401,12 @@
   },
   "sheets": [
     [
-      "e64b9a30-f24f-4cb5-933d-736149a759fc",
+      "eb5e89d0-06a9-4161-b7ca-c991fd55015c",
       "Root"
     ],
     [
-      "deca8b7c-dcc0-448a-8a7a-2391ebcf6f5a",
-      "Voltage_Divider"
+      "f770b142-4baf-4784-8126-52008a544a94",
+      "Power_ORing"
     ]
   ],
   "text_variables": {}

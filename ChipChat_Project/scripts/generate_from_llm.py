@@ -8,6 +8,7 @@ Usage:
     cd ChipChat_Project
     source .venv/bin/activate
     python scripts/generate_from_llm.py
+    python scripts/generate_from_llm.py --validate data/board.json  # fail before generate
 """
 
 import json
@@ -17,15 +18,19 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from src.lib import schematic_generator, project_generator
+from src.lib.symbol_preflight import validate_components_in_llm_data
 
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEFAULT_JSON_PATH = os.path.join(PROJECT_DIR, "data", "llm_output.json")
 GEN_DIR = os.path.join(PROJECT_DIR, "generated")
 
 if __name__ == "__main__":
+    argv = [a for a in sys.argv[1:] if a != "--validate"]
+    do_validate = "--validate" in sys.argv[1:]
+
     # Optional CLI arg: python scripts/generate_from_llm.py path/to/output.json
-    if len(sys.argv) > 1:
-        json_path = os.path.abspath(sys.argv[1])
+    if len(argv) >= 1:
+        json_path = os.path.abspath(argv[0])
     else:
         json_path = DEFAULT_JSON_PATH
 
@@ -35,6 +40,19 @@ if __name__ == "__main__":
 
     with open(json_path) as f:
         data = json.load(f)
+
+    if do_validate:
+        v_errs = validate_components_in_llm_data(data, print_ok=False)
+        if v_errs:
+            print("Symbol validation failed (--validate). Fix before generating:\n")
+            for e in v_errs:
+                print(f"  - {e}")
+            print(
+                "\nTip: add mappings in config/symbol_aliases.json or run "
+                "scripts/validate_llm_symbols.py for details."
+            )
+            sys.exit(1)
+        print("(validate) All component symbols resolve.\n")
 
     project_name = data.get("project_name", "LLM_Project")
     sheets = data["sheets"]

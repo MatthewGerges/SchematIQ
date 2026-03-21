@@ -241,7 +241,7 @@
     "pinned_symbol_libs": []
   },
   "meta": {
-    "filename": "Voltage_Divider_Test_Board.kicad_pro",
+    "filename": "Simple_Buck_Converter_Test_Board.kicad_pro",
     "version": 3
   },
   "net_settings": {
@@ -401,12 +401,12 @@
   },
   "sheets": [
     [
-      "e64b9a30-f24f-4cb5-933d-736149a759fc",
+      "d17b0628-c5c1-465a-9df8-78c72ea75e92",
       "Root"
     ],
     [
-      "deca8b7c-dcc0-448a-8a7a-2391ebcf6f5a",
-      "Voltage_Divider"
+      "e00307a5-2a6b-465d-9f74-3a182a06fe1f",
+      "Buck_Converter"
     ]
   ],
   "text_variables": {}

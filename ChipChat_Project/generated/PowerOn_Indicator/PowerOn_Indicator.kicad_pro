@@ -241,7 +241,7 @@
     "pinned_symbol_libs": []
   },
   "meta": {
-    "filename": "Voltage_Divider_Test_Board.kicad_pro",
+    "filename": "PowerOn_Indicator.kicad_pro",
     "version": 3
   },
   "net_settings": {
@@ -401,12 +401,12 @@
   },
   "sheets": [
     [
-      "e64b9a30-f24f-4cb5-933d-736149a759fc",
+      "5e4da133-ffe1-4289-961d-c0d6d2bcf564",
       "Root"
     ],
     [
-      "deca8b7c-dcc0-448a-8a7a-2391ebcf6f5a",
-      "Voltage_Divider"
+      "16199119-7e11-43fa-8fee-0f8037bf18ad",
+      "Power_Indicator"
     ]
   ],
   "text_variables": {}

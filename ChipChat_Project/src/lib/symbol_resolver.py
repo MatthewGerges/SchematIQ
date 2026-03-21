@@ -21,6 +21,9 @@ OFFICIAL_SYMBOLS_DIR = os.path.join(KICAD_LIB, "kicad-symbols")
 # (symbol_name, "custom", path_to_dir) or (symbol_name, "packed", path_to_.kicad_sym)
 _symbol_index = None
 
+# Avoid matching single-letter symbols (e.g. Simulation_SPICE "D") to "Diode:..." via prefix rules
+_MIN_SYM_LEN_FUZZY = 4
+
 
 def _top_level_symbol_names_from_packed_file(file_path):
     """Return list of top-level symbol names from a packed .kicad_sym file.
@@ -69,6 +72,53 @@ def _build_index():
     return index
 
 
+def list_top_level_symbols_in_packed(packed_lib_path):
+    """Return top-level symbol names in a packed .kicad_sym (for validation)."""
+    if not packed_lib_path or not os.path.isfile(packed_lib_path):
+        return []
+    return _top_level_symbol_names_from_packed_file(packed_lib_path)
+
+
+def resolve_in_packed_library(packed_lib_path, requested_symbol):
+    """Pick a symbol name inside one .kicad_sym file when the LLM name is wrong.
+
+    Handles common generics (NPN, PNP) inside Transistor_BJT; exact name if present.
+    Returns symbol name string or None.
+    """
+    if not packed_lib_path or not os.path.isfile(packed_lib_path):
+        return None
+    names = set(_top_level_symbol_names_from_packed_file(packed_lib_path))
+    req = (requested_symbol or "").strip()
+    if not req:
+        return None
+    if req in names:
+        return req
+    u = req.upper()
+    if u == "NPN":
+        for cand in (
+            "Q_NPN_BCE",
+            "Q_NPN_BEC",
+            "Q_NPN_CBE",
+            "Q_NPN_EBC",
+            "Q_NPN_ECB",
+            "Q_NPN_CEB",
+        ):
+            if cand in names:
+                return cand
+    if u == "PNP":
+        for cand in (
+            "Q_PNP_BCE",
+            "Q_PNP_BEC",
+            "Q_PNP_CBE",
+            "Q_PNP_EBC",
+            "Q_PNP_ECB",
+            "Q_PNP_CEB",
+        ):
+            if cand in names:
+                return cand
+    return None
+
+
 def resolve_symbol(part_name):
     """Find the best matching symbol for a part name (e.g. from LLM output).
 
@@ -82,19 +132,34 @@ def resolve_symbol(part_name):
     part_name = part_name.strip()
     index = _build_index()
 
+    # "Library:Symbol" — global fuzzy match is unsafe (e.g. Diode:LED → SPICE "D").
+    # Callers should use exact packed-lib embed + resolve_in_packed_library first.
+    search_token = part_name
+    if ":" in part_name:
+        search_token = part_name.split(":", 1)[1].strip()
+        if not search_token:
+            return None
+
     for (sym_name, kind, path) in index:
-        if sym_name == part_name:
+        if sym_name == part_name or sym_name == search_token:
             return (sym_name, kind, path)
 
     for (sym_name, kind, path) in index:
-        if sym_name.startswith(part_name) or part_name.startswith(sym_name):
+        if len(sym_name) < _MIN_SYM_LEN_FUZZY:
+            continue
+        if sym_name.startswith(search_token) or search_token.startswith(sym_name):
             return (sym_name, kind, path)
 
-    prefix = part_name[:6] if len(part_name) >= 6 else part_name
+    prefix = search_token[:6] if len(search_token) >= 6 else search_token
     if len(prefix) < 4:
         return None
     for (sym_name, kind, path) in index:
-        if sym_name.startswith(prefix) or prefix.startswith(sym_name[:6]):
+        if len(sym_name) < _MIN_SYM_LEN_FUZZY:
+            continue
+        sym6 = sym_name[:6] if len(sym_name) >= 6 else sym_name
+        if len(sym6) < 4:
+            continue
+        if sym_name.startswith(prefix) or prefix.startswith(sym6):
             return (sym_name, kind, path)
 
     return None

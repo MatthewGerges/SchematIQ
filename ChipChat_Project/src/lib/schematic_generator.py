@@ -11,6 +11,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from src.lib import kicad_api, symbol_resolver
+from src.lib.symbol_aliases import apply_symbol_alias, normalize_symbol_lookup
 
 # =============================================================================
 # Constants
@@ -44,9 +45,12 @@ MAIN_COMP_X_SPACING = 40.0
 PASSIVE_CONFIG = {
     "R":  {"file": "Resistor",     "angle": 90},
     "C":  {"file": "Capacitor",    "angle": 90},
+    # TVS / protection diode in custom Symbols (not generic rectifier)
     "D":  {"file": "SMAJ6.5CA",    "angle": 180},
     "FB": {"file": "FerriteBead",  "angle": 90},
     "L":  {"file": "L",            "angle": 90},
+    # Generic diode (OR-ing, rectifier): KiCad Device:D — pin 1 = K, pin 2 = A
+    "Diode": {"packed_lib": "Device", "packed_symbol": "D", "angle": 180},
 }
 
 
@@ -57,14 +61,52 @@ def _get_symbol_lib_path():
     return os.path.join(base, "KICAD_Library", "Symbols")
 
 
+def _get_kicad_packed_symbols_dir():
+    """Official kicad-symbols/ (Device, Connector_Generic, …)."""
+    base = os.path.dirname(os.path.dirname(os.path.dirname(
+        os.path.dirname(os.path.abspath(__file__)))))
+    return os.path.join(base, "KICAD_Library", "kicad-symbols")
+
+
+def _normalize_passive_type(ptype):
+    """Map common LLM spellings to PASSIVE_CONFIG keys."""
+    if not ptype:
+        return ptype
+    t = str(ptype).strip()
+    low = t.lower()
+    if low in ("diode", "d_schottky", "schottky", "schottky_diode", "rectifier"):
+        return "Diode"
+    return t
+
+
 def _embed_passive_symbol(schematic_data, symbol_type):
-    """Embed a passive symbol from KICAD_Library/Symbols/.
+    """Embed a passive symbol from custom Symbols/ or packed kicad-symbols/.
 
     Returns the lib_id string on success, or None.
     """
+    symbol_type = _normalize_passive_type(symbol_type)
     cfg = PASSIVE_CONFIG.get(symbol_type)
     if not cfg:
         print(f"Warning: Unknown passive type '{symbol_type}'")
+        return None
+
+    packed_lib = cfg.get("packed_lib")
+    packed_sym = cfg.get("packed_symbol")
+    if packed_lib and packed_sym:
+        packed_path = os.path.join(
+            _get_kicad_packed_symbols_dir(), f"{packed_lib}.kicad_sym"
+        )
+        if os.path.isfile(packed_path):
+            lib_id = kicad_api.embed_symbol_from_packed_lib(
+                schematic_data, packed_sym, packed_path
+            )
+            if lib_id:
+                print(
+                    f"  Embedded {packed_lib}:{packed_sym} ({symbol_type}) "
+                    f"→ lib_id={lib_id}"
+                )
+                return lib_id
+        print(f"  Warning: packed lib not found: {packed_path}")
         return None
 
     symbol_name = cfg["file"]
@@ -400,12 +442,23 @@ def _load_sheet_passives(json_path, sheet_name):
         if p.get("sheet") != sheet_name:
             continue
         conns = {c["pin"]: c["net"] for c in p.get("connections", [])}
+        ptype = _normalize_passive_type(p.get("type", ""))
+        # KiCad Device:D uses pin 1 = K (cathode), pin 2 = A (anode). LLMs
+        # usually output pin 1 = anode (rail in), pin 2 = cathode (OR output).
+        # Our horizontal layout ties JSON pin 1 → right stub, pin 2 → left;
+        # swapping nets aligns LLM convention with K=1 / A=2.
+        if ptype == "Diode":
+            pin1_net = conns.get("2", "")
+            pin2_net = conns.get("1", "")
+        else:
+            pin1_net = conns.get("1", "")
+            pin2_net = conns.get("2", "")
         passives.append({
             "ref": p["ref"],
-            "type": p["type"],       # "R" or "C"
+            "type": ptype,
             "value": p["value"],
-            "pin1_net": conns.get("1", ""),   # RIGHT side (after 90° rotation)
-            "pin2_net": conns.get("2", ""),    # LEFT side
+            "pin1_net": pin1_net,   # RIGHT side (see _wire_horizontal_passive)
+            "pin2_net": pin2_net,   # LEFT side
         })
 
     return passives, net_types
@@ -563,6 +616,22 @@ def _wire_component_pins(schematic_data, comp_x, comp_y,
         if pin_key is None:
             pin_key = original_pin
 
+        pin_key = str(pin_key)
+
+        # KiCad symbols key pins by number ("1","2","3"); LLMs often use names (B/C/E).
+        if pin_key not in symbol_pins:
+            name_aliases = set()
+            if pin_name:
+                name_aliases.add(pin_name)
+            op = str(original_pin).strip().upper()
+            if op:
+                name_aliases.add(op)
+            for num, pdata in symbol_pins.items():
+                pname = str(pdata.get("name", "")).strip().upper()
+                if pname and pname in name_aliases:
+                    pin_key = str(num)
+                    break
+
         if pin_key not in symbol_pins:
             continue
 
@@ -690,8 +759,11 @@ def generate_from_json(output_path, json_path, sheet_name="BME280_Sensor"):
     # LEDs, FETs, etc. overlapping. Instead, spread all main components
     # horizontally on a simple row, keeping passives in their own grid.
     main_count = len(main_comps)
+    main_placed = []
     for idx, comp in enumerate(main_comps):
-        part_name = comp["part"]
+        raw_part = comp["part"]
+        # User-editable JSON aliases (config/symbol_aliases.json), then built-in remaps.
+        part_name = apply_symbol_alias(raw_part)
 
         # Choose which symbol name to look up in the libraries.
         # Map common LLM-style names to real KiCad symbols:
@@ -700,24 +772,8 @@ def generate_from_json(output_path, json_path, sheet_name="BME280_Sensor"):
         #   - Any Transistor_FET:*       → Transistor_FET:Q_NMOS_GDS (generic NMOS)
         #   - Connector:1x01 / 1x02      → Connector_Generic:Conn_01x01 / Conn_01x02
         #
-        # We still keep the original `part_name` as the VALUE text so the
-        # schematic shows the user's logical part (e.g. BSS138, LED_TH...).
-        symbol_lookup = part_name
-        if part_name.startswith("LED_") or part_name.startswith("LED_TH:"):
-            symbol_lookup = "Device:LED"
-        elif part_name.startswith("Transistor_FET:"):
-            symbol_lookup = "Transistor_FET:Q_NMOS_GDS"
-        elif part_name == "Connector:1x01":
-            symbol_lookup = "Connector_Generic:Conn_01x01"
-        elif part_name == "Connector:1x02":
-            symbol_lookup = "Connector_Generic:Conn_01x02"
-        elif part_name == "Button_Switch_SMD" or "Button_Switch" in part_name:
-            symbol_lookup = "Switch:SW_Push"
-        elif part_name.startswith("Connector_Generic:"):
-            # LLM often emits Connector_01x02 / Connector_01x03; KiCad uses Conn_01x02.
-            _cg_lib, _cg_sym = part_name.split(":", 1)
-            if _cg_sym.startswith("Connector_"):
-                symbol_lookup = f"Connector_Generic:Conn_{_cg_sym[len('Connector_'):]}"
+        # Schematic VALUE field keeps `raw_part` (what the LLM said).
+        symbol_lookup = normalize_symbol_lookup(part_name)
 
         lib_id = None
         resolved_name = symbol_lookup
@@ -747,6 +803,15 @@ def generate_from_json(output_path, json_path, sheet_name="BME280_Sensor"):
                 if lib_id:
                     resolved_name = sym_name
                     packed_file_and_name = (packed_lib, sym_name)
+                else:
+                    alt = symbol_resolver.resolve_in_packed_library(packed_lib, sym_name)
+                    if alt:
+                        lib_id = kicad_api.embed_symbol_from_packed_lib(
+                            schematic_data, alt, packed_lib
+                        )
+                        if lib_id:
+                            resolved_name = alt
+                            packed_file_and_name = (packed_lib, alt)
 
         # If still not found, resolve by name (prefix / first-6-chars) in custom + official libs
         if not lib_id:
@@ -767,21 +832,8 @@ def generate_from_json(output_path, json_path, sheet_name="BME280_Sensor"):
                         sym_file_for_pins = os.path.join(path, f"{resolved_name}.kicad_sym")
 
         if lib_id:
-            pin_nums = [c["pin"] for c in comp.get("connections", [])]
-            max_pin = max((int(p) for p in pin_nums if p.isdigit()), default=1)
-            all_pins = [str(i) for i in range(1, max_pin + 1)]
-
-            # Evenly space components around MAIN_COMP_X on a single row.
-            offset = idx - (main_count - 1) / 2.0
-            comp_x = round(MAIN_COMP_X + offset * MAIN_COMP_X_SPACING, 2)
-            comp_y = MAIN_COMP_Y
-
-            kicad_api.place_component(
-                schematic_data, lib_id, comp["ref"], part_name,
-                (comp_x, comp_y), angle=0,
-                footprint="", pins=all_pins
-            )
-
+            # Parse symbol geometry before placing so we can (a) wire B/C/E → 1/2/3 and
+            # (b) pass every pin number to KiCad (JSON may only list letter pin refs).
             symbol_pins = None
             if sym_file_for_pins and os.path.exists(sym_file_for_pins):
                 symbol_pins = _parse_symbol_pins(sym_file_for_pins)
@@ -791,14 +843,53 @@ def generate_from_json(output_path, json_path, sheet_name="BME280_Sensor"):
                 if block:
                     symbol_pins = _parse_symbol_pins_from_content(block)
 
+            pin_nums = [c["pin"] for c in comp.get("connections", [])]
+            if symbol_pins:
+                all_pins = sorted(
+                    symbol_pins.keys(),
+                    key=lambda p: int(p) if str(p).isdigit() else 0,
+                )
+            else:
+                max_pin = max(
+                    (int(p) for p in pin_nums if str(p).isdigit()), default=1
+                )
+                all_pins = [str(i) for i in range(1, max_pin + 1)]
+
+            # Evenly space components around MAIN_COMP_X on a single row.
+            offset = idx - (main_count - 1) / 2.0
+            comp_x = round(MAIN_COMP_X + offset * MAIN_COMP_X_SPACING, 2)
+            comp_y = MAIN_COMP_Y
+
+            kicad_api.place_component(
+                schematic_data, lib_id, comp["ref"], raw_part,
+                (comp_x, comp_y), angle=0,
+                footprint="", pins=all_pins
+            )
+
             if symbol_pins:
                 _wire_component_pins(
                     schematic_data, comp_x, comp_y,
                     comp.get("connections", []), symbol_pins, net_types
                 )
                 print(f"  Wired {len(comp.get('connections', []))} pins on {comp['ref']}")
-            if resolved_name != part_name:
-                print(f"  Resolved '{part_name}' → '{resolved_name}' from library")
+            if resolved_name != symbol_lookup:
+                print(f"  Resolved lookup '{symbol_lookup}' → embedded '{resolved_name}'")
+            elif symbol_lookup != raw_part:
+                print(f"  Aliased '{raw_part}' → lookup '{symbol_lookup}'")
+            main_placed.append(
+                {
+                    "ref": comp["ref"],
+                    "raw_part": raw_part,
+                    "x": comp_x,
+                    "y": comp_y,
+                }
+            )
+        else:
+            print(
+                f"  ERROR: Could not place {comp['ref']} — no symbol for "
+                f"'{raw_part}' (lookup '{symbol_lookup}'). "
+                f"Add a line to config/symbol_aliases.json or fix the part name."
+            )
 
     # 6. Place passives — all horizontal, column grid
     placed_idx = 0
@@ -829,12 +920,10 @@ def generate_from_json(output_path, json_path, sheet_name="BME280_Sensor"):
 
     print(f"\n✓ Schematic generated from {os.path.basename(json_path)}")
     print(f"  Sheet: {sheet_name}")
-    if main_comps:
-        for idx, c in enumerate(main_comps):
-            offset = idx - (len(main_comps) - 1) / 2.0
-            comp_x = round(MAIN_COMP_X + offset * MAIN_COMP_X_SPACING, 2)
-            comp_y = MAIN_COMP_Y
-            print(f"  Component: {c['ref']} ({c['part']}) at ({comp_x}, {comp_y})")
+    for row in main_placed:
+        print(
+            f"  Placed: {row['ref']} ({row['raw_part']}) at ({row['x']}, {row['y']})"
+        )
     print(f"  {len(passives)} passives (horizontal, column grid):")
     for p in passives:
         print(f"    {p['ref']:>3s} ({p['value']:>5s}):  {p['pin2_net']} ←[{p['ref']}]→ {p['pin1_net']}")

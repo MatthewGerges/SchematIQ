@@ -241,7 +241,7 @@
     "pinned_symbol_libs": []
   },
   "meta": {
-    "filename": "Voltage_Divider_Test_Board.kicad_pro",
+    "filename": "LED_Driver_Board.kicad_pro",
     "version": 3
   },
   "net_settings": {
@@ -401,12 +401,12 @@
   },
   "sheets": [
     [
-      "e64b9a30-f24f-4cb5-933d-736149a759fc",
+      "dc68ec80-01b1-4f30-96f6-adb777d54bd7",
       "Root"
     ],
     [
-      "deca8b7c-dcc0-448a-8a7a-2391ebcf6f5a",
-      "Voltage_Divider"
+      "d5f516be-9a78-4144-bc4f-f47011e31382",
+      "LED_Driver"
     ]
   ],
   "text_variables": {}

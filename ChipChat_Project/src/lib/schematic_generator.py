@@ -552,6 +552,65 @@ def _parse_symbol_pins_from_content(content):
 
 
 # =============================================================================
+# Functional pin names → KiCad symbol pin numbers (op-amps, supplies)
+# =============================================================================
+
+def _functional_pin_role_from_label(label):
+    """Map LLM/datasheet pin label to a semantic role, or None.
+
+    KiCad op-amp symbols often use + / - / ~ / V+ / V- while datasheets use
+    IN+ / IN- / OUT / VDD / VSS with *different* pin numbers — always prefer
+    matching by this role over raw JSON pin integers when pin_name is present.
+    """
+    if not label:
+        return None
+    t = str(label).strip().upper().replace(" ", "")
+    if t in ("OUT", "OUTPUT"):
+        return "OP_OUT"
+    if t in ("IN+", "INP", "NON-INVERTING", "NONINVERTING", "+"):
+        return "OP_INP"
+    if t in ("IN-", "INN", "INVERTING", "-"):
+        return "OP_INN"
+    if t in ("V+", "VDD", "VCC", "VS+", "VPOS"):
+        return "PWR_POS"
+    if t in ("V-", "VSS", "VEE", "VS-", "VNEG"):
+        return "PWR_NEG"
+    return None
+
+
+def _symbol_pin_num_for_role(symbol_pins, role):
+    """Return KiCad pin number string for this role, or None."""
+    order = sorted(symbol_pins.keys(), key=lambda x: int(x) if str(x).isdigit() else 0)
+
+    def names_iter():
+        for num in order:
+            raw = str(symbol_pins[num].get("name", "")).strip()
+            yield num, raw, raw.upper()
+
+    if role == "OP_OUT":
+        for num, raw, u in names_iter():
+            if raw == "~" or u in ("OUT", "OUTPUT"):
+                return str(num)
+    elif role == "OP_INP":
+        for num, raw, u in names_iter():
+            if u in ("+", "IN+", "NON-INVERTING"):
+                return str(num)
+    elif role == "OP_INN":
+        for num, raw, u in names_iter():
+            if u in ("-", "IN-", "INVERTING"):
+                return str(num)
+    elif role == "PWR_POS":
+        for num, raw, u in names_iter():
+            if u in ("V+", "VDD", "VCC"):
+                return str(num)
+    elif role == "PWR_NEG":
+        for num, raw, u in names_iter():
+            if u in ("V-", "VSS", "VEE"):
+                return str(num)
+    return None
+
+
+# =============================================================================
 # Component pin wiring — connects IC pins to net labels
 # =============================================================================
 
@@ -611,6 +670,15 @@ def _wire_component_pins(schematic_data, comp_x, comp_y,
             pin_key = "2"
         elif pin_name in ("S", "SOURCE") and "3" in symbol_pins:
             pin_key = "3"
+
+        # Op-amps / rail pins: KiCad numbering often ≠ datasheet order (e.g. MCP6001).
+        # If JSON includes pin_name (OUT, IN+, IN-, VDD, VSS…), map by symbol pin names.
+        if pin_key is None and pin_name:
+            role = _functional_pin_role_from_label(pin_name)
+            if role:
+                mapped = _symbol_pin_num_for_role(symbol_pins, role)
+                if mapped:
+                    pin_key = mapped
 
         # If name-based mapping failed, fall back to numeric pin from JSON.
         if pin_key is None:

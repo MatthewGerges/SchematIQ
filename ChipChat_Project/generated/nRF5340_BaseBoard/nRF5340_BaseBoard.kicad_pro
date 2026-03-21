@@ -1,0 +1,33 @@
+{
+  "meta": {
+    "filename": "nRF5340_BaseBoard.kicad_pro",
+    "version": 2
+  },
+  "schematic": {
+    "annotate_start_num": 0,
+    "bom_fmt_settings": {
+      "field_delimiter": ",",
+      "name": "CSV",
+      "ref_delimiter": ",",
+      "string_delimiter": "\""
+    },
+    "connection_grid_size": 50.0,
+    "drawing": {},
+    "page_layout_descr_file": ""
+  },
+  "sheets": [
+    [
+      "70e8017f-665b-47b0-aff9-6aae9c3835f1",
+      "Root"
+    ],
+    [
+      "653bad08-f14f-488c-8889-b84cc344373b",
+      "nRF5340_Core"
+    ],
+    [
+      "84ba9d8c-24ea-43f8-bc6b-4ed38183f796",
+      "SWD_Programming"
+    ]
+  ],
+  "text_variables": {}
+}

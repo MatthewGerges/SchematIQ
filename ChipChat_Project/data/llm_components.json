@@ -1,87 +1,98 @@
 {
-  "MCP6001": {
-    "name": "MCP6001",
-    "manufacturer": "Microchip",
-    "part_number": "MCP6001-I/P",
-    "type": "op_amp",
-    "description": "1 MHz Rail-to-Rail Input/Output Op Amp, Single, PDIP-8 / SOT-23-5",
-    "interfaces": [],
+  "nRF5340_SoC": {
+    "name": "nRF5340_SoC",
+    "manufacturer": "Nordic Semiconductor",
+    "part_number": "nRF5340-QFAA",
+    "type": "MCU",
+    "description": "Dual-core Bluetooth 5.2/NFC/Thread/Zigbee SoC, 1.7-5.5V supply",
+    "interfaces": [
+      "SWD",
+      "Bluetooth LE",
+      "NFC",
+      "SPI",
+      "I2C",
+      "UART",
+      "USB"
+    ],
     "voltage_range": {
-      "min": 1.8,
+      "min": 1.7,
       "max": 5.5,
       "unit": "V"
     },
-    "symbol": {
-      "library": "Amplifier_Operational",
-      "lib_id": "Amplifier_Operational:MCP6001"
-    },
-    "footprint": {
-      "library": "Package_TO_SOT_SMD",
-      "name": "SOT-23-5"
-    },
     "pins": [
       {
-        "number": "1",
-        "name": "OUT",
-        "type": "output",
-        "function": "amplifier_output",
-        "voltage": {
-          "min": 0,
-          "max": 5.5,
-          "unit": "V"
-        }
-      },
-      {
-        "number": "2",
-        "name": "IN-",
-        "type": "input",
-        "function": "inverting_input",
-        "voltage": {
-          "min": 0,
-          "max": 5.5,
-          "unit": "V"
-        }
-      },
-      {
-        "number": "3",
-        "name": "IN+",
-        "type": "input",
-        "function": "non_inverting_input",
-        "voltage": {
-          "min": 0,
-          "max": 5.5,
-          "unit": "V"
-        }
-      },
-      {
-        "number": "4",
-        "name": "VSS",
-        "type": "power_in",
-        "function": "negative_supply",
-        "voltage": {
-          "min": 0,
-          "max": 0,
-          "unit": "V"
-        }
-      },
-      {
-        "number": "5",
+        "number": "V1",
         "name": "VDD",
         "type": "power_in",
-        "function": "positive_supply",
-        "voltage": {
-          "min": 1.8,
-          "max": 5.5,
-          "unit": "V"
-        }
+        "function": "main_digital_supply"
+      },
+      {
+        "number": "V2",
+        "name": "VDDA",
+        "type": "power_in",
+        "function": "analog_supply"
+      },
+      {
+        "number": "V3",
+        "name": "VDDH",
+        "type": "power_in",
+        "function": "high_voltage_supply_or_internal_regulator"
+      },
+      {
+        "number": "V4",
+        "name": "VDDL",
+        "type": "power_in",
+        "function": "low_voltage_supply_or_internal_regulator"
+      },
+      {
+        "number": "G1",
+        "name": "VSS",
+        "type": "power_in",
+        "function": "ground"
+      },
+      {
+        "number": "G2",
+        "name": "VSS_SWD",
+        "type": "power_in",
+        "function": "ground"
+      },
+      {
+        "number": "P1",
+        "name": "SWDIO",
+        "type": "bidirectional",
+        "function": "serial_wire_debug_data"
+      },
+      {
+        "number": "P2",
+        "name": "SWDCLK",
+        "type": "input",
+        "function": "serial_wire_debug_clock"
+      },
+      {
+        "number": "P3",
+        "name": "RESET_N",
+        "type": "input",
+        "function": "reset_active_low"
+      },
+      {
+        "number": "X1",
+        "name": "XL1",
+        "type": "input",
+        "function": "32MHz_crystal_input"
+      },
+      {
+        "number": "X2",
+        "name": "XL2",
+        "type": "output",
+        "function": "32MHz_crystal_output"
       }
     ],
-    "datasheet": "https://ww1.microchip.com/downloads/en/DeviceDoc/21733C.pdf",
+    "datasheet": "https://infocenter.nordicsemi.com/pdf/nRF5340_PS_v1.6.pdf",
     "design_notes": {
-      "power_supply": "Single supply operation from 1.8V to 5.5V. VDD to positive supply, VSS to ground.",
-      "required_passives": "0.1uF ceramic decoupling capacitor on VDD (pin 5) to VSS (pin 4), placed close to the IC.",
-      "typical_application": "For a voltage buffer, OUT connects to IN-, and the input signal connects to IN+. Rail-to-rail input/output allows signals to swing from VSS to VDD.",
-      "critical_notes": "Ensure VDD is within the 1.8V-5.5V operating range. Maintain proper decoupling for stable operation."
+      "power_rails": "VDD, VDDA typically 3.3V. VDDH and VDDL can be connected to VDD for internal regulator operation or specific external supplies. All VSS pins must be connected to ground.",
+      "required_passives": "Numerous decoupling capacitors (e.g., 0.1uF, 1uF) on all VDD and VDDA pins to GND. A 100nF cap is typical for each major power rail, placed close to the pin. For crystal: two loading capacitors (e.g., 10pF-18pF) and series resistor (if required, consult crystal datasheet) on XL1/XL2. Pull-up resistor (e.g., 10K) on RESET_N.",
+      "swd_connections": "SWDIO, SWDCLK, RESET_N, VDD (for voltage sensing), and GND are required for SWD programming. RESET_N needs an external pull-up. VDD on the SWD header acts as VTG.",
+      "crystal_requirements": "32 MHz crystal with appropriate loading capacitors (typically 12pF to 18pF for a standard 32MHz crystal) between XL1/XL2 and ground. Consult crystal datasheet for exact values."
     }
   }
 }

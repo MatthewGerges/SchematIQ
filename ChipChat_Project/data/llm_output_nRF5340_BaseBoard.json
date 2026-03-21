@@ -1,0 +1,557 @@
+{
+  "project_name": "nRF5340_BaseBoard",
+  "description": "A minimal board featuring the Nordic nRF5340 SoC with essential power, 32MHz crystal, and SWDIO programming header.",
+  "sheets": [
+    {
+      "name": "nRF5340_Core",
+      "file": "nRF5340_Core.kicad_sch",
+      "page": 2
+    },
+    {
+      "name": "SWD_Programming",
+      "file": "SWD_Programming.kicad_sch",
+      "page": 3
+    }
+  ],
+  "components": [
+    {
+      "ref": "U1",
+      "part": "nRF5340_SoC",
+      "sheet": "nRF5340_Core",
+      "note": "Nordic nRF5340 SoC with essential power, ground, and crystal connections",
+      "connections": [
+        {
+          "pin": "V1",
+          "pin_name": "VDD",
+          "net": "VCC_3V3"
+        },
+        {
+          "pin": "V2",
+          "pin_name": "VDDA",
+          "net": "VCC_3V3"
+        },
+        {
+          "pin": "V3",
+          "pin_name": "VDDH",
+          "net": "VCC_3V3"
+        },
+        {
+          "pin": "V4",
+          "pin_name": "VDDL",
+          "net": "VCC_3V3"
+        },
+        {
+          "pin": "G1",
+          "pin_name": "VSS",
+          "net": "GND"
+        },
+        {
+          "pin": "G2",
+          "pin_name": "VSS_SWD",
+          "net": "GND"
+        },
+        {
+          "pin": "X1",
+          "pin_name": "XL1",
+          "net": "U1_XL1"
+        },
+        {
+          "pin": "X2",
+          "pin_name": "XL2",
+          "net": "U1_XL2"
+        }
+      ]
+    },
+    {
+      "ref": "X1",
+      "part": "Device:Crystal",
+      "sheet": "nRF5340_Core",
+      "note": "32MHz crystal for nRF5340 clock",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "U1_XL1"
+        },
+        {
+          "pin": "2",
+          "net": "U1_XL2"
+        }
+      ]
+    },
+    {
+      "ref": "J1",
+      "part": "Connector_Generic:Conn_02x05_SWD_JTAG_ARM",
+      "sheet": "SWD_Programming",
+      "note": "Standard 10-pin 1.27mm pitch SWD programming header for ARM Cortex-M",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "VTG",
+          "net": "VCC_3V3"
+        },
+        {
+          "pin": "2",
+          "pin_name": "SWDIO",
+          "net": "SWDIO_MCU"
+        },
+        {
+          "pin": "3",
+          "pin_name": "GND",
+          "net": "GND"
+        },
+        {
+          "pin": "4",
+          "pin_name": "SWDCLK",
+          "net": "SWDCLK_MCU"
+        },
+        {
+          "pin": "5",
+          "pin_name": "GND",
+          "net": "GND"
+        },
+        {
+          "pin": "6",
+          "pin_name": "SWO",
+          "net": "NC_SWO"
+        },
+        {
+          "pin": "7",
+          "pin_name": "NC",
+          "net": "NC_J1_7"
+        },
+        {
+          "pin": "8",
+          "pin_name": "RESET_N",
+          "net": "RESET_N_MCU"
+        },
+        {
+          "pin": "9",
+          "pin_name": "GND",
+          "net": "GND"
+        },
+        {
+          "pin": "10",
+          "pin_name": "NC",
+          "net": "NC_J1_10"
+        }
+      ]
+    }
+  ],
+  "passives": [
+    {
+      "ref": "C1",
+      "type": "C",
+      "value": "0.1uF",
+      "sheet": "nRF5340_Core",
+      "purpose": "VDD decoupling",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VCC_3V3"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C2",
+      "type": "C",
+      "value": "0.1uF",
+      "sheet": "nRF5340_Core",
+      "purpose": "VDDA decoupling",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VCC_3V3"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C3",
+      "type": "C",
+      "value": "0.1uF",
+      "sheet": "nRF5340_Core",
+      "purpose": "VDDH decoupling",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VCC_3V3"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C4",
+      "type": "C",
+      "value": "0.1uF",
+      "sheet": "nRF5340_Core",
+      "purpose": "VDDL decoupling",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VCC_3V3"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C5",
+      "type": "C",
+      "value": "1uF",
+      "sheet": "nRF5340_Core",
+      "purpose": "Bulk VCC_3V3 decoupling",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VCC_3V3"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C6",
+      "type": "C",
+      "value": "12pF",
+      "sheet": "nRF5340_Core",
+      "purpose": "Crystal loading capacitor",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "U1_XL1"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C7",
+      "type": "C",
+      "value": "12pF",
+      "sheet": "nRF5340_Core",
+      "purpose": "Crystal loading capacitor",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "U1_XL2"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "R1",
+      "type": "R",
+      "value": "10K",
+      "sheet": "nRF5340_Core",
+      "purpose": "RESET_N pull-up resistor",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VCC_3V3"
+        },
+        {
+          "pin": "2",
+          "net": "RESET_N_MCU"
+        }
+      ]
+    }
+  ],
+  "nets": [
+    {
+      "name": "U1_XL1",
+      "type": "local",
+      "sheet": "nRF5340_Core",
+      "connections": [
+        {
+          "ref": "U1",
+          "pin": "X1",
+          "pin_name": "XL1"
+        },
+        {
+          "ref": "X1",
+          "pin": "1"
+        },
+        {
+          "ref": "C6",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "U1_XL2",
+      "type": "local",
+      "sheet": "nRF5340_Core",
+      "connections": [
+        {
+          "ref": "U1",
+          "pin": "X2",
+          "pin_name": "XL2"
+        },
+        {
+          "ref": "X1",
+          "pin": "2"
+        },
+        {
+          "ref": "C7",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "NC_SWO",
+      "type": "local",
+      "sheet": "SWD_Programming",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "6",
+          "pin_name": "SWO"
+        }
+      ]
+    },
+    {
+      "name": "NC_J1_7",
+      "type": "local",
+      "sheet": "SWD_Programming",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "7",
+          "pin_name": "NC"
+        }
+      ]
+    },
+    {
+      "name": "NC_J1_10",
+      "type": "local",
+      "sheet": "SWD_Programming",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "10",
+          "pin_name": "NC"
+        }
+      ]
+    },
+    {
+      "name": "VCC_3V3",
+      "type": "power",
+      "connections": [
+        {
+          "ref": "U1",
+          "pin": "V1",
+          "pin_name": "VDD",
+          "sheet": "nRF5340_Core"
+        },
+        {
+          "ref": "U1",
+          "pin": "V2",
+          "pin_name": "VDDA",
+          "sheet": "nRF5340_Core"
+        },
+        {
+          "ref": "U1",
+          "pin": "V3",
+          "pin_name": "VDDH",
+          "sheet": "nRF5340_Core"
+        },
+        {
+          "ref": "U1",
+          "pin": "V4",
+          "pin_name": "VDDL",
+          "sheet": "nRF5340_Core"
+        },
+        {
+          "ref": "R1",
+          "pin": "1",
+          "sheet": "nRF5340_Core"
+        },
+        {
+          "ref": "C1",
+          "pin": "1",
+          "sheet": "nRF5340_Core"
+        },
+        {
+          "ref": "C2",
+          "pin": "1",
+          "sheet": "nRF5340_Core"
+        },
+        {
+          "ref": "C3",
+          "pin": "1",
+          "sheet": "nRF5340_Core"
+        },
+        {
+          "ref": "C4",
+          "pin": "1",
+          "sheet": "nRF5340_Core"
+        },
+        {
+          "ref": "C5",
+          "pin": "1",
+          "sheet": "nRF5340_Core"
+        },
+        {
+          "ref": "J1",
+          "pin": "1",
+          "pin_name": "VTG",
+          "sheet": "SWD_Programming"
+        }
+      ]
+    },
+    {
+      "name": "SWDIO_MCU",
+      "type": "hierarchical",
+      "connections": [
+        {
+          "ref": "U1",
+          "pin": "P1",
+          "pin_name": "SWDIO",
+          "sheet": "nRF5340_Core"
+        },
+        {
+          "ref": "J1",
+          "pin": "2",
+          "pin_name": "SWDIO",
+          "sheet": "SWD_Programming"
+        }
+      ]
+    },
+    {
+      "name": "SWDCLK_MCU",
+      "type": "hierarchical",
+      "connections": [
+        {
+          "ref": "U1",
+          "pin": "P2",
+          "pin_name": "SWDCLK",
+          "sheet": "nRF5340_Core"
+        },
+        {
+          "ref": "J1",
+          "pin": "4",
+          "pin_name": "SWDCLK",
+          "sheet": "SWD_Programming"
+        }
+      ]
+    },
+    {
+      "name": "RESET_N_MCU",
+      "type": "hierarchical",
+      "connections": [
+        {
+          "ref": "U1",
+          "pin": "P3",
+          "pin_name": "RESET_N",
+          "sheet": "nRF5340_Core"
+        },
+        {
+          "ref": "R1",
+          "pin": "2",
+          "sheet": "nRF5340_Core"
+        },
+        {
+          "ref": "J1",
+          "pin": "8",
+          "pin_name": "RESET_N",
+          "sheet": "SWD_Programming"
+        }
+      ]
+    },
+    {
+      "name": "GND",
+      "type": "power",
+      "connections": [
+        {
+          "ref": "U1",
+          "pin": "G1",
+          "pin_name": "VSS",
+          "sheet": "nRF5340_Core"
+        },
+        {
+          "ref": "U1",
+          "pin": "G2",
+          "pin_name": "VSS_SWD",
+          "sheet": "nRF5340_Core"
+        },
+        {
+          "ref": "R1",
+          "pin": "2",
+          "sheet": "nRF5340_Core"
+        },
+        {
+          "ref": "C1",
+          "pin": "2",
+          "sheet": "nRF5340_Core"
+        },
+        {
+          "ref": "C2",
+          "pin": "2",
+          "sheet": "nRF5340_Core"
+        },
+        {
+          "ref": "C3",
+          "pin": "2",
+          "sheet": "nRF5340_Core"
+        },
+        {
+          "ref": "C4",
+          "pin": "2",
+          "sheet": "nRF5340_Core"
+        },
+        {
+          "ref": "C5",
+          "pin": "2",
+          "sheet": "nRF5340_Core"
+        },
+        {
+          "ref": "C6",
+          "pin": "2",
+          "sheet": "nRF5340_Core"
+        },
+        {
+          "ref": "C7",
+          "pin": "2",
+          "sheet": "nRF5340_Core"
+        },
+        {
+          "ref": "J1",
+          "pin": "3",
+          "pin_name": "GND",
+          "sheet": "SWD_Programming"
+        },
+        {
+          "ref": "J1",
+          "pin": "5",
+          "pin_name": "GND",
+          "sheet": "SWD_Programming"
+        },
+        {
+          "ref": "J1",
+          "pin": "9",
+          "pin_name": "GND",
+          "sheet": "SWD_Programming"
+        }
+      ]
+    }
+  ]
+}

@@ -118,15 +118,23 @@ When you use one of these parts, you MUST:
 - Follow the guidance in "design_notes" (especially "critical_notes")
 - Use the recommended passive values from "design_notes"
 
-If you need a part NOT in this database, you may still use it. We will look up \
-symbols by name in the KiCad library (custom + official): exact match, then prefix \
-match, then first-6-characters match (e.g. tape/reel suffixes often differ). Use \
-the exact KiCad symbol name when you know it (e.g. LM1117DT-3.3, nRF5340-QKxx); \
-for generic headers use **Connector_Generic:Conn_01x02** / **Conn_01x03** (prefix **Conn_**, not **Connector_**). \
-Otherwise a descriptive base name often matches. Use Google Search to find \
-datasheets and work through the Per-IC Design Checklist. For parts not in the \
-database, provide a full component definition in a fenced ```new_component block \
-so we can add it to the library later.
+If you need a part NOT in this database, you may still use it **only if** you can \
+reference a **real KiCad symbol** that already exists in the official libraries. \
+Look up the symbol in KiCad (or ask to use a common one): e.g. \
+**Amplifier_Operational:LM741** (classic 8-pin single op-amp), \
+**Amplifier_Operational:MCP6001R** (SOT-23-5), **Device:R**, **Device:LED**, \
+**Connector_Generic:Conn_01x02**. Put that string in JSON as **"part": "Library:SymbolName"**.
+
+**Do NOT** invent placeholder part names like `OpAmp_Single` or `GENERIC_OPAMP` — \
+they are not KiCad symbols and the schematic will not place. **Do NOT** use \
+```new_component``` for generic placeholders; that block is only for **real** new \
+MPNs we will later add to the library with a generated symbol file.
+
+We resolve symbols by name in the KiCad library (custom + official): exact match, \
+then prefix match, then first-6-characters match. Use the exact KiCad symbol name \
+when you know it (e.g. LM1117DT-3.3, nRF5340-QKxx); for generic headers use \
+**Connector_Generic:Conn_01x02** / **Conn_01x03** (prefix **Conn_**, not **Connector_**). \
+Use Google Search for datasheets and the Per-IC Design Checklist.
 
 {components_db}
 
@@ -237,6 +245,11 @@ for technical details you should know as an EE
 errors. Walk through Steps A–F for every IC before emitting JSON.
 - When "design_notes" gives a specific value (e.g. 249K for 3.3V), use THAT \
 value — do not guess or substitute.
+- For **every** component `connections` entry, always set **pin_name** to the \
+datasheet pin function (e.g. **OUT**, **IN+**, **IN-**, **VDD**, **VSS**, **SW**, \
+**GND**). The schematic generator maps nets to KiCad symbols by **name** when \
+possible (especially op-amps), because package pin **numbers** often differ \
+between the datasheet and the KiCad library.
 - Double-check voltage rails: if two power pins exist on an IC (e.g. VDD and \
 VUSB), verify they connect to the correct voltage. Read "critical_notes" \
 carefully.

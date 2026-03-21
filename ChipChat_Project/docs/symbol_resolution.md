@@ -22,7 +22,10 @@ This doc summarizes how LLM JSON becomes KiCad symbols, optional improvements, a
 
 7. **Preflight** — `scripts/validate_llm_symbols.py` and `generate_from_llm.py --validate` check **components** only (not every passive type yet).
 
-8. **Pin wiring** — Main symbols: numeric keys in KiCad; JSON may use **B/C/E** or **A/K**; name→number matching fills the gap.
+8. **Pin wiring** — Main symbols use numeric keys in KiCad. The generator maps:
+   - **B/C/E**, **A/K**, **G/D/S** by name where needed
+   - **Op-amps:** if `pin_name` is **OUT**, **IN+**, **IN-**, **VDD/V+**, **VSS/V-**, nets attach by **KiCad pin names** (`~`, `+`, `-`, `V+`, `V-`…) so datasheet pin *numbers* can differ from KiCad (e.g. MCP6001 SOT-23 vs `MCP6001R` symbol).
+   - If `pin_name` is missing, JSON **pin** numbers are still used (fragile for multi-package parts).
 
 ## “Back of mind” improvements (no LLM)
 
@@ -32,6 +35,18 @@ This doc summarizes how LLM JSON becomes KiCad symbols, optional improvements, a
 | **Strict mode** | Fail if no exact + alias + in-lib generic (no fuzzy) |
 | **Validate passives** | Extend preflight for unknown `type` |
 | **Single `symbol_hints.yaml`** | Aliases + “LLM synonyms” in one place |
+
+## Invented parts (`OpAmp_Single`, etc.)
+
+`new_component` in the playground **only saves JSON** — it does **not** create a \
+`.kicad_sym` file. Placeholders must be mapped to a real KiCad symbol (see \
+`config/symbol_aliases.json`, e.g. `OpAmp_Single` → `Amplifier_Operational:LM741`) \
+or the JSON should use **`Amplifier_Operational:LM741`** (or another real symbol) \
+directly. Prefer **pin_name**-based connections so package pin numbers can differ.
+
+A **second LLM “repair” pass** is optional: run validation, then ask a model to \
+replace unknown `part` strings using a short list of allowed `Library:Symbol` \
+names — same as discussed elsewhere; not required if prompts forbid invented names.
 
 ## Using a second LLM to link symbols & pins
 

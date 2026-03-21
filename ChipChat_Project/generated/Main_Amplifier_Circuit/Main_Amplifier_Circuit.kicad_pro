@@ -241,7 +241,7 @@
     "pinned_symbol_libs": []
   },
   "meta": {
-    "filename": "Voltage_Buffer_Board.kicad_pro",
+    "filename": "Main_Amplifier_Circuit.kicad_pro",
     "version": 3
   },
   "net_settings": {
@@ -401,12 +401,12 @@
   },
   "sheets": [
     [
-      "2738a53a-6783-42fa-bc8f-967b16bd962c",
+      "ab037484-bca4-478d-be7c-667db106df61",
       "Root"
     ],
     [
-      "7bc5a553-d5b9-4b43-96e5-a71a182c0ad4",
-      "Voltage_Buffer_Circuit"
+      "2b2d67ec-dafe-4871-8461-dcf30f8f308a",
+      "Main_Amplifier_Circuit"
     ]
   ],
   "text_variables": {}

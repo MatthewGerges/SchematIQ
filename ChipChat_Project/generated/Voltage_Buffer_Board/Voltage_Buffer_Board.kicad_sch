@@ -2,7 +2,7 @@
 	(version 20250114)
 	(generator "ChipChat_Gemini")
 	(generator_version "9.0")
-	(uuid "2738a53a-6783-42fa-bc8f-967b16bd962c")
+	(uuid "d37c0a4e-e573-453f-bd59-8b7ee99c0e48")
 	(paper "A4")
 	(lib_symbols)
 
@@ -20,7 +20,7 @@
 		(fill
 			(color 0 0 0 0.0000)
 		)
-		(uuid "7bc5a553-d5b9-4b43-96e5-a71a182c0ad4")
+		(uuid "c134468c-254b-4155-bc35-46d90a0f550c")
 		(property "Sheetname" "Voltage_Buffer_Circuit"
 			(at 25.0 24.32 0)
 			(effects
@@ -45,7 +45,7 @@
 		(path "/"
 			(page "1")
 		)
-		(path "/7bc5a553-d5b9-4b43-96e5-a71a182c0ad4"
+		(path "/c134468c-254b-4155-bc35-46d90a0f550c"
 			(page "1")
 		)
 	)

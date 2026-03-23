@@ -79,6 +79,57 @@ def list_top_level_symbols_in_packed(packed_lib_path):
     return _top_level_symbol_names_from_packed_file(packed_lib_path)
 
 
+def _count_pin_entries_in_symbol_block(block):
+    """Count (pin ... entries in a symbol block."""
+    n = 0
+    for line in block.splitlines():
+        if "\t\t(pin " in line or line.strip().startswith("(pin "):
+            n += 1
+    return n
+
+
+def _extract_symbol_block(content, symbol_name):
+    """Return the s-expression text for (symbol "symbol_name" ...), or None."""
+    needle = f'(symbol "{symbol_name}"'
+    idx = content.find(needle)
+    if idx < 0:
+        return None
+    depth = 0
+    for i in range(idx, len(content)):
+        c = content[i]
+        if c == "(":
+            depth += 1
+        elif c == ")":
+            depth -= 1
+            if depth == 0:
+                return content[idx : i + 1]
+    return None
+
+
+def count_pins_in_symbol(symbol_name, kind, path):
+    """Return number of pins for a top-level symbol (for rejecting bad fuzzy matches)."""
+    if kind == "packed" and path and os.path.isfile(path):
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                content = f.read()
+        except OSError:
+            return 0
+        block = _extract_symbol_block(content, symbol_name)
+        if not block:
+            return 0
+        return _count_pin_entries_in_symbol_block(block)
+    if kind == "custom" and path:
+        fp = os.path.join(path, f"{symbol_name}.kicad_sym")
+        if os.path.isfile(fp):
+            try:
+                with open(fp, "r", encoding="utf-8") as f:
+                    c = f.read()
+            except OSError:
+                return 0
+            return _count_pin_entries_in_symbol_block(c)
+    return 0
+
+
 def resolve_in_packed_library(packed_lib_path, requested_symbol):
     """Pick a symbol name inside one .kicad_sym file when the LLM name is wrong.
 
@@ -119,8 +170,19 @@ def resolve_in_packed_library(packed_lib_path, requested_symbol):
     return None
 
 
-def resolve_symbol(part_name):
+def _ok_pin_count(sym_name, kind, path, min_pin_count):
+    if min_pin_count is None or min_pin_count <= 0:
+        return True
+    n = count_pins_in_symbol(sym_name, kind, path)
+    return n >= min_pin_count
+
+
+def resolve_symbol(part_name, min_pin_count=None):
     """Find the best matching symbol for a part name (e.g. from LLM output).
+
+    If *min_pin_count* is set, fuzzy matches (prefix / first-6-char) are rejected
+    when the symbol has fewer pins — avoids ``Conn_02x05_*`` resolving to
+    ``Conn_01x01_Pin`` because both start with ``Conn_``.
 
     Returns:
         (symbol_name, "custom", library_dir) or (symbol_name, "packed", library_file_path)
@@ -142,27 +204,71 @@ def resolve_symbol(part_name):
 
     for (sym_name, kind, path) in index:
         if sym_name == part_name or sym_name == search_token:
+            # Exact match: always use it (pin-count filter is for fuzzy only).
             return (sym_name, kind, path)
 
     for (sym_name, kind, path) in index:
         if len(sym_name) < _MIN_SYM_LEN_FUZZY:
             continue
         if sym_name.startswith(search_token) or search_token.startswith(sym_name):
-            return (sym_name, kind, path)
+            if _ok_pin_count(sym_name, kind, path, min_pin_count):
+                return (sym_name, kind, path)
 
-    prefix = search_token[:6] if len(search_token) >= 6 else search_token
-    if len(prefix) < 4:
-        return None
-    for (sym_name, kind, path) in index:
-        if len(sym_name) < _MIN_SYM_LEN_FUZZY:
+    # Third fuzzy pass: prefix match. Use an 8-char prefix so "Conn_02x05_*" does not
+    # collide with "Conn_01x01_*" (a 6-char "Conn_0" matches almost every Conn_*).
+    # If the LLM adds a suffix with "_" (e.g. nRF5340_SoC), also try the stem
+    # (nRF5340) so we still match nRF5340-QKxx — search_token[:8] alone is "nRF5340_S"
+    # which does not match "nRF5340-Q…".
+    prefix_candidates = []
+    if "_" in search_token:
+        stem = search_token.split("_", 1)[0]
+        if len(stem) >= 6:
+            prefix_candidates.append(stem[:8] if len(stem) >= 8 else stem)
+    if len(search_token) >= 8:
+        prefix_candidates.append(search_token[:8])
+    elif len(search_token) >= 4:
+        prefix_candidates.append(search_token)
+
+    seen = set()
+    for prefix in prefix_candidates:
+        if prefix in seen or len(prefix) < 4:
             continue
-        sym6 = sym_name[:6] if len(sym_name) >= 6 else sym_name
-        if len(sym6) < 4:
-            continue
-        if sym_name.startswith(prefix) or prefix.startswith(sym6):
-            return (sym_name, kind, path)
+        seen.add(prefix)
+        plen = len(prefix)
+        for (sym_name, kind, path) in index:
+            if len(sym_name) < _MIN_SYM_LEN_FUZZY:
+                continue
+            sym_p = sym_name[:plen] if len(sym_name) >= plen else sym_name
+            if len(sym_p) < 4:
+                continue
+            if sym_name.startswith(prefix) or prefix.startswith(sym_p):
+                if _ok_pin_count(sym_name, kind, path, min_pin_count):
+                    return (sym_name, kind, path)
 
     return None
+
+
+def list_lib_colon_symbols():
+    """Return every indexed symbol as a lookup string.
+
+    Packed libraries become ``LibraryName:SymbolName`` (matches KiCad). Custom
+    single-file symbols in ``KICAD_Library/Symbols`` are listed as the bare
+    symbol filename (no ``:``), which is how ``schematic_generator`` resolves
+    them.
+
+    Used by the LLM symbol-repair pass to validate suggestions and to build a
+    ranked candidate list.
+    """
+    out = []
+    index = _build_index()
+    for sym_name, kind, path in index:
+        if kind == "packed":
+            lib = os.path.splitext(os.path.basename(path))[0]
+            out.append(f"{lib}:{sym_name}")
+        else:
+            out.append(sym_name)
+    out.sort()
+    return out
 
 
 def get_custom_symbols_path():

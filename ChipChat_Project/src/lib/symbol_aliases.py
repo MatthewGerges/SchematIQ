@@ -13,6 +13,12 @@ _ALIASES_PATH = os.path.join(_CHIPCHAT_ROOT, "config", "symbol_aliases.json")
 _aliases_cache = None
 
 
+def invalidate_aliases_cache():
+    """Call after editing ``symbol_aliases.json`` on disk (e.g. LLM repair merge)."""
+    global _aliases_cache
+    _aliases_cache = None
+
+
 def load_symbol_aliases():
     """Return dict[str, str] of part -> lib:symbol. Missing file => {}."""
     global _aliases_cache

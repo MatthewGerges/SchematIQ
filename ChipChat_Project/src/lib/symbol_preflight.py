@@ -25,8 +25,23 @@ def _official_symbols_dir():
     return os.path.join(_repo_root(), "KICAD_Library", "kicad-symbols")
 
 
-def preview_resolve(symbol_lookup: str) -> tuple[bool, str]:
-    """Return (ok, detail) — whether generation can embed this lookup string."""
+def _min_pin_count_from_connections(comp: dict) -> int:
+    """Same heuristic as schematic_generator (blocks bad fuzzy matches)."""
+    conns = comp.get("connections") or []
+    max_n = 0
+    for c in conns:
+        p = str(c.get("pin", "")).strip()
+        if p.isdigit():
+            max_n = max(max_n, int(p))
+    return max(max_n, len(conns))
+
+
+def preview_resolve(symbol_lookup: str, min_pin_count: int | None = None) -> tuple[bool, str]:
+    """Return (ok, detail) — whether generation can embed this lookup string.
+
+    If *min_pin_count* is set, fuzzy resolution uses the same pin-count guard as
+    ``schematic_generator`` (avoids approving a 1-pin stub for a 10-pin JSON).
+    """
     custom_dir = _custom_symbols_dir()
     official_dir = _official_symbols_dir()
     custom_path = os.path.join(custom_dir, f"{symbol_lookup}.kicad_sym")
@@ -46,12 +61,44 @@ def preview_resolve(symbol_lookup: str) -> tuple[bool, str]:
             return False, f"symbol '{sym_name}' not in {lib_name}.kicad_sym"
         return False, f"library file {lib_name}.kicad_sym not found"
 
-    resolved = symbol_resolver.resolve_symbol(symbol_lookup)
+    resolved = symbol_resolver.resolve_symbol(symbol_lookup, min_pin_count=min_pin_count)
     if resolved:
         sym_name, kind, path = resolved
         where = os.path.basename(path) if kind == "packed" else "custom"
         return True, f"fuzzy → {sym_name} ({where})"
     return False, "no packed lib:sym and fuzzy resolve failed"
+
+
+def find_unresolved_components(data: dict) -> list[dict]:
+    """
+    Return structured entries for components whose ``part`` does not resolve.
+
+    Each item: ``ref``, ``part``, ``lookup``, ``detail``, ``min_pin_count``, ``sheet``.
+    """
+    out: list[dict] = []
+    sheets = {s["name"] for s in data.get("sheets", [])}
+    for comp in data.get("components", []):
+        sheet = comp.get("sheet", "")
+        if sheets and sheet and sheet not in sheets:
+            continue
+        raw = comp.get("part", "")
+        ref = comp.get("ref", "?")
+        after_alias = apply_symbol_alias(raw)
+        lookup = normalize_symbol_lookup(after_alias)
+        min_pins = _min_pin_count_from_connections(comp)
+        ok, detail = preview_resolve(lookup, min_pin_count=min_pins or None)
+        if not ok:
+            out.append(
+                {
+                    "ref": ref,
+                    "part": raw,
+                    "lookup": lookup,
+                    "detail": detail,
+                    "min_pin_count": min_pins,
+                    "sheet": sheet,
+                }
+            )
+    return out
 
 
 def validate_components_in_llm_data(data: dict, print_ok: bool = False) -> list[str]:
@@ -68,7 +115,8 @@ def validate_components_in_llm_data(data: dict, print_ok: bool = False) -> list[
         ref = comp.get("ref", "?")
         after_alias = apply_symbol_alias(raw)
         lookup = normalize_symbol_lookup(after_alias)
-        ok, detail = preview_resolve(lookup)
+        min_pins = _min_pin_count_from_connections(comp)
+        ok, detail = preview_resolve(lookup, min_pin_count=min_pins or None)
         if not ok:
             errors.append(f"{ref}: '{raw}' → lookup '{lookup}' — {detail}")
         elif print_ok:

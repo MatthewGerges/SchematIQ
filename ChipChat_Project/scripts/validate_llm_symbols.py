@@ -8,6 +8,7 @@ normalize_symbol_lookup) without writing a schematic.
 Usage:
   python scripts/validate_llm_symbols.py [path/to/llm_output.json]
   python scripts/generate_from_llm.py --validate data/board.json
+  python scripts/repair_llm_symbols.py data/board.json --dry-run   # Gemini fallback
 """
 
 from __future__ import annotations
@@ -43,8 +44,9 @@ def main():
         for e in errs:
             print(f"  - {e}")
         print(
-            "\nFix: add a mapping in config/symbol_aliases.json "
-            "(preferred) or correct the LLM output."
+            "\nFix: add a mapping in config/symbol_aliases.json (preferred), "
+            "correct the LLM output, or run:\n"
+            "  python scripts/repair_llm_symbols.py \"" + path + "\" --dry-run"
         )
         sys.exit(1)
     print("\nAll component symbols resolve.")

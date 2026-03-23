@@ -2,7 +2,7 @@
 	(version 20250114)
 	(generator "ChipChat_Gemini")
 	(generator_version "9.0")
-	(uuid "70e8017f-665b-47b0-aff9-6aae9c3835f1")
+	(uuid "127e9166-a668-489f-90f3-e6308b8ea11c")
 	(paper "A4")
 	(lib_symbols)
 
@@ -20,7 +20,7 @@
 		(fill
 			(color 0 0 0 0.0000)
 		)
-		(uuid "653bad08-f14f-488c-8889-b84cc344373b")
+		(uuid "07825846-7c68-490d-b8b4-700246e7b9f3")
 		(property "Sheetname" "nRF5340_Core"
 			(at 25.0 24.32 0)
 			(effects
@@ -55,7 +55,7 @@
 		(fill
 			(color 0 0 0 0.0000)
 		)
-		(uuid "84ba9d8c-24ea-43f8-bc6b-4ed38183f796")
+		(uuid "4df435d7-acc4-4f38-b843-8a0cfeded920")
 		(property "Sheetname" "SWD_Programming"
 			(at 85.0 24.32 0)
 			(effects
@@ -80,10 +80,10 @@
 		(path "/"
 			(page "1")
 		)
-		(path "/653bad08-f14f-488c-8889-b84cc344373b"
+		(path "/07825846-7c68-490d-b8b4-700246e7b9f3"
 			(page "2")
 		)
-		(path "/84ba9d8c-24ea-43f8-bc6b-4ed38183f796"
+		(path "/4df435d7-acc4-4f38-b843-8a0cfeded920"
 			(page "3")
 		)
 	)

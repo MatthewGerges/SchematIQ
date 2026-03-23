@@ -123,7 +123,10 @@ reference a **real KiCad symbol** that already exists in the official libraries.
 Look up the symbol in KiCad (or ask to use a common one): e.g. \
 **Amplifier_Operational:LM741** (classic 8-pin single op-amp), \
 **Amplifier_Operational:MCP6001R** (SOT-23-5), **Device:R**, **Device:LED**, \
-**Connector_Generic:Conn_01x02**. Put that string in JSON as **"part": "Library:SymbolName"**.
+**Connector_Generic:Conn_01x02**, **Connector:Conn_ARM_JTAG_SWD_10** (10-pin 1.27 mm Cortex SWD). \
+Put that string in JSON as **"part": "Library:SymbolName"**. Do **not** invent symbols like \
+`Connector_Generic:Conn_02x05_SWD_JTAG_ARM` — use a real name from KiCad or a generic \
+**Connector_Generic:Conn_02x05_Odd_Even** / **Conn_01x06** if you must approximate pin count.
 
 **Do NOT** invent placeholder part names like `OpAmp_Single` or `GENERIC_OPAMP` — \
 they are not KiCad symbols and the schematic will not place. **Do NOT** use \

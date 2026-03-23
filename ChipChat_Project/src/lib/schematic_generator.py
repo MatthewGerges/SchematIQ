@@ -610,6 +610,56 @@ def _symbol_pin_num_for_role(symbol_pins, role):
     return None
 
 
+def _strip_kicad_pin_decorators(name):
+    r"""Strip KiCad inactive-low pin names: ``~{RESET}`` → ``RESET``."""
+    s = (name or "").strip()
+    if s.startswith("~{") and s.endswith("}"):
+        s = s[2:-1]
+    return s
+
+
+def _llm_pin_matches_kicad_symbol_pin(llm_upper, kicad_raw):
+    """Match LLM connector labels (VTG, SWDCLK, …) to KiCad names (VTref, SWCLK/TCK, …)."""
+    if not llm_upper or not kicad_raw:
+        return False
+    kr = _strip_kicad_pin_decorators(kicad_raw).upper()
+    if not kr:
+        return False
+    if llm_upper == kr:
+        return True
+    if llm_upper == "VTG" and kr == "VTREF":
+        return True
+    if llm_upper == "RESET_N" and "RESET" in kr:
+        return True
+    plain = re.sub(r"[\~\{\}]", "", kicad_raw)
+    for seg in re.split(r"[/\s]+", plain):
+        su = seg.strip().upper()
+        if not su:
+            continue
+        if llm_upper == su:
+            return True
+        if len(su) >= 3 and (su in llm_upper or llm_upper in su):
+            return True
+    if llm_upper == "SWDCLK" and "SWCLK" in kr:
+        return True
+    if llm_upper == "SWDIO" and "SWDIO" in kr:
+        return True
+    if llm_upper == "SWO" and "SWO" in kr:
+        return True
+    return False
+
+
+def _min_pin_count_from_connections(comp):
+    """Lower bound on symbol pin count from JSON (blocks fuzzy → Conn_01x01)."""
+    conns = comp.get("connections") or []
+    max_n = 0
+    for c in conns:
+        p = str(c.get("pin", "")).strip()
+        if p.isdigit():
+            max_n = max(max_n, int(p))
+    return max(max_n, len(conns))
+
+
 # =============================================================================
 # Component pin wiring — connects IC pins to net labels
 # =============================================================================
@@ -680,6 +730,13 @@ def _wire_component_pins(schematic_data, comp_x, comp_y,
                 if mapped:
                     pin_key = mapped
 
+        # Cortex SWD / ARM debug connector: VTG vs VTref, SWCLK/TCK, ~{{RESET}}, etc.
+        if pin_key is None and pin_name:
+            for num, pdata in symbol_pins.items():
+                if _llm_pin_matches_kicad_symbol_pin(pin_name, pdata.get("name", "")):
+                    pin_key = str(num)
+                    break
+
         # If name-based mapping failed, fall back to numeric pin from JSON.
         if pin_key is None:
             pin_key = original_pin
@@ -699,6 +756,11 @@ def _wire_component_pins(schematic_data, comp_x, comp_y,
                 if pname and pname in name_aliases:
                     pin_key = str(num)
                     break
+            if pin_key not in symbol_pins and pin_name:
+                for num, pdata in symbol_pins.items():
+                    if _llm_pin_matches_kicad_symbol_pin(pin_name, pdata.get("name", "")):
+                        pin_key = str(num)
+                        break
 
         if pin_key not in symbol_pins:
             continue
@@ -883,7 +945,8 @@ def generate_from_json(output_path, json_path, sheet_name="BME280_Sensor"):
 
         # If still not found, resolve by name (prefix / first-6-chars) in custom + official libs
         if not lib_id:
-            resolved = symbol_resolver.resolve_symbol(symbol_lookup)
+            min_pins = _min_pin_count_from_connections(comp)
+            resolved = symbol_resolver.resolve_symbol(symbol_lookup, min_pin_count=min_pins)
             if resolved:
                 resolved_name, kind, path = resolved
                 if kind == "packed":

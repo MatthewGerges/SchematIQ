@@ -12,7 +12,7 @@ This doc summarizes how LLM JSON becomes KiCad symbols, optional improvements, a
 
 4. **`symbol_resolver.resolve_in_packed_library()`** — Same-file fallbacks (e.g. `NPN` → `Q_NPN_BCE` inside `Transistor_BJT`).
 
-5. **Global fuzzy match** — Last resort; short symbols are filtered so `Diode:LED` does not become `Simulation_SPICE:D`.
+5. **Global fuzzy match** — Last resort; short symbols are filtered so `Diode:LED` does not become `Simulation_SPICE:D`. Prefix matching uses **8-character** prefixes (and a **stem before `_`**, e.g. `nRF5340_SoC` → `nRF5340`) so `Conn_02x05_*` does not collapse to `Conn_01x01_Pin`. If the JSON lists **N** connections, fuzzy matches are rejected when the symbol has **fewer than N** pins (stops 10-pin headers from becoming a 1-pin stub). Prefer **`config/symbol_aliases.json`** for invented names (e.g. `Connector_Generic:Conn_02x05_SWD_JTAG_ARM` → `Connector:Conn_ARM_JTAG_SWD_10`).
 
 6. **Passives** — `PASSIVE_CONFIG` in `schematic_generator.py`:
    - `R`, `C`, `L`, `FB` → custom `KICAD_Library/Symbols/`
@@ -61,6 +61,35 @@ names — same as discussed elsewhere; not required if prompts forbid invented n
 **Risks:** Hallucinated symbols, cost/latency, and new bugs. Prefer fixing the **first** LLM prompt + deterministic layers first; add repair only when validation failures are frequent.
 
 **Cheaper alternative:** On validation failure, **re-prompt the same design LLM** with the error list and 5–10 lines of “use `Device:D`, `Diode` passive type, …” — no separate model.
+
+## LLM symbol repair (implemented fallback)
+
+When deterministic resolution is not enough (new names, odd connectors, or you do not want to hand-edit aliases), use the **Gemini repair pass**. It is **not** a replacement for aliases — every suggestion is **re-checked** against your local KiCad index and pin-count rules before the JSON is updated.
+
+| Step | What |
+|------|------|
+| 1 | `find_unresolved_components` lists `ref`, `part`, `lookup`, `min_pin_count`, … |
+| 2 | **Ranked candidates** are built from `symbol_resolver.list_lib_colon_symbols()` (token overlap with the failing part — no need to send the whole library). |
+| 3 | Gemini returns JSON `{"replacements":[{"ref":"…","part":"Lib:Sym","note":"…"}]}`. |
+| 4 | Each `part` is verified with `preview_resolve` (+ pin count). Rejected rows are reported. |
+
+**CLI**
+
+```bash
+cd ChipChat_Project
+# Preview
+python scripts/repair_llm_symbols.py data/your_board.json --dry-run
+# Fix JSON in place + optional alias file
+python scripts/repair_llm_symbols.py data/your_board.json --write --save-aliases
+```
+
+**One-shot with generation** (requires `GEMINI_API_KEY` in `.env`):
+
+```bash
+python scripts/generate_from_llm.py --repair data/your_board.json
+```
+
+Requires: `google-genai`, `python-dotenv`, and **`GEMINI_API_KEY`**.
 
 ## Quick reference for diode OR-ing JSON
 

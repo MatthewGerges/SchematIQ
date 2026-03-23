@@ -59,6 +59,21 @@
           "pin": "X2",
           "pin_name": "XL2",
           "net": "U1_XL2"
+        },
+        {
+          "pin": "P1",
+          "pin_name": "SWDIO",
+          "net": "SWDIO_MCU"
+        },
+        {
+          "pin": "P2",
+          "pin_name": "SWDCLK",
+          "net": "SWDCLK_MCU"
+        },
+        {
+          "pin": "P3",
+          "pin_name": "RESET_N",
+          "net": "RESET_N_MCU"
         }
       ]
     },
@@ -80,7 +95,7 @@
     },
     {
       "ref": "J1",
-      "part": "Connector_Generic:Conn_02x05_SWD_JTAG_ARM",
+      "part": "Connector:Conn_ARM_JTAG_SWD_10",
       "sheet": "SWD_Programming",
       "note": "Standard 10-pin 1.27mm pitch SWD programming header for ARM Cortex-M",
       "connections": [
@@ -121,8 +136,8 @@
         },
         {
           "pin": "8",
-          "pin_name": "RESET_N",
-          "net": "RESET_N_MCU"
+          "pin_name": "TDI",
+          "net": "NC_J1_8"
         },
         {
           "pin": "9",
@@ -131,8 +146,8 @@
         },
         {
           "pin": "10",
-          "pin_name": "NC",
-          "net": "NC_J1_10"
+          "pin_name": "RESET_N",
+          "net": "RESET_N_MCU"
         }
       ]
     }
@@ -341,14 +356,14 @@
       ]
     },
     {
-      "name": "NC_J1_10",
+      "name": "NC_J1_8",
       "type": "local",
       "sheet": "SWD_Programming",
       "connections": [
         {
           "ref": "J1",
-          "pin": "10",
-          "pin_name": "NC"
+          "pin": "8",
+          "pin_name": "TDI"
         }
       ]
     },
@@ -471,7 +486,7 @@
         },
         {
           "ref": "J1",
-          "pin": "8",
+          "pin": "10",
           "pin_name": "RESET_N",
           "sheet": "SWD_Programming"
         }
@@ -491,11 +506,6 @@
           "ref": "U1",
           "pin": "G2",
           "pin_name": "VSS_SWD",
-          "sheet": "nRF5340_Core"
-        },
-        {
-          "ref": "R1",
-          "pin": "2",
           "sheet": "nRF5340_Core"
         },
         {

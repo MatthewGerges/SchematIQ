@@ -7,6 +7,8 @@ Usage:
     python scripts/generate_from_llm.py
     python scripts/generate_from_llm.py --validate data/board.json
     python scripts/generate_from_llm.py --repair --target both data/board.json
+
+See schematic_commands.md for a short command index.
 """
 
 import argparse
@@ -16,12 +18,15 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from dotenv import load_dotenv
 from src.lib import project_generator, schematic_generator, tscircuit_generator
+from src.lib.electrical_review_llm import run_two_llm_review, severity_meets_or_exceeds
 from src.lib.symbol_preflight import find_unresolved_components, validate_components_in_llm_data
 
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEFAULT_JSON_PATH = os.path.join(PROJECT_DIR, "data", "llm_output.json")
 GEN_DIR = os.path.join(PROJECT_DIR, "generated")
+REPORT_DIR = os.path.join(PROJECT_DIR, "reports")
 
 
 def _run_kicad_generation(data: dict, json_path: str, output_dir: str) -> int:
@@ -94,10 +99,21 @@ def _run_tscircuit_generation(data: dict, output_dir: str) -> int:
 
 
 def main() -> int:
+    load_dotenv(os.path.join(PROJECT_DIR, ".env"))
+
     parser = argparse.ArgumentParser(description="Generate KiCad and/or tscircuit from LLM JSON.")
     parser.add_argument("json_path", nargs="?", default=DEFAULT_JSON_PATH)
     parser.add_argument("--validate", action="store_true")
     parser.add_argument("--repair", action="store_true")
+    parser.add_argument("--review", action="store_true", help="Run 2-LLM electrical review before generation")
+    parser.add_argument("--review-model-structural", default="gemini-2.5-flash")
+    parser.add_argument("--review-model-electrical", default="gemini-2.5-flash")
+    parser.add_argument(
+        "--review-fail-on",
+        choices=("none", "error", "warning"),
+        default="error",
+        help="When --review is enabled, fail if max severity meets/exceeds this threshold",
+    )
     parser.add_argument(
         "--target",
         choices=("kicad", "tscircuit", "both"),
@@ -113,6 +129,38 @@ def main() -> int:
 
     with open(json_path, encoding="utf-8") as f:
         data = json.load(f)
+
+    if args.review:
+        print("--- Running 2-LLM electrical review ---")
+        report = run_two_llm_review(
+            data,
+            model_structural=args.review_model_structural,
+            model_electrical=args.review_model_electrical,
+        )
+        os.makedirs(REPORT_DIR, exist_ok=True)
+        base = os.path.splitext(os.path.basename(json_path))[0]
+        report_path = os.path.join(REPORT_DIR, f"{base}_electrical_review.json")
+        with open(report_path, "w", encoding="utf-8") as rf:
+            json.dump(report, rf, indent=2)
+            rf.write("\n")
+        merged = report.get("merged", {})
+        max_sev = (merged.get("max_severity") or "info").lower()
+        gate_sev = (merged.get("gate_severity") or "none").lower()
+        fc = merged.get("finding_counts") or {}
+        ne = int(fc.get("error") or 0)
+        nw = int(fc.get("warning") or 0)
+        ni = int(fc.get("info") or 0)
+        print(f"(review) report: {report_path}")
+        hs = merged.get("human_summary") or {}
+        if hs.get("headline"):
+            print(f"(review) {hs['headline']}")
+        print(
+            f"(review) max (all): {max_sev}, gate: {gate_sev}, "
+            f"errors/warnings/info: {ne}/{nw}/{ni}"
+        )
+        if args.review_fail_on != "none" and severity_meets_or_exceeds(gate_sev, args.review_fail_on):
+            print(f"(review) blocking generation because severity >= {args.review_fail_on}")
+            return 1
 
     if args.repair:
         failures = find_unresolved_components(data)

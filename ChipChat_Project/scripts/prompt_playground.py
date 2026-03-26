@@ -7,34 +7,102 @@ asks about your requirements, and builds up a project JSON sheet by sheet.
 Usage:
     cd ChipChat_Project
     source .venv/bin/activate
+    pip install -r requirements.txt
     python scripts/prompt_playground.py
 
 Commands during chat:
-    quit / done  — save project JSON and exit
-    save         — save current progress without exiting
-    status       — show what's been accumulated so far
+    help, ?      — command reference
+    save         — write project JSON (same path on later saves)
+    status       — summary of accumulated design
+    gen, generate, build, done — save + run KiCad + tscircuit generators (stay in chat)
+    check        — symbol validation + 2-LLM electrical review; JSON report + in-chat summary
+    validate     — KiCad symbol resolution only (fast, no LLM)
+    review       — 2-LLM electrical review only → reports/
+    repair       — LLM symbol repair on saved JSON, then reload
+    reload       — reload project JSON from disk (after editing in Cursor)
+    bye          — save + generate + exit
+    quit, exit   — save JSON only + exit (no generator)
 """
+
+from __future__ import annotations
 
 import json
 import os
 import re
+import subprocess
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 from dotenv import load_dotenv  # pip install python-dotenv
 try:
     from google import genai  # pip install google-genai
-except ImportError as e:
+except ImportError:
     print("ImportError: google-genai is required. From ChipChat_Project directory:")
     print("  source .venv/bin/activate")
     print("  pip install google-genai python-dotenv")
+    sys.exit(1)
+try:
+    from rich.console import Console
+    from rich.markdown import Markdown
+    from rich.panel import Panel
+    from rich.prompt import Prompt
+    from rich.syntax import Syntax
+    from rich.table import Table
+    from rich.theme import Theme
+except ImportError:
+    print("ImportError: rich is required for the playground UI.")
+    print("  pip install rich")
     sys.exit(1)
 from google.genai import types
 from google.genai.types import GoogleSearch, Tool
 
 # ── Paths ────────────────────────────────────────────────────────────────────
 ROOT = Path(__file__).resolve().parent.parent
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 load_dotenv(ROOT / ".env")
+
+PLAYGROUND_THEME = Theme(
+    {
+        "info": "dim cyan",
+        "warn": "yellow",
+        "err": "bold red",
+        "cmd": "bold magenta",
+        "accent": "bold bright_cyan",
+    }
+)
+
+def llm_intent_is_schematic_check(client: any, model: str, user_text: str) -> bool:
+    """
+    Decide whether the user is asking for a schematic check.
+
+    This intentionally does NOT rely on keyword presence. Instead, we ask the LLM
+    to classify the intent, then we trigger the expensive `check` pipeline.
+    """
+    try:
+        classifier_prompt = (
+            "You are an intent classifier for an electronics design assistant.\n"
+            "Return STRICT JSON only with this schema:\n"
+            '{ "schematic_check_requested": boolean, "reason": string }\n'
+            "\n"
+            "Set schematic_check_requested=true if the user is asking you to:\n"
+            "- review the schematic/board for errors\n"
+            "- run an ERC-like check\n"
+            "- run the assistant's schematic check pipeline (JSON report)\n"
+            "\n"
+            "Otherwise set it to false.\n"
+            "\n"
+            f"User message: {user_text!r}\n"
+        )
+        resp = client.models.generate_content(model=model, contents=classifier_prompt)
+        text = (resp.text or "").strip()
+        if not text:
+            return False
+        parsed = json.loads(text)
+        return bool(parsed.get("schematic_check_requested"))
+    except Exception:
+        return False
 
 COMP_DB_PATH = ROOT.parent / "component_database" / "components.json"
 # Default filenames live under ROOT/data but we now generate unique names per
@@ -74,8 +142,22 @@ you MUST follow the Per-IC Design Checklist below BEFORE outputting any JSON.
    - The cross-sheet (hierarchical) nets that connect signals between sheets
    - The GND power net with all ground connections across all sheets
    - Output these as a final JSON code block
-7. Ask the user if they'd like to review or modify anything, then tell them to \
-type "done" to save.
+7. After the design is captured, remind them they can type **gen** (or **done**) to rebuild \
+KiCad/tscircuit, and **check** to run symbol validation plus electrical review (report JSON \
+under `reports/`), without leaving the chat.
+
+## Schematic iteration & debugging (anytime)
+
+The user may keep chatting **after** schematics are generated. They might say:
+- A pin shows connected in the project JSON but **not** on the KiCad schematic (or the opposite).
+- A symbol looks wrong or pins are swapped.
+
+When that happens:
+1. Reason about **pin_name vs pin number**: our generator maps nets using **pin_name** when \
+possible; KiCad library pin numbers can differ from the datasheet.
+2. Check **part** / library symbol choice — wrong symbol → wrong pinout.
+3. Propose **concrete fixes** as normal fenced ```json blocks (same schema as before) so \
+they can be merged, or describe exact field edits (ref, pin, net, part).
 
 ## Per-IC Design Checklist (MANDATORY for every sheet)
 
@@ -231,6 +313,11 @@ When you're ready to commit a design section, output it as a fenced JSON code bl
 ```
 
 ## Important Rules
+- **No-connect pins:** If a pin is intentionally unused, either (1) assign a net name
+  starting with **NC_** (e.g. `NC_SWO`, `NC_J1_7`) — only that pin on that net — or
+  (2) **omit** that pin from the component's `connections` array entirely. Do **not** use
+  vague net names that look like real signals. The checker treats single-connection **NC_***
+  nets as intentional, not floating.
 - Passive pin 1 = signal side, pin 2 = power/ground side
 - Allowed passive **type** strings: **R**, **C**, **L**, **FB**, **Diode** \
 (generic rectifier / Schottky OR-ing → KiCad `Device:D`; pin **1 = anode**, \
@@ -274,11 +361,34 @@ class ProjectState:
         self.passives = []
         self.nets = []
         self.new_components = {}
+        # Once set, subsequent saves overwrite this file (stable path for regen / repair).
+        self.output_json_path: Path | None = None
         # Track which items we've already ingested to avoid duplicates when
         # the LLM repeats the same JSON blocks (common at the end of a chat).
         self._component_keys = set()  # (sheet, ref)
         self._passive_keys = set()    # (sheet, ref)
         self._net_keys = set()        # (sheet, name)
+
+    @classmethod
+    def from_dict(cls, data: dict) -> ProjectState:
+        """Replace state from a saved JSON file (e.g. after repair or manual edit)."""
+        s = cls()
+        s.project_name = data.get("project_name")
+        s.description = data.get("description", "")
+        s.sheets = list(data.get("sheets", []))
+        s.components = list(data.get("components", []))
+        s.passives = list(data.get("passives", []))
+        s.nets = list(data.get("nets", []))
+        for c in s.components:
+            sh = c.get("sheet")
+            s._component_keys.add((sh, c.get("ref")))
+        for p in s.passives:
+            sh = p.get("sheet")
+            s._passive_keys.add((sh, p.get("ref")))
+        for n in s.nets:
+            sh = n.get("sheet", "")
+            s._net_keys.add((sh, n.get("name")))
+        return s
 
     def ingest(self, data: dict):
         """Parse a JSON block from the LLM and merge it into state."""
@@ -389,7 +499,7 @@ def extract_new_components(text: str) -> list[dict]:
 # ── File I/O ─────────────────────────────────────────────────────────────────
 
 def load_components_db() -> dict:
-    with open(COMP_DB_PATH) as f:
+    with open(COMP_DB_PATH, encoding="utf-8") as f:
         return json.load(f)
 
 
@@ -421,28 +531,340 @@ def _build_output_path(state: ProjectState) -> Path:
 
 def save_project(state: ProjectState) -> Path:
     """Persist the current project state and return the JSON path."""
-    out_path = _build_output_path(state)
-    with open(out_path, "w") as f:
+    if state.output_json_path is not None:
+        out_path = state.output_json_path
+    else:
+        out_path = _build_output_path(state)
+        state.output_json_path = out_path
+    with open(out_path, "w", encoding="utf-8") as f:
         json.dump(state.to_dict(), f, indent=2)
-    print(f"\n  Project saved to: {out_path}")
     return out_path
 
 
-def save_new_components(state: ProjectState):
+def save_new_components(state: ProjectState, console: Console) -> None:
     if not state.new_components:
         return
     NEW_COMP_PATH.parent.mkdir(parents=True, exist_ok=True)
-    with open(NEW_COMP_PATH, "w") as f:
+    with open(NEW_COMP_PATH, "w", encoding="utf-8") as f:
         json.dump(state.new_components, f, indent=2)
-    print(f"  New components saved to: {NEW_COMP_PATH}")
+    console.print(f"[dim]New component defs → {NEW_COMP_PATH}[/]")
+
+
+def print_help(console: Console) -> None:
+    table = Table(show_header=True, header_style="bold bright_white", title="Playground commands")
+    table.add_column("Command", style="magenta", no_wrap=True)
+    table.add_column("Action")
+    for cmd, desc in (
+        ("help, ?", "Show this table"),
+        ("save", "Write JSON (reuses the same file on later saves)"),
+        ("status", "Sheet / component / net counts"),
+        ("gen, done, build", "Save + run KiCad + tscircuit — [bold]stay in chat[/]"),
+        ("check", "Symbols + 2-LLM electrical review — full JSON in [bold]reports/[/]"),
+        ("validate", "KiCad symbol resolution only (fast, no Gemini)"),
+        ("review", "Electrical review only (same LLM pass as [magenta]check[/])"),
+        ("repair", "LLM symbol repair on saved JSON, reload state"),
+        ("reload", "Reload JSON from disk (after editing in Cursor)"),
+        ("load PATH", "Open a different llm_output*.json as the working project"),
+        ("bye", "Save + generate + exit"),
+        ("quit", "Save JSON only + exit (no build)"),
+    ):
+        table.add_row(cmd, desc)
+    console.print(table)
+    console.print(
+        Panel(
+            "[bold]Schematic check[/]\n"
+            "Type [magenta]check[/] (or phrases like “schematic check”) for **symbol validation** "
+            "plus **2-LLM electrical review**. Full JSON: [i]reports/<project>_schematic_check.json[/]. "
+            "Use [magenta]validate[/] for symbols only (no Gemini).\n\n"
+            "[bold]KiCad and live updates[/]\n"
+            "KiCad does not continuously watch schematic files. After each [cmd]gen[/], "
+            "close the affected schematic tab(s) and reopen them from the project tree, "
+            "or use [i]File → Revert[/] if your KiCad version offers it.\n\n"
+            "[bold]JSON vs schematic mismatches[/]\n"
+            "Describe the issue in plain language; the assistant can reason about "
+            "[i]pin_name[/] vs pin number, symbol choice, and nets, and emit corrected JSON blocks.\n\n"
+            "[bold]load PATH[/]\n"
+            "Swaps the in-memory project to another JSON file. Gemini still has the old "
+            "conversation context — restart the script if you want a fully fresh thread.",
+            title="Tips",
+            border_style="dim",
+        )
+    )
+
+
+def _generated_paths(state: ProjectState) -> tuple[Path, Path]:
+    pname = (state.project_name or "LLM_Project").strip() or "LLM_Project"
+    gen = ROOT / "generated" / pname
+    return gen / f"{pname}.kicad_pro", gen / "tscircuit"
+
+
+def run_generate(console: Console, state: ProjectState) -> int:
+    json_path = save_project(state)
+    save_new_components(state, console)
+    console.print(
+        Panel(str(json_path), title="[green]Saved project JSON[/]", border_style="green")
+    )
+    console.print("[dim]Running[/] [magenta]generate_from_llm.py --target both[/][dim]…[/]\n")
+    rc = subprocess.run(
+        [sys.executable, "scripts/generate_from_llm.py", "--target", "both", str(json_path)],
+        cwd=ROOT,
+    ).returncode
+    kicad_pro, tsci = _generated_paths(state)
+    console.print()
+    console.print(
+        Panel(
+            f"[bold]KiCad[/]\n[accent]{kicad_pro}[/]\n\n"
+            f"[bold]tscircuit[/]\n[accent]{tsci}[/]\n\n"
+            "[dim]Tip: run [magenta]gen[/] again any time after edits.[/]",
+            title="Build" if rc == 0 else "Build (exit code {})".format(rc),
+            border_style="cyan" if rc == 0 else "red",
+        )
+    )
+    return rc
+
+
+def cmd_review(console: Console, state: ProjectState) -> None:
+    from src.lib.electrical_review_llm import run_two_llm_review
+
+    json_path = save_project(state)
+    with open(json_path, encoding="utf-8") as f:
+        data = json.load(f)
+    console.print("[dim]Running 2-LLM electrical review…[/]")
+    report = run_two_llm_review(data)
+    report_dir = ROOT / "reports"
+    report_dir.mkdir(parents=True, exist_ok=True)
+    report_path = report_dir / f"{json_path.stem}_electrical_review.json"
+    with open(report_path, "w", encoding="utf-8") as rf:
+        json.dump(report, rf, indent=2)
+        rf.write("\n")
+    merged = report.get("merged", {})
+    hs = merged.get("human_summary") or {}
+    headline = hs.get("headline", "")
+    fc = merged.get("finding_counts") or {}
+    body = f"[accent]{report_path}[/]\n\n"
+    if headline:
+        body += f"{headline}\n"
+    body += (
+        f"\n[dim]errors / warnings / info:[/] "
+        f"{fc.get('error', 0)} / {fc.get('warning', 0)} / {fc.get('info', 0)}"
+    )
+    console.print(Panel(body, title="Electrical review", border_style="blue"))
+
+
+def _compact_check_json_for_chat(
+    consolidated: dict,
+    report_path: Path,
+    *,
+    max_findings: int = 35,
+) -> dict:
+    """Smaller object to print in-terminal; full detail stays on disk."""
+    merged = consolidated["electrical_review"].get("merged") or {}
+    findings = merged.get("findings") or []
+    compact: dict = {
+        "full_report_file": str(report_path),
+        "source_project_json": consolidated["source_project_json"],
+        "symbol_validation": consolidated["symbol_validation"],
+        "electrical": {
+            "finding_counts": merged.get("finding_counts"),
+            "human_summary": merged.get("human_summary"),
+            "findings": findings[:max_findings],
+        },
+    }
+    compact["electrical"]["info_bundle"] = merged.get("info")
+    if len(findings) > max_findings:
+        compact["electrical"]["findings_truncated"] = len(findings) - max_findings
+    return compact
+
+
+def cmd_schematic_check(console: Console, state: ProjectState) -> None:
+    """Symbol preflight + 2-LLM review; one JSON file + Rich summary + JSON snippet in chat."""
+    from src.lib.electrical_review_llm import run_two_llm_review
+    from src.lib.symbol_preflight import validate_components_in_llm_data
+
+    json_path = save_project(state)
+    with open(json_path, encoding="utf-8") as f:
+        data = json.load(f)
+
+    console.print("[dim]1/2 KiCad symbol resolution (local)…[/]")
+    sym_errors = validate_components_in_llm_data(data, print_ok=False)
+    sym_ok = len(sym_errors) == 0
+
+    console.print("[dim]2/2 2-LLM electrical review (Gemini)…[/]")
+    er_report = run_two_llm_review(data)
+
+    report_dir = ROOT / "reports"
+    report_dir.mkdir(parents=True, exist_ok=True)
+    report_path = report_dir / f"{json_path.stem}_schematic_check.json"
+
+    consolidated = {
+        "check_generated_at": datetime.now(timezone.utc).isoformat(),
+        "source_project_json": str(json_path.resolve()),
+        "symbol_validation": {
+            "ok": sym_ok,
+            "error_count": len(sym_errors),
+            "errors": sym_errors,
+        },
+        "electrical_review": er_report,
+    }
+    with open(report_path, "w", encoding="utf-8") as wf:
+        json.dump(consolidated, wf, indent=2)
+        wf.write("\n")
+
+    merged = er_report.get("merged") or {}
+    hs = merged.get("human_summary") or {}
+    fc = merged.get("finding_counts") or {}
+    ne, nw, ni = int(fc.get("error") or 0), int(fc.get("warning") or 0), int(fc.get("info") or 0)
+
+    sym_panel = (
+        "[green]All component symbols resolve.[/]"
+        if sym_ok
+        else "[yellow]" + "\n".join(sym_errors[:20]) + ("[/]\n[dim]…[/]" if len(sym_errors) > 20 else "[/]")
+    )
+    console.print(Panel(sym_panel, title="Symbol validation", border_style="green" if sym_ok else "yellow"))
+
+    el_lines = [
+        f"[accent]{report_path}[/]",
+        "",
+        f"[bold]{hs.get('headline', '(no headline)')}[/]",
+        f"[dim]Electrical counts — errors / warnings / info:[/] {ne} / {nw} / {ni}",
+    ]
+    if hs.get("must_fix"):
+        el_lines.append("\n[red bold]Must fix[/]")
+        el_lines.extend(f"  • {m}" for m in hs["must_fix"][:8])
+    if hs.get("double_check"):
+        el_lines.append("\n[yellow bold]Double-check[/]")
+        el_lines.extend(f"  • {m}" for m in hs["double_check"][:8])
+    console.print(Panel("\n".join(el_lines), title="Schematic check summary", border_style="blue"))
+
+    compact = _compact_check_json_for_chat(consolidated, report_path)
+    json_text = json.dumps(compact, indent=2)
+    console.print(
+        Panel(
+            Syntax(json_text, "json", theme="monokai", word_wrap=True),
+            title="[bold]Summary JSON[/] (full report on disk — path above)",
+            border_style="cyan",
+        )
+    )
+
+
+def cmd_validate_symbols(console: Console, state: ProjectState) -> None:
+    """Fast symbol resolution only; small JSON under reports/."""
+    from src.lib.symbol_preflight import validate_components_in_llm_data
+
+    json_path = save_project(state)
+    with open(json_path, encoding="utf-8") as f:
+        data = json.load(f)
+    sym_errors = validate_components_in_llm_data(data, print_ok=False)
+    sym_ok = len(sym_errors) == 0
+
+    report_dir = ROOT / "reports"
+    report_dir.mkdir(parents=True, exist_ok=True)
+    report_path = report_dir / f"{json_path.stem}_symbol_validation.json"
+    payload = {
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "source_project_json": str(json_path.resolve()),
+        "ok": sym_ok,
+        "error_count": len(sym_errors),
+        "errors": sym_errors,
+    }
+    with open(report_path, "w", encoding="utf-8") as wf:
+        json.dump(payload, wf, indent=2)
+        wf.write("\n")
+
+    body = f"[accent]{report_path}[/]\n\n"
+    body += "[green]OK — all symbols resolve.[/]" if sym_ok else "[yellow]" + "\n".join(sym_errors) + "[/]"
+    console.print(Panel(body, title="Symbol validation", border_style="green" if sym_ok else "yellow"))
+    console.print(
+        Panel(
+            Syntax(json.dumps(payload, indent=2), "json", theme="monokai", word_wrap=True),
+            title="JSON (also saved to file)",
+            border_style="cyan",
+        )
+    )
+
+
+def cmd_repair(console: Console, state: ProjectState) -> ProjectState:
+    from src.lib.symbol_preflight import find_unresolved_components
+    from src.lib.symbol_repair_llm import repair_symbols_with_llm
+
+    path = save_project(state)
+    with open(path, encoding="utf-8") as f:
+        data = json.load(f)
+    failures = find_unresolved_components(data)
+    if not failures:
+        console.print("[info]All symbols resolve — nothing to repair.[/]")
+        return state
+    console.print(f"[info]Repairing [bold]{len(failures)}[/] unresolved symbol(s)…[/]")
+    data, report = repair_symbols_with_llm(data, failures, dry_run=False)
+    with open(path, "w", encoding="utf-8") as wf:
+        json.dump(data, wf, indent=2)
+        wf.write("\n")
+    applied = report.get("applied") or []
+    rej = report.get("rejected") or []
+    detail = json.dumps({"applied": applied, "rejected": rej}, indent=2)
+    if len(detail) > 6000:
+        detail = detail[:6000] + "\n…"
+    console.print(Panel(detail, title="Symbol repair", border_style="green"))
+    ns = ProjectState.from_dict(data)
+    ns.output_json_path = path
+    console.print("[dim]State reloaded. Run[/] [magenta]gen[/] [dim]to rebuild schematics.[/]")
+    return ns
+
+
+def cmd_reload(console: Console, state: ProjectState) -> ProjectState:
+    if state.output_json_path is None or not state.output_json_path.is_file():
+        console.print("[warn]No JSON on disk yet — use[/] [magenta]save[/] [warn]first.[/]")
+        return state
+    with open(state.output_json_path, encoding="utf-8") as f:
+        data = json.load(f)
+    ns = ProjectState.from_dict(data)
+    ns.output_json_path = state.output_json_path
+    console.print(f"[info]Reloaded[/] [accent]{state.output_json_path}[/]")
+    return ns
+
+
+def cmd_load(console: Console, arg: str) -> tuple[ProjectState | None, str]:
+    raw = arg.strip().strip('"').strip("'")
+    if not raw:
+        return None, "Usage: [magenta]load[/] path/to/llm_output_Something.json"
+    path = Path(raw).expanduser()
+    if not path.is_absolute():
+        path = (ROOT / path).resolve()
+    else:
+        path = path.resolve()
+    if not path.is_file():
+        return None, f"[err]File not found:[/] {path}"
+    with open(path, encoding="utf-8") as f:
+        data = json.load(f)
+    ns = ProjectState.from_dict(data)
+    ns.output_json_path = path
+    return ns, f"[info]Loaded[/] [accent]{path}[/]"
+
+
+def render_assistant(console: Console, text: str) -> None:
+    console.print()
+    console.print(
+        Panel(
+            Markdown(text),
+            title="[bold cyan]Assistant[/]",
+            border_style="cyan",
+            padding=(0, 1),
+        )
+    )
+
+
+def print_status(console: Console, state: ProjectState) -> None:
+    console.print(Panel(state.summary(), title="Project status", border_style="blue"))
 
 
 # ── Main Chat Loop ───────────────────────────────────────────────────────────
 
-def main():
+def main() -> None:
+    console = Console(theme=PLAYGROUND_THEME)
+
     api_key = os.getenv("GEMINI_API_KEY")
     if not api_key:
-        print("ERROR: GEMINI_API_KEY not found in .env")
+        console.print("[err]GEMINI_API_KEY not found in .env[/]")
         sys.exit(1)
 
     components_db = load_components_db()
@@ -462,72 +884,115 @@ def main():
 
     state = ProjectState()
 
-    print("=" * 60)
-    print("  ChipChat — Interactive PCB Design Assistant")
-    print("  Type your message, or: quit/done, save, status")
-    print("=" * 60)
+    console.print(
+        Panel.fit(
+            "[bold accent]ChipChat[/] — interactive schematic design\n"
+            "[dim]Type[/] [magenta]check[/] [dim]for symbol + electrical review ·[/] [magenta]help[/] [dim]for all commands[/]",
+            border_style="bright_cyan",
+        )
+    )
 
-    # Send an empty opener to trigger the LLM's greeting
     try:
         response = chat.send_message("Hello, I'd like to design a board.")
-        print(f"\nAssistant: {response.text}")
-        process_response(response.text, state)
+        render_assistant(console, response.text or "")
+        process_response(console, response.text or "", state)
     except Exception as e:
-        print(f"\nERROR connecting to Gemini: {e}")
+        console.print(f"[err]ERROR connecting to Gemini:[/] {e}")
         sys.exit(1)
 
     while True:
         try:
-            user_input = input("\nYou: ").strip()
-        except (KeyboardInterrupt, EOFError):
-            print("\n")
-            user_input = "done"
+            user_input = Prompt.ask("\n[bold green]You[/]").strip()
+        except EOFError:
+            user_input = "quit"
+        except KeyboardInterrupt:
+            console.print("\n[dim]Interrupted — still in session. Type[/] [magenta]quit[/] [dim]to exit.[/]")
+            continue
 
         if not user_input:
             continue
 
-        if user_input.lower() in ("quit", "done", "exit"):
-            json_path = save_project(state)
-            save_new_components(state)
-            print(f"\n  Final state:\n{state.summary()}")
+        parts = user_input.split(maxsplit=1)
+        cmd0 = parts[0].lower()
+        rest = parts[1].strip() if len(parts) > 1 else ""
 
-            # Automatically run the KiCad generator so the user can open the
-            # result immediately in KiCad.
-            try:
-                print("\n  Running generate_from_llm.py to build KiCad project...")
-                import subprocess
-
-                subprocess.run(
-                    [sys.executable, "scripts/generate_from_llm.py", str(json_path)],
-                    cwd=ROOT,
-                    check=False,
-                )
-            except Exception as e:
-                print(f"  (Skipped KiCad generation: {e})")
-
-            print("\n  Goodbye!")
-            break
-
-        if user_input.lower() == "save":
-            save_project(state)
-            save_new_components(state)
-            print(f"\n  Current state:\n{state.summary()}")
+        if cmd0 in ("help", "?"):
+            print_help(console)
             continue
 
-        if user_input.lower() == "status":
-            print(f"\n  Current state:\n{state.summary()}")
+        if cmd0 == "save":
+            p = save_project(state)
+            save_new_components(state, console)
+            console.print(Panel(f"[accent]{p}[/]", title="Saved", border_style="green"))
+            print_status(console, state)
+            continue
+
+        if cmd0 == "status":
+            print_status(console, state)
+            continue
+
+        if cmd0 in ("gen", "generate", "build", "done"):
+            run_generate(console, state)
+            console.print("[dim]You can keep chatting or run[/] [magenta]gen[/] [dim]again after edits.[/]")
+            continue
+
+        if cmd0 in ("check", "schematic-check", "schematic_check"):
+            cmd_schematic_check(console, state)
+            continue
+
+        if cmd0 == "validate":
+            cmd_validate_symbols(console, state)
+            continue
+
+        if cmd0 == "review":
+            cmd_review(console, state)
+            continue
+
+        if cmd0 == "repair":
+            state = cmd_repair(console, state)
+            continue
+
+        if cmd0 == "reload":
+            state = cmd_reload(console, state)
+            continue
+
+        if cmd0 == "load":
+            ns, msg = cmd_load(console, rest)
+            if ns is None:
+                console.print(msg)
+            else:
+                console.print(msg)
+                state = ns
+            continue
+
+        if cmd0 == "bye":
+            save_new_components(state, console)
+            print_status(console, state)
+            run_generate(console, state)
+            console.print("[accent]Goodbye![/]")
+            break
+
+        if cmd0 in ("quit", "exit"):
+            p = save_project(state)
+            save_new_components(state, console)
+            console.print(Panel(f"[accent]{p}[/]\n\n{state.summary()}", title="Saved (no build)", border_style="yellow"))
+            console.print("[accent]Goodbye![/]")
+            break
+
+        if llm_intent_is_schematic_check(client, MODEL, user_input):
+            cmd_schematic_check(console, state)
             continue
 
         try:
             response = chat.send_message(user_input)
-            print(f"\nAssistant: {response.text}")
-            process_response(response.text, state)
+            render_assistant(console, response.text or "")
+            process_response(console, response.text or "", state)
         except Exception as e:
-            print(f"\nERROR: {e}")
-            print("(You can keep chatting or type 'done' to save and exit)")
+            console.print(f"[err]ERROR:[/] {e}")
+            console.print("[dim]You can retry or type[/] [magenta]help[/][dim].[/]")
 
 
-def process_response(text: str, state: ProjectState):
+def process_response(console: Console, text: str, state: ProjectState) -> None:
     """Extract any JSON blocks from the LLM response and ingest them."""
     json_blocks = extract_json_blocks(text)
     new_comp_blocks = extract_new_components(text)
@@ -535,11 +1000,11 @@ def process_response(text: str, state: ProjectState):
     for block in json_blocks:
         result = state.ingest(block)
         if result:
-            print(f"\n  [Captured: {result}]")
+            console.print(f"[dim]Captured:[/] [cyan]{result}[/]")
 
     for block in new_comp_blocks:
         name = state.ingest_new_component(block)
-        print(f"\n  [New component saved: {name}]")
+        console.print(f"[dim]New component:[/] [cyan]{name}[/]")
 
 
 if __name__ == "__main__":

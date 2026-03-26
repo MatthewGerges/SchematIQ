@@ -1,0 +1,269 @@
+{
+  "generated_at": "2026-03-23T17:54:48.298014+00:00",
+  "project_name": "nRF5340_BaseBoard",
+  "models": {
+    "structural": "gemini-2.5-flash",
+    "electrical": "gemini-2.5-flash"
+  },
+  "deterministic_findings": [
+    {
+      "severity": "warning",
+      "code": "SINGLE_ENDPOINT_NET",
+      "ref": null,
+      "pin": null,
+      "message": "Net \"NC_SWO\" has only one connection (possible floating node).",
+      "suggestion": "Confirm this is intentional or connect the net to its target."
+    },
+    {
+      "severity": "warning",
+      "code": "SINGLE_ENDPOINT_NET",
+      "ref": null,
+      "pin": null,
+      "message": "Net \"NC_J1_7\" has only one connection (possible floating node).",
+      "suggestion": "Confirm this is intentional or connect the net to its target."
+    },
+    {
+      "severity": "warning",
+      "code": "SINGLE_ENDPOINT_NET",
+      "ref": null,
+      "pin": null,
+      "message": "Net \"NC_J1_8\" has only one connection (possible floating node).",
+      "suggestion": "Confirm this is intentional or connect the net to its target."
+    }
+  ],
+  "reviewer_reports": {
+    "structural": {
+      "reviewer": "A_STRUCTURAL",
+      "summary": "The provided schematic excerpt details the nRF5340 core, its crystal oscillator, and a standard SWD programming interface. Core power and ground connections appear established for the represented pins, and the SWD interface is correctly routed. However, the nRF5340 component symbol seems highly abstracted or incomplete, leading to several assumptions about missing critical connections. Additionally, the TDI pin on the SWD connector is left floating.",
+      "findings": [
+        {
+          "severity": "warning",
+          "code": "SINGLE_ENDPOINT_NET",
+          "ref": "J1",
+          "pin": "6",
+          "message": "Net \"NC_SWO\" (SWO pin of J1) has only one connection. While often left floating if tracing is not used, confirm this is intentional.",
+          "suggestion": "If SWO (Serial Wire Output) functionality is not required, leaving it disconnected might be acceptable. If tracing is intended, connect it to the corresponding pin on U1. If not used, consider explicitly terminating it with a weak pull-up/down if noise is a concern, or mark it clearly as 'no connect'."
+        },
+        {
+          "severity": "info",
+          "code": "SINGLE_ENDPOINT_NET_INTENTIONAL",
+          "ref": "J1",
+          "pin": "7",
+          "message": "Net \"NC_J1_7\" (NC pin of J1) has only one connection. This is expected as the pin is designated 'NC' (No Connect).",
+          "suggestion": "No action required, this is intentional."
+        },
+        {
+          "severity": "warning",
+          "code": "FLOATING_DEBUG_PIN",
+          "ref": "J1",
+          "pin": "8",
+          "message": "Net \"NC_J1_8\" (TDI pin of J1) has only one connection, leaving the TDI signal floating. This can lead to increased power consumption, noise susceptibility, or unexpected behavior if the JTAG interface is enabled.",
+          "suggestion": "If JTAG is not used, connect TDI (Test Data Input) to a weak pull-up resistor (e.g., 10k-100k to VCC_3V3) to ensure a defined logic level. If JTAG is intended, connect it to the corresponding TDI pin of U1. Review the nRF5340 datasheet for recommendations on unused JTAG pins."
+        },
+        {
+          "severity": "warning",
+          "code": "INCOMPLETE_IC_PINOUT",
+          "ref": "U1",
+          "pin": null,
+          "message": "The nRF5340_SoC component (U1) appears to have a highly abstracted or incomplete pinout representation. Many essential power, ground, and core functional pins typically required for an nRF5340 (e.g., VDD_NRF, VDD_GPIO, additional VSS pins, VREG_H, DEC_VDD, GPIOs) are not present in the connections list.",
+          "suggestion": "Ensure the U1 symbol accurately reflects all necessary power, ground, and control pins as specified in the nRF5340 datasheet. Verify that all critical pins required for device operation and stability (e.g., all VDD/VSS groups, voltage regulator decoupling, boot configuration pins) are present and correctly connected/decoupled, even if not explicitly shown here."
+        },
+        {
+          "severity": "info",
+          "code": "GENERIC_PIN_NAMES",
+          "ref": "U1",
+          "pin": null,
+          "message": "The nRF5340_SoC component (U1) uses generic pin designators like 'V1', 'P1', 'X1' instead of specific physical package pin numbers (e.g., 'A1', 'B2'). This may be an abstraction, but it hinders direct cross-referencing with a datasheet for physical pin-level checks.",
+          "suggestion": "Confirm if these pin names are intentionally abstract for a higher-level view or if the underlying symbol in the EDA tool uses actual physical pin numbers. If possible, use physical pin numbers in the JSON representation for easier validation against the component datasheet."
+        },
+        {
+          "severity": "warning",
+          "code": "MISSING_POWER_SOURCE",
+          "ref": null,
+          "pin": null,
+          "message": "The source for the \"VCC_3V3\" power rail is not defined within this schematic JSON (e.g., a voltage regulator or input connector).",
+          "suggestion": "Ensure that the \"VCC_3V3\" net is properly supplied by a power source elsewhere in the design. If this JSON represents a complete power domain, a source component should be added."
+        }
+      ],
+      "checks_covered": [
+        "Netlist structure correctness for connected components",
+        "Connectivity completeness for represented nets and pins",
+        "Detection of floating nets (including pre-checked items)",
+        "Power and ground net connections to components",
+        "Crystal oscillator connections and loading capacitors",
+        "SWD programming interface routing and pull-ups",
+        "Reset circuit pull-up sanity"
+      ],
+      "assumptions": [
+        "The provided JSON represents a partial schematic focusing on the nRF5340 core, crystal, and SWD, and is not a complete representation of a full design.",
+        "\"VCC_3V3\" is an externally provided 3.3V power rail, and its source is outside the scope of this JSON.",
+        "The 12pF crystal loading capacitors (C6, C7) are appropriate for the chosen 32MHz crystal and the nRF5340's internal crystal oscillator characteristics.",
+        "Pin designators for U1 (e.g., 'V1', 'P1', 'X1') are internal symbol identifiers and do not necessarily correspond to physical package pin numbers on the nRF5340 component."
+      ]
+    },
+    "electrical": {
+      "reviewer": "B_ELECTRICAL",
+      "summary": "The nRF5340 core and SWD programming interface exhibit generally plausible electrical behavior. Power rails are consistently 3.3V with standard decoupling. The crystal oscillator is implemented with common load capacitor values. However, some debug interface pins on the connector are left floating on the MCU side, and specific datasheet verification for crystal load capacitance and SWD termination is recommended.",
+      "findings": [
+        {
+          "severity": "warning",
+          "code": "SWO_PIN_UNCONNECTED",
+          "ref": "J1",
+          "pin": "6",
+          "message": "The SWO pin (J1 pin 6) on the SWD programming header is connected to a single-endpoint net 'NC_SWO' and not connected to the nRF5340 (U1) or any other component. If Serial Wire Viewer (SWV) functionality is desired, the corresponding SWO output pin on U1 must be connected.",
+          "suggestion": "Connect J1 pin 6 to the nRF5340's SWO output pin if Serial Wire Viewer (SWV) is intended. If SWV is not used, consult the nRF5340 datasheet for the recommended handling of its SWO pin (e.g., leave floating, configure as GPIO, or tie to GND/VCC via a resistor) to avoid unintended behavior or power consumption."
+        },
+        {
+          "severity": "warning",
+          "code": "JTAG_TDI_PIN_UNCONNECTED",
+          "ref": "J1",
+          "pin": "8",
+          "message": "The JTAG TDI pin (J1 pin 8) on the SWD programming header is connected to a single-endpoint net 'NC_J1_8' and not connected to the nRF5340 (U1) or any other component. If JTAG debugging is intended, the nRF5340's TDI input pin must be connected.",
+          "suggestion": "Connect J1 pin 8 to the nRF5340's TDI input pin if JTAG debugging is intended. If only SWD debugging is used, and U1's TDI pin is multiplexed with a GPIO, consult the nRF5340 datasheet for the recommended handling of this pin to prevent it from floating or entering an undesirable state."
+        },
+        {
+          "severity": "info",
+          "code": "CRYSTAL_LOAD_CAPACITANCE_VERIFICATION",
+          "ref": "X1",
+          "pin": null,
+          "message": "The load capacitors C6 and C7 (12pF each) for the 32MHz crystal (X1) are standard values, but should be verified against the specific crystal's (X1) specified load capacitance and the nRF5340 (U1) datasheet's requirements for external crystal oscillators.",
+          "suggestion": "Verify the total load capacitance provided by C6, C7 (which combine in series to approximately 6pF plus stray capacitance) matches the specified load capacitance of the 32MHz crystal (X1) and the nRF5340 (U1) datasheet for optimal oscillator performance and stability."
+        },
+        {
+          "severity": "info",
+          "code": "SWD_PULLUPS_PULLDOWNS_CHECK",
+          "ref": "U1",
+          "pin": "P1|P2",
+          "message": "SWDIO (P1) and SWDCLK (P2) on U1, connected to J1, do not have explicit external pull-up or pull-down resistors. While modern MCUs often have internal termination, some datasheets recommend external resistors for robustness.",
+          "suggestion": "Consult the nRF5340 datasheet for specific recommendations on external pull-up or pull-down resistors for SWDIO and SWDCLK pins (U1, P1, P2) to ensure robust debug interface operation, especially during power-up or hot-plug scenarios."
+        }
+      ],
+      "checks_covered": [
+        "Power rails present and connected",
+        "Rail/value consistency (3.3V power)",
+        "Decoupling capacitor placement and values",
+        "Reset/boot/debug pin sanity (RESET_N pull-up)",
+        "Clock/crystal and load capacitor sanity",
+        "Level compatibility / VIH-VIL risk flags (3.3V SWD interface)",
+        "Missing pull-ups/pull-downs/open-drain issues (SWD pins)",
+        "Suspicious or floating nets (SWO, TDI on J1)"
+      ],
+      "assumptions": [
+        "VCC_3V3 is a stable 3.3V power supply.",
+        "The nRF5340 (U1) is designed to operate with VDD, VDDA, VDDH, VDDL all tied to 3.3V, and the specified decoupling for these pins is appropriate for the selected nRF5340 configuration (e.g., if internal DCDC is used, specific external filtering might be needed as per datasheet, which is not detailed here).",
+        "The nRF5340's internal pull-ups/downs on SWDIO and SWDCLK are sufficient, or external ones are not required by its datasheet for the intended application.",
+        "The single-endpoint net 'NC_J1_7' for J1 pin 7 (NC) is intentional and expected, as per the connector's designation."
+      ]
+    }
+  },
+  "merged": {
+    "max_severity": "warning",
+    "finding_count": 13,
+    "findings": [
+      {
+        "severity": "warning",
+        "code": "SINGLE_ENDPOINT_NET",
+        "ref": null,
+        "pin": null,
+        "message": "Net \"NC_SWO\" has only one connection (possible floating node).",
+        "suggestion": "Confirm this is intentional or connect the net to its target."
+      },
+      {
+        "severity": "warning",
+        "code": "SINGLE_ENDPOINT_NET",
+        "ref": null,
+        "pin": null,
+        "message": "Net \"NC_J1_7\" has only one connection (possible floating node).",
+        "suggestion": "Confirm this is intentional or connect the net to its target."
+      },
+      {
+        "severity": "warning",
+        "code": "SINGLE_ENDPOINT_NET",
+        "ref": null,
+        "pin": null,
+        "message": "Net \"NC_J1_8\" has only one connection (possible floating node).",
+        "suggestion": "Confirm this is intentional or connect the net to its target."
+      },
+      {
+        "severity": "warning",
+        "code": "SINGLE_ENDPOINT_NET",
+        "ref": "J1",
+        "pin": "6",
+        "message": "Net \"NC_SWO\" (SWO pin of J1) has only one connection. While often left floating if tracing is not used, confirm this is intentional.",
+        "suggestion": "If SWO (Serial Wire Output) functionality is not required, leaving it disconnected might be acceptable. If tracing is intended, connect it to the corresponding pin on U1. If not used, consider explicitly terminating it with a weak pull-up/down if noise is a concern, or mark it clearly as 'no connect'."
+      },
+      {
+        "severity": "info",
+        "code": "SINGLE_ENDPOINT_NET_INTENTIONAL",
+        "ref": "J1",
+        "pin": "7",
+        "message": "Net \"NC_J1_7\" (NC pin of J1) has only one connection. This is expected as the pin is designated 'NC' (No Connect).",
+        "suggestion": "No action required, this is intentional."
+      },
+      {
+        "severity": "warning",
+        "code": "FLOATING_DEBUG_PIN",
+        "ref": "J1",
+        "pin": "8",
+        "message": "Net \"NC_J1_8\" (TDI pin of J1) has only one connection, leaving the TDI signal floating. This can lead to increased power consumption, noise susceptibility, or unexpected behavior if the JTAG interface is enabled.",
+        "suggestion": "If JTAG is not used, connect TDI (Test Data Input) to a weak pull-up resistor (e.g., 10k-100k to VCC_3V3) to ensure a defined logic level. If JTAG is intended, connect it to the corresponding TDI pin of U1. Review the nRF5340 datasheet for recommendations on unused JTAG pins."
+      },
+      {
+        "severity": "warning",
+        "code": "INCOMPLETE_IC_PINOUT",
+        "ref": "U1",
+        "pin": null,
+        "message": "The nRF5340_SoC component (U1) appears to have a highly abstracted or incomplete pinout representation. Many essential power, ground, and core functional pins typically required for an nRF5340 (e.g., VDD_NRF, VDD_GPIO, additional VSS pins, VREG_H, DEC_VDD, GPIOs) are not present in the connections list.",
+        "suggestion": "Ensure the U1 symbol accurately reflects all necessary power, ground, and control pins as specified in the nRF5340 datasheet. Verify that all critical pins required for device operation and stability (e.g., all VDD/VSS groups, voltage regulator decoupling, boot configuration pins) are present and correctly connected/decoupled, even if not explicitly shown here."
+      },
+      {
+        "severity": "info",
+        "code": "GENERIC_PIN_NAMES",
+        "ref": "U1",
+        "pin": null,
+        "message": "The nRF5340_SoC component (U1) uses generic pin designators like 'V1', 'P1', 'X1' instead of specific physical package pin numbers (e.g., 'A1', 'B2'). This may be an abstraction, but it hinders direct cross-referencing with a datasheet for physical pin-level checks.",
+        "suggestion": "Confirm if these pin names are intentionally abstract for a higher-level view or if the underlying symbol in the EDA tool uses actual physical pin numbers. If possible, use physical pin numbers in the JSON representation for easier validation against the component datasheet."
+      },
+      {
+        "severity": "warning",
+        "code": "MISSING_POWER_SOURCE",
+        "ref": null,
+        "pin": null,
+        "message": "The source for the \"VCC_3V3\" power rail is not defined within this schematic JSON (e.g., a voltage regulator or input connector).",
+        "suggestion": "Ensure that the \"VCC_3V3\" net is properly supplied by a power source elsewhere in the design. If this JSON represents a complete power domain, a source component should be added."
+      },
+      {
+        "severity": "warning",
+        "code": "SWO_PIN_UNCONNECTED",
+        "ref": "J1",
+        "pin": "6",
+        "message": "The SWO pin (J1 pin 6) on the SWD programming header is connected to a single-endpoint net 'NC_SWO' and not connected to the nRF5340 (U1) or any other component. If Serial Wire Viewer (SWV) functionality is desired, the corresponding SWO output pin on U1 must be connected.",
+        "suggestion": "Connect J1 pin 6 to the nRF5340's SWO output pin if Serial Wire Viewer (SWV) is intended. If SWV is not used, consult the nRF5340 datasheet for the recommended handling of its SWO pin (e.g., leave floating, configure as GPIO, or tie to GND/VCC via a resistor) to avoid unintended behavior or power consumption."
+      },
+      {
+        "severity": "warning",
+        "code": "JTAG_TDI_PIN_UNCONNECTED",
+        "ref": "J1",
+        "pin": "8",
+        "message": "The JTAG TDI pin (J1 pin 8) on the SWD programming header is connected to a single-endpoint net 'NC_J1_8' and not connected to the nRF5340 (U1) or any other component. If JTAG debugging is intended, the nRF5340's TDI input pin must be connected.",
+        "suggestion": "Connect J1 pin 8 to the nRF5340's TDI input pin if JTAG debugging is intended. If only SWD debugging is used, and U1's TDI pin is multiplexed with a GPIO, consult the nRF5340 datasheet for the recommended handling of this pin to prevent it from floating or entering an undesirable state."
+      },
+      {
+        "severity": "info",
+        "code": "CRYSTAL_LOAD_CAPACITANCE_VERIFICATION",
+        "ref": "X1",
+        "pin": null,
+        "message": "The load capacitors C6 and C7 (12pF each) for the 32MHz crystal (X1) are standard values, but should be verified against the specific crystal's (X1) specified load capacitance and the nRF5340 (U1) datasheet's requirements for external crystal oscillators.",
+        "suggestion": "Verify the total load capacitance provided by C6, C7 (which combine in series to approximately 6pF plus stray capacitance) matches the specified load capacitance of the 32MHz crystal (X1) and the nRF5340 (U1) datasheet for optimal oscillator performance and stability."
+      },
+      {
+        "severity": "info",
+        "code": "SWD_PULLUPS_PULLDOWNS_CHECK",
+        "ref": "U1",
+        "pin": "P1|P2",
+        "message": "SWDIO (P1) and SWDCLK (P2) on U1, connected to J1, do not have explicit external pull-up or pull-down resistors. While modern MCUs often have internal termination, some datasheets recommend external resistors for robustness.",
+        "suggestion": "Consult the nRF5340 datasheet for specific recommendations on external pull-up or pull-down resistors for SWDIO and SWDCLK pins (U1, P1, P2) to ensure robust debug interface operation, especially during power-up or hot-plug scenarios."
+      }
+    ]
+  }
+}

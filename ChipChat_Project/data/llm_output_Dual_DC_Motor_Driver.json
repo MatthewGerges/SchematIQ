@@ -1,0 +1,433 @@
+{
+  "project_name": "Dual_DC_Motor_Driver",
+  "description": "Dual DC brushed motor driver board using DRV8833, powered by external 5V, controlled via PWM.",
+  "sheets": [
+    {
+      "name": "Motor_Driver",
+      "file": "Motor_Driver.kicad_sch",
+      "page": 2
+    },
+    {
+      "name": "Input_Interface",
+      "file": "Input_Interface.kicad_sch",
+      "page": 3
+    }
+  ],
+  "components": [
+    {
+      "ref": "U1",
+      "part": "Driver_Motor:DRV8833",
+      "sheet": "Motor_Driver",
+      "note": "Dual H-bridge motor driver for two DC brushed motors",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "nSLEEP",
+          "net": "DRV_nSLEEP"
+        },
+        {
+          "pin": "2",
+          "pin_name": "AOUT2",
+          "net": "MOTOR1_OUT2"
+        },
+        {
+          "pin": "3",
+          "pin_name": "AISEN",
+          "net": "GND"
+        },
+        {
+          "pin": "4",
+          "pin_name": "AOUT1",
+          "net": "MOTOR1_OUT1"
+        },
+        {
+          "pin": "5",
+          "pin_name": "VM",
+          "net": "+5V_MOTOR"
+        },
+        {
+          "pin": "6",
+          "pin_name": "GND",
+          "net": "GND"
+        },
+        {
+          "pin": "7",
+          "pin_name": "BOUT2",
+          "net": "MOTOR2_OUT2"
+        },
+        {
+          "pin": "8",
+          "pin_name": "BISEN",
+          "net": "GND"
+        },
+        {
+          "pin": "9",
+          "pin_name": "BOUT1",
+          "net": "MOTOR2_OUT1"
+        },
+        {
+          "pin": "10",
+          "pin_name": "GND",
+          "net": "GND"
+        },
+        {
+          "pin": "11",
+          "pin_name": "VCC",
+          "net": "+5V_MOTOR"
+        },
+        {
+          "pin": "12",
+          "pin_name": "VINT",
+          "net": "DRV_VINT_CAP"
+        },
+        {
+          "pin": "13",
+          "pin_name": "VCP",
+          "net": "DRV_VCP_CAP"
+        },
+        {
+          "pin": "14",
+          "pin_name": "BIN2",
+          "net": "M2_IN2"
+        },
+        {
+          "pin": "15",
+          "pin_name": "BIN1",
+          "net": "M2_IN1"
+        },
+        {
+          "pin": "16",
+          "pin_name": "nFAULT",
+          "net": "DRV_nFAULT"
+        }
+      ]
+    },
+    {
+      "ref": "J1",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "Motor_Driver",
+      "note": "Connector for Motor 1",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "1",
+          "net": "MOTOR1_OUT1"
+        },
+        {
+          "pin": "2",
+          "pin_name": "2",
+          "net": "MOTOR1_OUT2"
+        }
+      ]
+    },
+    {
+      "ref": "J2",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "Motor_Driver",
+      "note": "Connector for Motor 2",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "1",
+          "net": "MOTOR2_OUT1"
+        },
+        {
+          "pin": "2",
+          "pin_name": "2",
+          "net": "MOTOR2_OUT2"
+        }
+      ]
+    },
+    {
+      "ref": "J3",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "Input_Interface",
+      "note": "External 5V Power Input",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "1",
+          "net": "+5V_MOTOR"
+        },
+        {
+          "pin": "2",
+          "pin_name": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "J4",
+      "part": "Connector_Generic:Conn_01x06",
+      "sheet": "Input_Interface",
+      "note": "Microcontroller Control Signal Header",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "1",
+          "net": "M1_IN1"
+        },
+        {
+          "pin": "2",
+          "pin_name": "2",
+          "net": "M1_IN2"
+        },
+        {
+          "pin": "3",
+          "pin_name": "3",
+          "net": "M2_IN1"
+        },
+        {
+          "pin": "4",
+          "pin_name": "4",
+          "net": "M2_IN2"
+        },
+        {
+          "pin": "5",
+          "pin_name": "5",
+          "net": "DRV_nFAULT"
+        },
+        {
+          "pin": "6",
+          "pin_name": "6",
+          "net": "GND"
+        }
+      ]
+    }
+  ],
+  "passives": [
+    {
+      "ref": "C1",
+      "type": "C",
+      "value": "0.1uF",
+      "sheet": "Motor_Driver",
+      "purpose": "VM decoupling",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "+5V_MOTOR"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C2",
+      "type": "C",
+      "value": "10uF",
+      "sheet": "Motor_Driver",
+      "purpose": "VM bulk decoupling",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "+5V_MOTOR"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C3",
+      "type": "C",
+      "value": "0.1uF",
+      "sheet": "Motor_Driver",
+      "purpose": "VCC decoupling",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "+5V_MOTOR"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C4",
+      "type": "C",
+      "value": "0.1uF",
+      "sheet": "Motor_Driver",
+      "purpose": "VCP charge pump capacitor",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "DRV_VCP_CAP"
+        },
+        {
+          "pin": "2",
+          "net": "+5V_MOTOR"
+        }
+      ]
+    },
+    {
+      "ref": "C5",
+      "type": "C",
+      "value": "0.1uF",
+      "sheet": "Motor_Driver",
+      "purpose": "VINT internal supply bypass capacitor",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "DRV_VINT_CAP"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "R1",
+      "type": "R",
+      "value": "10K",
+      "sheet": "Motor_Driver",
+      "purpose": "nSLEEP pull-up to enable DRV8833",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "DRV_nSLEEP"
+        },
+        {
+          "pin": "2",
+          "net": "+5V_MOTOR"
+        }
+      ]
+    },
+    {
+      "ref": "R2",
+      "type": "R",
+      "value": "10K",
+      "sheet": "Motor_Driver",
+      "purpose": "nFAULT pull-up for fault indication",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "DRV_nFAULT"
+        },
+        {
+          "pin": "2",
+          "net": "+5V_MOTOR"
+        }
+      ]
+    }
+  ],
+  "nets": [
+    {
+      "name": "DRV_nSLEEP",
+      "type": "local",
+      "sheet": "Motor_Driver",
+      "connections": [
+        {
+          "ref": "U1",
+          "pin": "1",
+          "pin_name": "nSLEEP"
+        },
+        {
+          "ref": "R1",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "MOTOR1_OUT1",
+      "type": "local",
+      "sheet": "Motor_Driver",
+      "connections": [
+        {
+          "ref": "U1",
+          "pin": "4",
+          "pin_name": "AOUT1"
+        },
+        {
+          "ref": "J1",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "MOTOR1_OUT2",
+      "type": "local",
+      "sheet": "Motor_Driver",
+      "connections": [
+        {
+          "ref": "U1",
+          "pin": "2",
+          "pin_name": "AOUT2"
+        },
+        {
+          "ref": "J1",
+          "pin": "2"
+        }
+      ]
+    },
+    {
+      "name": "MOTOR2_OUT1",
+      "type": "local",
+      "sheet": "Motor_Driver",
+      "connections": [
+        {
+          "ref": "U1",
+          "pin": "9",
+          "pin_name": "BOUT1"
+        },
+        {
+          "ref": "J2",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "MOTOR2_OUT2",
+      "type": "local",
+      "sheet": "Motor_Driver",
+      "connections": [
+        {
+          "ref": "U1",
+          "pin": "7",
+          "pin_name": "BOUT2"
+        },
+        {
+          "ref": "J2",
+          "pin": "2"
+        }
+      ]
+    },
+    {
+      "name": "DRV_VCP_CAP",
+      "type": "local",
+      "sheet": "Motor_Driver",
+      "connections": [
+        {
+          "ref": "U1",
+          "pin": "13",
+          "pin_name": "VCP"
+        },
+        {
+          "ref": "C4",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "DRV_VINT_CAP",
+      "type": "local",
+      "sheet": "Motor_Driver",
+      "connections": [
+        {
+          "ref": "U1",
+          "pin": "12",
+          "pin_name": "VINT"
+        },
+        {
+          "ref": "C5",
+          "pin": "1"
+        }
+      ]
+    }
+  ]
+}

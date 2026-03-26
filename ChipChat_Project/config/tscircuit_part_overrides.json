@@ -1,0 +1,14 @@
+{
+  "overrides": [
+    {
+      "part_substrings": ["L298", "L298N"],
+      "manufacturerPartNumber": "L298N",
+      "footprint": "dip15"
+    },
+    {
+      "part_substrings": ["USB_C", "USB-C", "USB2.0_16P"],
+      "manufacturerPartNumber": "USB4120-GF-A",
+      "footprint": "usb_c_16pin"
+    }
+  ]
+}

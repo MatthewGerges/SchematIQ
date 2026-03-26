@@ -17,6 +17,10 @@ import re
 from typing import Any
 
 
+# ---------------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------------
+
 def _safe_name(value: str, fallback: str = "X") -> str:
     s = re.sub(r"[^A-Za-z0-9_]", "_", (value or "").strip())
     if not s:
@@ -28,6 +32,42 @@ def _safe_name(value: str, fallback: str = "X") -> str:
 
 def _js_string(value: str) -> str:
     return json.dumps(value)
+
+
+# Part overrides: edit config/tscircuit_part_overrides.json (MPN, footprint, etc.)
+_PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+_TSC_OVERRIDES_PATH = os.path.join(_PROJECT_ROOT, "config", "tscircuit_part_overrides.json")
+_TSC_OVERRIDES_CACHE: list[dict[str, Any]] | None = None
+
+
+def _load_tscircuit_overrides() -> list[dict[str, Any]]:
+    global _TSC_OVERRIDES_CACHE
+    if _TSC_OVERRIDES_CACHE is not None:
+        return _TSC_OVERRIDES_CACHE
+    _TSC_OVERRIDES_CACHE = []
+    if os.path.isfile(_TSC_OVERRIDES_PATH):
+        try:
+            with open(_TSC_OVERRIDES_PATH, encoding="utf-8") as f:
+                blob = json.load(f)
+            _TSC_OVERRIDES_CACHE = list(blob.get("overrides") or [])
+        except (json.JSONDecodeError, OSError):
+            _TSC_OVERRIDES_CACHE = []
+    return _TSC_OVERRIDES_CACHE
+
+
+def _override_for_part(part: str) -> dict[str, Any]:
+    """First matching override row wins by longest substring match."""
+    p = (part or "").upper()
+    best: dict[str, Any] = {}
+    best_len = 0
+    for row in _load_tscircuit_overrides():
+        subs = row.get("part_substrings") or []
+        for s in subs:
+            su = str(s).upper()
+            if su and su in p and len(su) >= best_len:
+                best = {k: v for k, v in row.items() if k != "part_substrings"}
+                best_len = len(su)
+    return best
 
 
 def _normalize_resistance(value: str) -> str:
@@ -47,7 +87,6 @@ def _normalize_resistance(value: str) -> str:
 
 
 def _normalize_capacitance(value: str) -> str:
-    """Ensure capacitance values use proper SI notation for tscircuit."""
     v = (value or "").strip()
     m = re.match(r'^([\d.]+)\s*([pPnNuUmM]?)[fF]?$', v)
     if not m:
@@ -64,13 +103,38 @@ def _normalize_capacitance(value: str) -> str:
     return f"{num}F"
 
 
+def _normalize_inductance(value: str) -> str:
+    v = (value or "").strip()
+    m = re.match(r'^([\d.]+)\s*([pPnNuUmM]?)[hH]?$', v)
+    if not m:
+        return v
+    num, prefix = m.group(1), m.group(2).lower()
+    if prefix == "u":
+        return f"{num}uH"
+    if prefix == "n":
+        return f"{num}nH"
+    if prefix == "m":
+        return f"{num}mH"
+    if prefix == "p":
+        return f"{num}pH"
+    return f"{num}H"
+
+
+def _is_gnd(net: str) -> bool:
+    return (net or "").strip().upper() in {"GND", "GROUND", "VSS"}
+
+
 def _infer_footprint(part: str, ref: str, pin_count: int) -> str:
-    p = (part or "").upper()
+    raw = part or ""
+    o = _override_for_part(raw)
+    if o.get("footprint"):
+        return str(o["footprint"])
+    p = raw.upper()
     r = (ref or "").upper()
     if "CONN_ARM_JTAG_SWD_10" in p or (r.startswith("J") and pin_count >= 10):
         return "pinrow10_p1.27mm"
     if "CRYSTAL" in p or r.startswith("X"):
-        return "xtal_3225"
+        return "0805"
     if "NRF5340" in p:
         return "qfn94"
     if pin_count <= 3:
@@ -93,8 +157,8 @@ def _infer_mpn(part: str, ref: str) -> str:
 
 
 def _collect_net_names(data: dict[str, Any]) -> list[str]:
-    seen = set()
-    ordered = []
+    seen: set[str] = set()
+    ordered: list[str] = []
     for coll in (data.get("components", []), data.get("passives", [])):
         for item in coll:
             for c in item.get("connections", []):
@@ -110,39 +174,37 @@ def _collect_net_names(data: dict[str, Any]) -> list[str]:
     return ordered
 
 
-def _is_gnd(net: str) -> bool:
-    return (net or "").strip().upper() in {"GND", "GROUND"}
+def _passive_nets(passive: dict[str, Any]) -> tuple[str, str]:
+    conns = {str(c.get("pin")): (c.get("net") or "").strip()
+             for c in passive.get("connections", [])}
+    return conns.get("1", ""), conns.get("2", "")
 
 
-# ---------------------------------------------------------------------------
-# Pin arrangement: put all GND pins on the left side of connectors so they
-# render with the short ground tie style instead of hierarchical labels.
-# ---------------------------------------------------------------------------
-
-def _arrange_connector_pins(
+def _emit_connections_block(
+    lines: list[str],
     pin_entries: list[tuple[str, str, str]],
-) -> tuple[list[str], list[str]]:
-    """Split pin labels into left/right for connectors.
+    indent: str = "      ",
+) -> None:
+    """Emit tscircuit `connections` prop for net-label-only wiring."""
+    lines.append(f"{indent}  connections={{{{")
+    for _raw_pin, label, net in pin_entries:
+        lines.append(f"{indent}    {label}: {_js_string(f'net.{_safe_name(net)}')},")
+    lines.append(f"{indent}  }}}}")
 
-    GND pins go to the LEFT (tscircuit draws them with the ground-symbol
-    tie-down), non-GND go to the RIGHT.
-    """
-    left: list[str] = []
-    right: list[str] = []
-    for _raw, label, net in pin_entries:
-        if _is_gnd(net):
-            left.append(label)
-        else:
-            right.append(label)
-    if not left:
-        half = max(1, len(right) // 2)
-        left = right[:half]
-        right = right[half:]
-    if not right:
-        right = left
-        left = []
-    return left, right
 
+def _signal_nets_of(item: dict[str, Any]) -> set[str]:
+    """Return non-GND/power net names that an item connects to."""
+    nets: set[str] = set()
+    for c in item.get("connections", []):
+        net = (c.get("net") or "").strip()
+        if net and not _is_gnd(net):
+            nets.add(net)
+    return nets
+
+
+# ---------------------------------------------------------------------------
+# Component emitters
+# ---------------------------------------------------------------------------
 
 def _emit_generic_chip(
     lines: list[str],
@@ -151,73 +213,62 @@ def _emit_generic_chip(
     pin_entries: list[tuple[str, str, str]],
     sch_x: float,
     sch_y: float,
+    indent: str = "      ",
 ) -> None:
     pins_only = [p[1] for p in pin_entries]
-
-    if ref.upper().startswith("J"):
-        left, right = _arrange_connector_pins(pin_entries)
-    else:
-        half = max(1, len(pins_only) // 2)
-        left = pins_only[:half]
-        right = pins_only[half:]
-        if not right:
-            right = left
-            left = []
+    half = max(1, len(pins_only) // 2)
+    left = pins_only[:half]
+    right = pins_only[half:]
+    if not right:
+        right = left
+        left = []
 
     footprint = _infer_footprint(part, ref, len(pin_entries))
     sch_width = 6 if ref.upper().startswith("J") else 10
 
-    lines.append(f'      <chip name="{ref}" schX={{{sch_x}}} schY={{{sch_y}}} schWidth={{{sch_width}}}')
-    lines.append(f"        manufacturerPartNumber={_js_string(_infer_mpn(part, ref))}")
-    lines.append(f"        footprint={_js_string(footprint)}")
-    lines.append("        pinLabels={{")
-    for idx, (_raw_pin, label, _net) in enumerate(pin_entries, start=1):
-        lines.append(f"          pin{idx}: {_js_string(label)},")
-    lines.append("        }}")
-    lines.append("        schPinArrangement={{")
+    lines.append(f'{indent}<chip name="{ref}" schX={{{sch_x}}} schY={{{sch_y}}} schWidth={{{sch_width}}}')
+    lines.append(f"{indent}  manufacturerPartNumber={_js_string(_infer_mpn(part, ref))}")
+    lines.append(f"{indent}  footprint={_js_string(footprint)}")
+    lines.append(f"{indent}  pinLabels={{{{")
+    for idx, (_raw, label, _net) in enumerate(pin_entries, start=1):
+        lines.append(f"{indent}    pin{idx}: {_js_string(label)},")
+    lines.append(f"{indent}  }}}}")
+    lines.append(f"{indent}  schPinArrangement={{{{")
     lines.append(
-        "          leftSide: { direction: \"top-to-bottom\", pins: ["
-        + ", ".join(_js_string(x) for x in left)
-        + "] },"
+        f'{indent}    leftSide: {{ direction: "top-to-bottom", pins: ['
+        + ", ".join(_js_string(x) for x in left) + "] },"
     )
     lines.append(
-        "          rightSide: { direction: \"top-to-bottom\", pins: ["
-        + ", ".join(_js_string(x) for x in right)
-        + "] },"
+        f'{indent}    rightSide: {{ direction: "top-to-bottom", pins: ['
+        + ", ".join(_js_string(x) for x in right) + "] },"
     )
-    lines.append("        }}")
-    lines.append("      />")
-
-    for _raw_pin, label, net in pin_entries:
-        lines.append(f'      <trace from=".{ref} > .{label}" to="net.{_safe_name(net)}" />')
+    lines.append(f"{indent}  }}}}")
+    _emit_connections_block(lines, pin_entries, indent=indent)
+    lines.append(f"{indent}/>")
 
 
-def _emit_crystal_component(
+def _emit_crystal_as_chip(
     lines: list[str],
     ref: str,
     pin_entries: list[tuple[str, str, str]],
     sch_x: float,
     sch_y: float,
+    indent: str = "      ",
 ) -> None:
-    """Emit a crystal as a 2-pin chip.
-
-    The native <crystal> primitive renders on the schematic but does NOT
-    produce a PCB footprint.  Using a <chip> with an 0805 footprint
-    ensures it appears on both views.
-    """
-    labels = [p[1] for p in pin_entries[:2]] or ["pin1", "pin2"]
-    lines.append(f'      <chip name="{ref}" schX={{{sch_x}}} schY={{{sch_y}}} schWidth={{4}}')
-    lines.append(f'        manufacturerPartNumber="Crystal_32MHz"')
-    lines.append(f'        footprint="0805"')
-    lines.append(f"        pinLabels={{{{ pin1: {_js_string(labels[0])}, pin2: {_js_string(labels[1] if len(labels) > 1 else 'pin2')} }}}}")
+    """Render crystal as a 2-pin chip so it appears on both schematic and PCB."""
+    labels = [p[1] for p in pin_entries[:2]] or ["P_1", "P_2"]
+    l1, l2 = labels[0], labels[1] if len(labels) > 1 else "P_2"
+    lines.append(f'{indent}<chip name="{ref}" schX={{{sch_x}}} schY={{{sch_y}}} schWidth={{4}}')
+    lines.append(f'{indent}  manufacturerPartNumber="Crystal_32MHz"')
+    lines.append(f'{indent}  footprint="0805"')
+    lines.append(f"{indent}  pinLabels={{{{ pin1: {_js_string(l1)}, pin2: {_js_string(l2)} }}}}")
     lines.append(
-        f"        schPinArrangement={{{{" 
-        f" leftSide: {{ direction: \"top-to-bottom\", pins: [{_js_string(labels[0])}] }},"
-        f" rightSide: {{ direction: \"top-to-bottom\", pins: [{_js_string(labels[1] if len(labels) > 1 else 'pin2')}] }} }}}}"
+        f"{indent}  schPinArrangement={{{{" 
+        f' leftSide: {{ direction: "top-to-bottom", pins: [{_js_string(l1)}] }},'
+        f' rightSide: {{ direction: "top-to-bottom", pins: [{_js_string(l2)}] }} }}}}'
     )
-    lines.append("      />")
-    for idx, (_raw_pin, label, net) in enumerate(pin_entries[:2]):
-        lines.append(f'      <trace from=".{ref} > .{label}" to="net.{_safe_name(net)}" />')
+    _emit_connections_block(lines, pin_entries[:2], indent=indent)
+    lines.append(f"{indent}/>")
 
 
 def _emit_component(
@@ -225,6 +276,7 @@ def _emit_component(
     comp: dict[str, Any],
     sch_x: float,
     sch_y: float,
+    indent: str = "      ",
 ) -> None:
     ref = comp.get("ref", "U1")
     part = comp.get("part", "")
@@ -249,88 +301,167 @@ def _emit_component(
 
     upart = (part or "").upper()
     if "CRYSTAL" in upart or ref.upper().startswith("X"):
-        _emit_crystal_component(lines, ref, deduped, sch_x=sch_x, sch_y=sch_y)
+        _emit_crystal_as_chip(lines, ref, deduped, sch_x=sch_x, sch_y=sch_y, indent=indent)
     else:
-        _emit_generic_chip(lines, ref, part, deduped, sch_x=sch_x, sch_y=sch_y)
+        _emit_generic_chip(lines, ref, part, deduped, sch_x=sch_x, sch_y=sch_y, indent=indent)
 
 
-def _passive_nets(passive: dict[str, Any]) -> tuple[str, str]:
-    conns = {str(c.get("pin")): (c.get("net") or "").strip() for c in passive.get("connections", [])}
-    return conns.get("1", ""), conns.get("2", "")
-
-
-def _emit_passive_or_chip(
+def _emit_passive(
     lines: list[str],
     passive: dict[str, Any],
     sch_x: float,
     sch_y: float,
-    rotation: str = "",
+    indent: str = "      ",
 ) -> None:
+    """Emit a passive with schOrientation and net-label traces."""
     ref = passive.get("ref", "P1")
     ptype = (passive.get("type") or "").strip().upper()
     value = passive.get("value", "")
 
-    conn_by_pin = {str(c.get("pin")): (c.get("net") or "").strip() for c in passive.get("connections", [])}
+    conn_by_pin = {str(c.get("pin")): (c.get("net") or "").strip()
+                   for c in passive.get("connections", [])}
     net1 = conn_by_pin.get("1", "")
     net2 = conn_by_pin.get("2", "")
-
-    rot_attr = f' schRotation="{rotation}"' if rotation else ""
 
     if ptype == "R":
         rv = _normalize_resistance(value)
         lines.append(
-            f'      <resistor name="{ref}" schX={{{sch_x}}} schY={{{sch_y}}} '
-            f'footprint="0402" resistance={_js_string(rv)} />'
+            f'{indent}<resistor name="{ref}" schX={{{sch_x}}} schY={{{sch_y}}} '
+            f'footprint="0402" resistance={_js_string(rv)} schOrientation="horizontal" />'
         )
-        lines.append(f'      <trace from=".{ref} > .pin1" to="net.{_safe_name(net1)}" />')
-        lines.append(f'      <trace from=".{ref} > .pin2" to="net.{_safe_name(net2)}" />')
+        lines[-1] = lines[-1].replace(
+            " />",
+            f' connections={{{{ pin1: "{f"net.{_safe_name(net1)}"}", pin2: "{f"net.{_safe_name(net2)}"}" }}}} />',
+        )
         return
+
     if ptype == "C":
         cv = _normalize_capacitance(value)
-        cap_rot = ' schRotation="90deg"'
         lines.append(
-            f'      <capacitor name="{ref}" schX={{{sch_x}}} schY={{{sch_y}}} '
-            f'footprint="0402" capacitance={_js_string(cv)}{cap_rot} />'
+            f'{indent}<capacitor name="{ref}" schX={{{sch_x}}} schY={{{sch_y}}} '
+            f'footprint="0402" capacitance={_js_string(cv)} schOrientation="vertical" />'
         )
-        lines.append(f'      <trace from=".{ref} > .pin1" to="net.{_safe_name(net1)}" />')
-        lines.append(f'      <trace from=".{ref} > .pin2" to="net.{_safe_name(net2)}" />')
+        lines[-1] = lines[-1].replace(
+            " />",
+            f' connections={{{{ pin1: "{f"net.{_safe_name(net1)}"}", pin2: "{f"net.{_safe_name(net2)}"}" }}}} />',
+        )
         return
+
+    if ptype == "L":
+        ind = _normalize_inductance(value)
+        lines.append(
+            f'{indent}<inductor name="{ref}" schX={{{sch_x}}} schY={{{sch_y}}} '
+            f'footprint="1210" inductance={_js_string(ind)} schOrientation="horizontal" />'
+        )
+        lines[-1] = lines[-1].replace(
+            " />",
+            f' connections={{{{ pin1: "{f"net.{_safe_name(net1)}"}", pin2: "{f"net.{_safe_name(net2)}"}" }}}} />',
+        )
+        return
+
+    if ptype in {"DIODE", "D"} or "DIODE" in ptype:
+        is_sch = "SCHOTTKY" in value.upper()
+        sch_flag = " schottky={true}" if is_sch else ""
+        lines.append(
+            f'{indent}<diode name="{ref}" schX={{{sch_x}}} schY={{{sch_y}}} '
+            f'footprint="sod123"{sch_flag} schOrientation="horizontal" />'
+        )
+        lines[-1] = lines[-1].replace(
+            " />",
+            f' connections={{{{ anode: "{f"net.{_safe_name(net1)}"}", cathode: "{f"net.{_safe_name(net2)}"}" }}}} />',
+        )
+        return
+
     if "CRYSTAL" in (passive.get("part") or "").upper() or ptype in {"X", "XTAL"}:
-        lines.append(f'      <chip name="{ref}" schX={{{sch_x}}} schY={{{sch_y}}} schWidth={{4}}')
-        lines.append(f'        manufacturerPartNumber="Crystal_32MHz"')
-        lines.append(f'        footprint="0805"')
-        lines.append(f'        pinLabels={{{{ pin1: "P1", pin2: "P2" }}}}')
+        l1, l2 = "P_1", "P_2"
+        lines.append(f'{indent}<chip name="{ref}" schX={{{sch_x}}} schY={{{sch_y}}} schWidth={{4}}')
+        lines.append(f'{indent}  manufacturerPartNumber="Crystal_32MHz"')
+        lines.append(f'{indent}  footprint="0805"')
+        lines.append(f'{indent}  pinLabels={{{{ pin1: "{l1}", pin2: "{l2}" }}}}')
         lines.append(
-            '        schPinArrangement={{'
-            ' leftSide: { direction: "top-to-bottom", pins: ["P1"] },'
-            ' rightSide: { direction: "top-to-bottom", pins: ["P2"] } }}'
+            f'{indent}  schPinArrangement={{{{' 
+            f' leftSide: {{ direction: "top-to-bottom", pins: ["{l1}"] }},'
+            f' rightSide: {{ direction: "top-to-bottom", pins: ["{l2}"] }} }}}}'
         )
-        lines.append("      />")
-        lines.append(f'      <trace from=".{ref} > .P1" to="net.{_safe_name(net1)}" />')
-        lines.append(f'      <trace from=".{ref} > .P2" to="net.{_safe_name(net2)}" />')
+        lines.append(
+            f'{indent}  connections={{{{ {l1}: "net.{_safe_name(net1)}", {l2}: "net.{_safe_name(net2)}" }}}}'
+        )
+        lines.append(f"{indent}/>")
         return
 
+    # Fallback: generic 2-pin chip
     lines.append(
-        f'      <chip name="{ref}" schX={{{sch_x}}} schY={{{sch_y}}} schWidth={{6}} footprint="0402"'
+        f'{indent}<chip name="{ref}" schX={{{sch_x}}} schY={{{sch_y}}} schWidth={{6}} footprint="0402"'
     )
-    lines.append("        pinLabels={{ pin1: \"P1\", pin2: \"P2\" }}")
+    lines.append(f'{indent}  pinLabels={{{{ pin1: "P1", pin2: "P2" }}}}')
     lines.append(
-        "        schPinArrangement={{"
-        " leftSide: { direction: \"top-to-bottom\", pins: [\"P1\"] },"
-        " rightSide: { direction: \"top-to-bottom\", pins: [\"P2\"] } }}"
+        f'{indent}  schPinArrangement={{{{' 
+        f' leftSide: {{ direction: "top-to-bottom", pins: ["P1"] }},'
+        f' rightSide: {{ direction: "top-to-bottom", pins: ["P2"] }} }}}}'
     )
-    lines.append("      />")
-    lines.append(f'      <trace from=".{ref} > .P1" to="net.{_safe_name(net1)}" />')
-    lines.append(f'      <trace from=".{ref} > .P2" to="net.{_safe_name(net2)}" />')
+    lines.append(
+        f'{indent}  connections={{{{ P1: "net.{_safe_name(net1)}", P2: "net.{_safe_name(net2)}" }}}}'
+    )
+    lines.append(f"{indent}/>")
 
 
 # ---------------------------------------------------------------------------
-# Layout constants for tscircuit schematic coordinates
+# Passive-to-component grouping
 # ---------------------------------------------------------------------------
 
-CAP_ROW_SPACING = 4       # horizontal distance between side-by-side caps
-CAP_GROUP_GAP = 6         # horizontal gap between different net-groups
-PASSIVE_ROW_Y_OFFSET = 8  # below main components
+def _group_passives_by_parent(
+    comps: list[dict[str, Any]],
+    passives: list[dict[str, Any]],
+) -> dict[str, list[dict[str, Any]]]:
+    """Assign each passive to its most-related main component (by shared
+    signal nets, ignoring GND/power).  Falls back to first component."""
+    comp_sig_nets: dict[str, set[str]] = {}
+    for comp in comps:
+        comp_sig_nets[comp["ref"]] = _signal_nets_of(comp)
+
+    groups: dict[str, list[dict[str, Any]]] = {c["ref"]: [] for c in comps}
+    fallback = comps[0]["ref"] if comps else "__NONE__"
+
+    for p in passives:
+        p_nets = _signal_nets_of(p)
+        best_ref = fallback
+        best_overlap = 0
+        for ref, c_nets in comp_sig_nets.items():
+            overlap = len(p_nets & c_nets)
+            if overlap > best_overlap:
+                best_overlap = overlap
+                best_ref = ref
+        groups.setdefault(best_ref, []).append(p)
+
+    return groups
+
+
+# ---------------------------------------------------------------------------
+# Annotation helpers
+# ---------------------------------------------------------------------------
+
+_COMPONENT_ANNOTATIONS: dict[str, str] = {
+    "NRF5340": "This is the MCU",
+}
+
+
+def _annotation_for(part: str) -> str | None:
+    up = (part or "").upper()
+    for key, text in _COMPONENT_ANNOTATIONS.items():
+        if key in up:
+            return text
+    return None
+
+
+# ---------------------------------------------------------------------------
+# Main builder
+# ---------------------------------------------------------------------------
+
+COMP_H_SPACING = 14   # horizontal gap between main ICs
+PASSIVE_Y_GAP = 7     # vertical offset from IC row to passive area
+CAP_H_SPACING = 5     # horizontal gap between side-by-side caps
+OTHER_H_SPACING = 8   # horizontal gap between non-cap passives
+OTHER_V_OFFSET = 6    # vertical offset of resistors below caps
 
 
 def build_tscircuit_tsx(data: dict[str, Any]) -> str:
@@ -344,8 +475,7 @@ def build_tscircuit_tsx(data: dict[str, Any]) -> str:
     lines.append("  <board routingDisabled>")
 
     for net in _collect_net_names(data):
-        safe = _safe_name(net)
-        lines.append(f'    <net name="{safe}" />')
+        lines.append(f'    <net name="{_safe_name(net)}" />')
 
     lines.append("")
     lines.append(f"    {{/* Generated from {project_name} */}}")
@@ -353,47 +483,58 @@ def build_tscircuit_tsx(data: dict[str, Any]) -> str:
     for sidx, sheet in enumerate(sheets):
         sheet_name = sheet.get("name", f"Sheet{sidx+1}")
         sub_name = _safe_name(sheet_name, fallback=f"SHEET_{sidx+1}")
-        y_offset = sidx * 30
-        lines.append(f'    <subcircuit name="{sub_name}">')
+        y_base = sidx * 12
+        # Prefer net labels on long schematic routes (tscircuit still auto-routes wires).
+        lines.append(
+            f'    <subcircuit name="{sub_name}" schTraceAutoLabelEnabled={{true}}>'
+        )
 
         comps = [c for c in all_components if c.get("sheet") == sheet_name]
         passives = [p for p in all_passives if p.get("sheet") == sheet_name]
 
-        # Place main components spaced horizontally.
+        # --- Row of main components ---
+        comp_x_positions: dict[str, float] = {}
         for cidx, comp in enumerate(comps):
-            sch_x = -10 + cidx * 20
-            sch_y = float(y_offset)
-            _emit_component(lines, comp, sch_x=sch_x, sch_y=sch_y)
+            sx = float(-10 + cidx * COMP_H_SPACING)
+            sy = float(y_base)
+            comp_x_positions[comp["ref"]] = sx
+            _emit_component(lines, comp, sch_x=sx, sch_y=sy)
 
-        # --- Capacitors: group by nets, place each group as a horizontal row ---
-        caps = [p for p in passives if (p.get("type") or "").strip().upper() == "C"]
-        others = [p for p in passives if (p.get("type") or "").strip().upper() != "C"]
+            annotation = _annotation_for(comp.get("part", ""))
+            if annotation:
+                lines.append(
+                    f'      <schematictext text={_js_string(annotation)} '
+                    f'schX={{{sx + 6}}} schY={{{sy - 3}}} fontSize={{0.3}} />'
+                )
 
-        cap_groups: dict[tuple[str, str], list[dict[str, Any]]] = {}
-        for p in caps:
-            key = _passive_nets(p)
-            cap_groups.setdefault(key, []).append(p)
+        # --- Passives in one compact grouped cluster near mains ---
+        if comps and passives:
+            x_values = list(comp_x_positions.values())
+            center_x = (min(x_values) + max(x_values)) / 2 if x_values else -10.0
+            base_x = center_x - 10
+            passive_y = float(y_base + PASSIVE_Y_GAP)
 
-        cap_base_y = y_offset + PASSIVE_ROW_Y_OFFSET
-        x_cursor = -10.0
-        group_row = 0
-        for _nets, group in cap_groups.items():
-            for cidx, p in enumerate(group):
-                x = x_cursor + cidx * CAP_ROW_SPACING
-                y = float(cap_base_y + group_row * 6)
-                _emit_passive_or_chip(lines, p, sch_x=x, sch_y=y)
-            x_cursor += len(group) * CAP_ROW_SPACING + CAP_GROUP_GAP
-            if x_cursor > 30:
-                x_cursor = -10.0
-                group_row += 1
+            caps = [p for p in passives if (p.get("type") or "").upper() == "C"]
+            others = [p for p in passives if (p.get("type") or "").upper() != "C"]
 
-        # --- Non-cap passives (resistors render horizontal by default) ---
-        cap_rows_used = group_row + (1 if caps else 0)
-        other_base_y = cap_base_y + cap_rows_used * 6 + 4
-        for pidx, p in enumerate(others):
-            px = -10 + (pidx % 4) * 10
-            py = float(other_base_y + (pidx // 4) * 4)
-            _emit_passive_or_chip(lines, p, sch_x=px, sch_y=py)
+            for ci, cap in enumerate(caps):
+                cx = base_x + (ci % 5) * CAP_H_SPACING
+                cy = passive_y + (ci // 5) * 3
+                _emit_passive(lines, cap, sch_x=cx, sch_y=cy)
+
+            other_base_y = passive_y + 6 + (len(caps) // 5) * 3
+            for oi, other in enumerate(others):
+                ox = base_x + (oi % 4) * OTHER_H_SPACING
+                oy = other_base_y + (oi // 4) * 3
+                _emit_passive(lines, other, sch_x=ox, sch_y=oy)
+
+        elif passives:
+            px_base = -10.0
+            py_base = float(y_base + PASSIVE_Y_GAP)
+            for pi, p in enumerate(passives):
+                px = px_base + (pi % 6) * CAP_H_SPACING
+                py = py_base + (pi // 6) * 5
+                _emit_passive(lines, p, sch_x=px, sch_y=py)
 
         lines.append("    </subcircuit>")
         lines.append("")
@@ -403,6 +544,10 @@ def build_tscircuit_tsx(data: dict[str, Any]) -> str:
     lines.append("")
     return "\n".join(lines)
 
+
+# ---------------------------------------------------------------------------
+# Project scaffolding
+# ---------------------------------------------------------------------------
 
 def write_tscircuit_project(data: dict[str, Any], output_dir: str) -> dict[str, str]:
     os.makedirs(output_dir, exist_ok=True)

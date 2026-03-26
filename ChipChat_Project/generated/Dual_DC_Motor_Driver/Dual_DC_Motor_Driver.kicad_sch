@@ -1,0 +1,91 @@
+(kicad_sch
+	(version 20250114)
+	(generator "ChipChat_Gemini")
+	(generator_version "9.0")
+	(uuid "17ab6ab4-e2e4-44e6-a73b-c6ca915e6545")
+	(paper "A4")
+	(lib_symbols)
+
+	(sheet
+		(at 25.0 25.0)
+		(size 45.0 15.0)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(stroke
+			(width 0)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "3546ffe9-5561-45c5-8f95-1fbb4d5e4ece")
+		(property "Sheetname" "Motor_Driver"
+			(at 25.0 24.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "Motor_Driver.kicad_sch"
+			(at 25.0 40.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+	)
+
+	(sheet
+		(at 85.0 25.0)
+		(size 45.0 15.0)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(stroke
+			(width 0)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "751427ac-4ff5-4a54-88ce-d974876719bf")
+		(property "Sheetname" "Input_Interface"
+			(at 85.0 24.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "Input_Interface.kicad_sch"
+			(at 85.0 40.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+	)
+
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+		(path "/3546ffe9-5561-45c5-8f95-1fbb4d5e4ece"
+			(page "2")
+		)
+		(path "/751427ac-4ff5-4a54-88ce-d974876719bf"
+			(page "3")
+		)
+	)
+	(embedded_fonts no)
+)

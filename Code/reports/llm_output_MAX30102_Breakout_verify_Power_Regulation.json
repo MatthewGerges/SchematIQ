@@ -1,0 +1,125 @@
+{
+  "missing_components": [],
+  "extra_components": [],
+  "missing_nets": [
+    "VLED_3V3"
+  ],
+  "pin_errors": [
+    {
+      "ref": "U2",
+      "pin": "1",
+      "expected_net": "GND",
+      "actual_nets": []
+    },
+    {
+      "ref": "U2",
+      "pin": "2",
+      "expected_net": "VLED_3V3",
+      "actual_nets": []
+    },
+    {
+      "ref": "U2",
+      "pin": "3",
+      "expected_net": "VIN_5V",
+      "actual_nets": []
+    },
+    {
+      "ref": "U3",
+      "pin": "1",
+      "expected_net": "GND",
+      "actual_nets": []
+    },
+    {
+      "ref": "U3",
+      "pin": "2",
+      "expected_net": "VDD_1V8",
+      "actual_nets": []
+    },
+    {
+      "ref": "U3",
+      "pin": "3",
+      "expected_net": "VIN_5V",
+      "actual_nets": []
+    },
+    {
+      "ref": "C3",
+      "pin": "1",
+      "expected_net": "VIN_5V",
+      "actual_nets": []
+    },
+    {
+      "ref": "C3",
+      "pin": "2",
+      "expected_net": "GND",
+      "actual_nets": []
+    },
+    {
+      "ref": "C4",
+      "pin": "1",
+      "expected_net": "VLED_3V3",
+      "actual_nets": []
+    },
+    {
+      "ref": "C4",
+      "pin": "2",
+      "expected_net": "GND",
+      "actual_nets": []
+    },
+    {
+      "ref": "C5",
+      "pin": "1",
+      "expected_net": "VIN_5V",
+      "actual_nets": []
+    },
+    {
+      "ref": "C5",
+      "pin": "2",
+      "expected_net": "GND",
+      "actual_nets": []
+    },
+    {
+      "ref": "C6",
+      "pin": "1",
+      "expected_net": "VIN_5V",
+      "actual_nets": []
+    },
+    {
+      "ref": "C6",
+      "pin": "2",
+      "expected_net": "GND",
+      "actual_nets": []
+    },
+    {
+      "ref": "C7",
+      "pin": "1",
+      "expected_net": "VDD_1V8",
+      "actual_nets": []
+    },
+    {
+      "ref": "C7",
+      "pin": "2",
+      "expected_net": "GND",
+      "actual_nets": []
+    },
+    {
+      "ref": "C8",
+      "pin": "1",
+      "expected_net": "VIN_5V",
+      "actual_nets": []
+    },
+    {
+      "ref": "C8",
+      "pin": "2",
+      "expected_net": "GND",
+      "actual_nets": []
+    }
+  ],
+  "summary": {
+    "components_expected": 8,
+    "components_placed": 8,
+    "missing_components": 0,
+    "missing_nets": 1,
+    "pin_errors": 18
+  },
+  "ok": false
+}

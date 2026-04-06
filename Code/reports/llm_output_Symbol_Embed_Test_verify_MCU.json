@@ -1,0 +1,47 @@
+{
+  "missing_components": [],
+  "extra_components": [],
+  "missing_nets": [],
+  "pin_errors": [
+    {
+      "ref": "U8",
+      "pin": "A8",
+      "expected_net": "VCC",
+      "actual_nets": []
+    },
+    {
+      "ref": "U8",
+      "pin": "A12",
+      "expected_net": "GND",
+      "actual_nets": []
+    },
+    {
+      "ref": "U8",
+      "pin": "D2",
+      "expected_net": "LED1",
+      "actual_nets": []
+    },
+    {
+      "ref": "U8",
+      "pin": "B1",
+      "expected_net": "UART_TX",
+      "actual_nets": [
+        "VCC"
+      ]
+    },
+    {
+      "ref": "U8",
+      "pin": "A20",
+      "expected_net": "SWDIO",
+      "actual_nets": []
+    }
+  ],
+  "summary": {
+    "components_expected": 1,
+    "components_placed": 1,
+    "missing_components": 0,
+    "missing_nets": 0,
+    "pin_errors": 5
+  },
+  "ok": false
+}

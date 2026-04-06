@@ -1,0 +1,205 @@
+(kicad_sch
+	(version 20250114)
+	(generator "SchematIQ")
+	(generator_version "9.0")
+	(uuid "a7066cb3-2295-43a8-b74e-b37b609d78c8")
+	(paper "A4")
+	(lib_symbols)
+
+	(sheet
+		(at 25.0 25.0)
+		(size 45.0 15.0)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(stroke
+			(width 0)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "608d1f8f-d5f9-42e4-9959-c4ebd359c415")
+		(property "Sheetname" "Regulators"
+			(at 25.0 24.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "Regulators.kicad_sch"
+			(at 25.0 40.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+	)
+
+	(sheet
+		(at 85.0 25.0)
+		(size 45.0 15.0)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(stroke
+			(width 0)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "82694ec5-08f3-4f17-9234-35119d14482c")
+		(property "Sheetname" "OpAmps_Timers"
+			(at 85.0 24.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "OpAmps_Timers.kicad_sch"
+			(at 85.0 40.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+	)
+
+	(sheet
+		(at 145.0 25.0)
+		(size 45.0 15.0)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(stroke
+			(width 0)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "a5d02e2f-f0f9-4876-bb32-02571fffa6ff")
+		(property "Sheetname" "Sensors"
+			(at 145.0 24.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "Sensors.kicad_sch"
+			(at 145.0 40.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+	)
+
+	(sheet
+		(at 205.0 25.0)
+		(size 45.0 15.0)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(stroke
+			(width 0)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "bf8c5ea9-9c3d-442e-8808-1060b3dd10ea")
+		(property "Sheetname" "Connectors_USB"
+			(at 205.0 24.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "Connectors_USB.kicad_sch"
+			(at 205.0 40.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+	)
+
+	(sheet
+		(at 25.0 55.0)
+		(size 45.0 15.0)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(stroke
+			(width 0)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "780ba1dd-4b42-4870-93c5-420c6ea50f2a")
+		(property "Sheetname" "MCU"
+			(at 25.0 54.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "MCU.kicad_sch"
+			(at 25.0 70.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+	)
+
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+		(path "/608d1f8f-d5f9-42e4-9959-c4ebd359c415"
+			(page "1")
+		)
+		(path "/82694ec5-08f3-4f17-9234-35119d14482c"
+			(page "2")
+		)
+		(path "/a5d02e2f-f0f9-4876-bb32-02571fffa6ff"
+			(page "3")
+		)
+		(path "/bf8c5ea9-9c3d-442e-8808-1060b3dd10ea"
+			(page "4")
+		)
+		(path "/780ba1dd-4b42-4870-93c5-420c6ea50f2a"
+			(page "5")
+		)
+	)
+	(embedded_fonts no)
+)

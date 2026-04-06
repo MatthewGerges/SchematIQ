@@ -1,0 +1,45 @@
+{
+  "meta": {
+    "filename": "Symbol_Embed_Test.kicad_pro",
+    "version": 2
+  },
+  "schematic": {
+    "annotate_start_num": 0,
+    "bom_fmt_settings": {
+      "field_delimiter": ",",
+      "name": "CSV",
+      "ref_delimiter": ",",
+      "string_delimiter": "\""
+    },
+    "connection_grid_size": 50.0,
+    "drawing": {},
+    "page_layout_descr_file": ""
+  },
+  "sheets": [
+    [
+      "a7066cb3-2295-43a8-b74e-b37b609d78c8",
+      "Root"
+    ],
+    [
+      "608d1f8f-d5f9-42e4-9959-c4ebd359c415",
+      "Regulators"
+    ],
+    [
+      "82694ec5-08f3-4f17-9234-35119d14482c",
+      "OpAmps_Timers"
+    ],
+    [
+      "a5d02e2f-f0f9-4876-bb32-02571fffa6ff",
+      "Sensors"
+    ],
+    [
+      "bf8c5ea9-9c3d-442e-8808-1060b3dd10ea",
+      "Connectors_USB"
+    ],
+    [
+      "780ba1dd-4b42-4870-93c5-420c6ea50f2a",
+      "MCU"
+    ]
+  ],
+  "text_variables": {}
+}

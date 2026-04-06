@@ -1,0 +1,319 @@
+{
+  "project_name": "LDO_Breakout_5V_to_3V3_500mA",
+  "description": "LDO breakout board using LM1117-3.3 to convert 5V input to 3.3V @ 0.5A on a single sheet.",
+  "sheets": [
+    {
+      "name": "Main_LDO_Sheet",
+      "file": "Main_LDO_Sheet.kicad_sch",
+      "page": 1
+    }
+  ],
+  "components": [
+    {
+      "ref": "J1",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "Power_IO",
+      "note": "5V Input Connector",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VIN_5V"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "J2",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "Power_IO",
+      "note": "3.3V Output Connector",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VOUT_3V3"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "U1",
+      "part": "ADP124-3.3",
+      "sheet": "LDO_Regulator",
+      "note": "5V to 3.3V LDO Regulator",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "EN",
+          "net": "VIN_5V"
+        },
+        {
+          "pin": "3",
+          "pin_name": "GND",
+          "net": "GND"
+        },
+        {
+          "pin": "4",
+          "pin_name": "PGOOD",
+          "net": "NC_PGOOD"
+        },
+        {
+          "pin": "5",
+          "pin_name": "VOUT",
+          "net": "VOUT_3V3"
+        },
+        {
+          "pin": "7",
+          "pin_name": "VIN",
+          "net": "VIN_5V"
+        },
+        {
+          "pin": "8",
+          "pin_name": "GND",
+          "net": "GND"
+        },
+        {
+          "pin": "EP",
+          "pin_name": "GND",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "J1",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "Main_LDO_Sheet",
+      "note": "5V Input Connector",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VIN_5V"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "J2",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "Main_LDO_Sheet",
+      "note": "3.3V Output Connector",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VOUT_3V3"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "U1",
+      "part": "ADP124-3.3",
+      "sheet": "Main_LDO_Sheet",
+      "note": "5V to 3.3V LDO Regulator",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "EN",
+          "net": "VIN_5V"
+        },
+        {
+          "pin": "3",
+          "pin_name": "GND",
+          "net": "GND"
+        },
+        {
+          "pin": "4",
+          "pin_name": "PGOOD",
+          "net": "NC_PGOOD"
+        },
+        {
+          "pin": "5",
+          "pin_name": "VOUT",
+          "net": "VOUT_3V3"
+        },
+        {
+          "pin": "7",
+          "pin_name": "VIN",
+          "net": "VIN_5V"
+        },
+        {
+          "pin": "8",
+          "pin_name": "GND",
+          "net": "GND"
+        },
+        {
+          "pin": "EP",
+          "pin_name": "GND",
+          "net": "GND"
+        }
+      ]
+    }
+  ],
+  "passives": [
+    {
+      "ref": "C1",
+      "type": "C",
+      "value": "1uF",
+      "sheet": "LDO_Regulator",
+      "purpose": "Input decoupling for LDO",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VIN_5V"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C2",
+      "type": "C",
+      "value": "1uF",
+      "sheet": "LDO_Regulator",
+      "purpose": "Output decoupling for LDO",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VOUT_3V3"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C1",
+      "type": "C",
+      "value": "1uF",
+      "sheet": "Main_LDO_Sheet",
+      "purpose": "Input decoupling for LDO",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VIN_5V"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C2",
+      "type": "C",
+      "value": "1uF",
+      "sheet": "Main_LDO_Sheet",
+      "purpose": "Output decoupling for LDO",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VOUT_3V3"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    }
+  ],
+  "nets": [
+    {
+      "name": "VIN_5V",
+      "type": "hierarchical",
+      "sheet": "Power_IO"
+    },
+    {
+      "name": "VOUT_3V3",
+      "type": "hierarchical",
+      "sheet": "Power_IO"
+    },
+    {
+      "name": "VIN_5V",
+      "type": "hierarchical",
+      "sheet": "LDO_Regulator"
+    },
+    {
+      "name": "VOUT_3V3",
+      "type": "hierarchical",
+      "sheet": "LDO_Regulator"
+    },
+    {
+      "name": "NC_PGOOD",
+      "type": "local",
+      "sheet": "LDO_Regulator"
+    },
+    {
+      "name": "VIN_5V",
+      "type": "hierarchical",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "1",
+          "sheet": "Power_IO"
+        },
+        {
+          "ref": "U1",
+          "pin": "7",
+          "pin_name": "VIN",
+          "sheet": "LDO_Regulator"
+        },
+        {
+          "ref": "C1",
+          "pin": "1",
+          "sheet": "LDO_Regulator"
+        }
+      ]
+    },
+    {
+      "name": "VOUT_3V3",
+      "type": "hierarchical",
+      "connections": [
+        {
+          "ref": "J2",
+          "pin": "1",
+          "sheet": "Power_IO"
+        },
+        {
+          "ref": "U1",
+          "pin": "5",
+          "pin_name": "VOUT",
+          "sheet": "LDO_Regulator"
+        },
+        {
+          "ref": "C2",
+          "pin": "1",
+          "sheet": "LDO_Regulator"
+        }
+      ]
+    },
+    {
+      "name": "VIN_5V",
+      "type": "power",
+      "sheet": "Main_LDO_Sheet"
+    },
+    {
+      "name": "VOUT_3V3",
+      "type": "power",
+      "sheet": "Main_LDO_Sheet"
+    },
+    {
+      "name": "NC_PGOOD",
+      "type": "local",
+      "sheet": "Main_LDO_Sheet"
+    }
+  ]
+}

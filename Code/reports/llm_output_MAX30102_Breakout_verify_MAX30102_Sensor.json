@@ -1,0 +1,122 @@
+{
+  "missing_components": [],
+  "extra_components": [],
+  "missing_nets": [
+    "INT",
+    "SCL",
+    "SDA",
+    "VLED_3V3"
+  ],
+  "pin_errors": [
+    {
+      "ref": "U1",
+      "pin": "1",
+      "expected_net": "SDA",
+      "actual_nets": []
+    },
+    {
+      "ref": "U1",
+      "pin": "2",
+      "expected_net": "SCL",
+      "actual_nets": []
+    },
+    {
+      "ref": "U1",
+      "pin": "3",
+      "expected_net": "INT",
+      "actual_nets": []
+    },
+    {
+      "ref": "U1",
+      "pin": "6",
+      "expected_net": "GND",
+      "actual_nets": []
+    },
+    {
+      "ref": "U1",
+      "pin": "7",
+      "expected_net": "VDD_1V8",
+      "actual_nets": []
+    },
+    {
+      "ref": "U1",
+      "pin": "10",
+      "expected_net": "GND",
+      "actual_nets": []
+    },
+    {
+      "ref": "U1",
+      "pin": "11",
+      "expected_net": "VLED_3V3",
+      "actual_nets": []
+    },
+    {
+      "ref": "C1",
+      "pin": "1",
+      "expected_net": "VDD_1V8",
+      "actual_nets": []
+    },
+    {
+      "ref": "C1",
+      "pin": "2",
+      "expected_net": "GND",
+      "actual_nets": []
+    },
+    {
+      "ref": "C2",
+      "pin": "1",
+      "expected_net": "VLED_3V3",
+      "actual_nets": []
+    },
+    {
+      "ref": "C2",
+      "pin": "2",
+      "expected_net": "GND",
+      "actual_nets": []
+    },
+    {
+      "ref": "R1",
+      "pin": "1",
+      "expected_net": "SDA",
+      "actual_nets": []
+    },
+    {
+      "ref": "R1",
+      "pin": "2",
+      "expected_net": "VLED_3V3",
+      "actual_nets": []
+    },
+    {
+      "ref": "R2",
+      "pin": "1",
+      "expected_net": "SCL",
+      "actual_nets": []
+    },
+    {
+      "ref": "R2",
+      "pin": "2",
+      "expected_net": "VLED_3V3",
+      "actual_nets": []
+    },
+    {
+      "ref": "R3",
+      "pin": "1",
+      "expected_net": "INT",
+      "actual_nets": []
+    },
+    {
+      "ref": "R3",
+      "pin": "2",
+      "expected_net": "VLED_3V3",
+      "actual_nets": []
+    }
+  ],
+  "summary": {
+    "components_expected": 6,
+    "components_placed": 6,
+    "missing_components": 0,
+    "missing_nets": 4,
+    "pin_errors": 17
+  },
+  "ok": false
+}

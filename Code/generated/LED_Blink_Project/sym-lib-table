@@ -1,0 +1,3 @@
+(sym_lib_table
+  (lib (name "SchematIQ") (type "KiCad") (uri "${KIPRJMOD}/_schematiq_embedded.kicad_sym") (options "") (descr "SchematIQ embedded symbols"))
+)

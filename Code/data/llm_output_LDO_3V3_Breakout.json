@@ -1,0 +1,190 @@
+{
+  "project_name": "LDO_3V3_Breakout",
+  "description": "3.3V LDO Breakout Board with 5V input",
+  "sheets": [
+    {
+      "name": "LDO_Regulator",
+      "file": "LDO_Regulator.kicad_sch",
+      "page": 1
+    }
+  ],
+  "components": [
+    {
+      "ref": "U1",
+      "part": "Regulator_Linear:LM1117-3.3",
+      "sheet": "LDO_Regulator",
+      "note": "Fixed 3.3V LDO, requires 10uF input and output capacitors for stability.",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "GND",
+          "net": "GND"
+        },
+        {
+          "pin": "2",
+          "pin_name": "VOUT",
+          "net": "3V3"
+        },
+        {
+          "pin": "3",
+          "pin_name": "VIN",
+          "net": "5V_VIN"
+        }
+      ]
+    },
+    {
+      "ref": "J1",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "LDO_Regulator",
+      "note": "VIN (5V) Input Connector",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "5V_VIN"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "J2",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "LDO_Regulator",
+      "note": "VOUT (3.3V) Output Connector",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "3V3"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    }
+  ],
+  "passives": [
+    {
+      "ref": "C1",
+      "type": "C",
+      "value": "10uF",
+      "sheet": "LDO_Regulator",
+      "purpose": "Input decoupling for LDO",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "5V_VIN"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C2",
+      "type": "C",
+      "value": "10uF",
+      "sheet": "LDO_Regulator",
+      "purpose": "Output stability and decoupling for LDO",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "3V3"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    }
+  ],
+  "nets": [
+    {
+      "name": "5V_VIN",
+      "type": "power",
+      "sheet": "LDO_Regulator",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "1"
+        },
+        {
+          "ref": "U1",
+          "pin": "3",
+          "pin_name": "VIN"
+        },
+        {
+          "ref": "C1",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "3V3",
+      "type": "power",
+      "sheet": "LDO_Regulator",
+      "connections": [
+        {
+          "ref": "J2",
+          "pin": "1"
+        },
+        {
+          "ref": "U1",
+          "pin": "2",
+          "pin_name": "VOUT"
+        },
+        {
+          "ref": "C2",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "5V_VIN",
+      "type": "power",
+      "connections": [
+        {
+          "ref": "U1",
+          "pin": "3",
+          "pin_name": "VIN",
+          "sheet": "LDO_Regulator"
+        },
+        {
+          "ref": "J1",
+          "pin": "1",
+          "sheet": "LDO_Regulator"
+        },
+        {
+          "ref": "C1",
+          "pin": "1",
+          "sheet": "LDO_Regulator"
+        }
+      ]
+    },
+    {
+      "name": "3V3",
+      "type": "power",
+      "connections": [
+        {
+          "ref": "U1",
+          "pin": "2",
+          "pin_name": "VOUT",
+          "sheet": "LDO_Regulator"
+        },
+        {
+          "ref": "J2",
+          "pin": "1",
+          "sheet": "LDO_Regulator"
+        },
+        {
+          "ref": "C2",
+          "pin": "1",
+          "sheet": "LDO_Regulator"
+        }
+      ]
+    }
+  ]
+}

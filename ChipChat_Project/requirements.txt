@@ -1,3 +1,0 @@
-google-genai
-python-dotenv
-rich>=13.0.0

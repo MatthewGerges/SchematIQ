@@ -1,0 +1,126 @@
+{
+  "project_name": "LDO_Breakout_Board",
+  "description": "5V to 3.3V LDO breakout board with 0.5A max current",
+  "sheets": [
+    {
+      "name": "LDO_Breakout",
+      "file": "LDO_Breakout.kicad_sch",
+      "page": 1
+    }
+  ],
+  "components": [
+    {
+      "ref": "U1",
+      "part": "Regulator_Linear:LM1117DT-3.3",
+      "sheet": "LDO_Breakout",
+      "note": "3.3V Fixed LDO, SOT-223 / TO-252",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "GND",
+          "net": "GND"
+        },
+        {
+          "pin": "2",
+          "pin_name": "VOUT",
+          "net": "VOUT_3V3"
+        },
+        {
+          "pin": "3",
+          "pin_name": "VIN",
+          "net": "VIN_5V"
+        }
+      ]
+    },
+    {
+      "ref": "J1",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "LDO_Breakout",
+      "note": "2-pin header for 5V input",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VIN_5V"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "J2",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "LDO_Breakout",
+      "note": "2-pin header for 3.3V output",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VOUT_3V3"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    }
+  ],
+  "passives": [
+    {
+      "ref": "C1",
+      "type": "C",
+      "value": "0.1uF",
+      "sheet": "LDO_Breakout",
+      "purpose": "Input bypass capacitor",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VIN_5V"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C2",
+      "type": "C",
+      "value": "10uF",
+      "sheet": "LDO_Breakout",
+      "purpose": "Output stability capacitor",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VOUT_3V3"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    }
+  ],
+  "nets": [
+    {
+      "name": "VIN_5V",
+      "type": "power",
+      "sheet": "LDO_Breakout",
+      "connections": [
+        {"ref": "J1", "pin": "1"},
+        {"ref": "U1", "pin": "3", "pin_name": "VIN"},
+        {"ref": "C1", "pin": "1"}
+      ]
+    },
+    {
+      "name": "VOUT_3V3",
+      "type": "power",
+      "sheet": "LDO_Breakout",
+      "connections": [
+        {"ref": "J2", "pin": "1"},
+        {"ref": "U1", "pin": "2", "pin_name": "VOUT"},
+        {"ref": "C2", "pin": "1"}
+      ]
+    }
+  ]
+}

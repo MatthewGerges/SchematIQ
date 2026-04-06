@@ -1,0 +1,153 @@
+{
+  "project_name": "5V_to_3V3_LDO_Breakout",
+  "description": "5V to 3.3V 0.5A LDO Regulator Breakout Board",
+  "sheets": [
+    {
+      "name": "LDO_Regulator",
+      "file": "LDO_Regulator.kicad_sch",
+      "page": 1
+    },
+    {
+      "name": "Connectors",
+      "file": "Connectors.kicad_sch",
+      "page": 2
+    }
+  ],
+  "components": [
+    {
+      "ref": "U1",
+      "part": "Regulator_Linear:LM1117-3.3",
+      "sheet": "LDO_Regulator",
+      "note": "Fixed 3.3V LDO regulator, 800mA max output",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "GND",
+          "net": "GND"
+        },
+        {
+          "pin": "2",
+          "pin_name": "VOUT",
+          "net": "VOUT_3V3"
+        },
+        {
+          "pin": "3",
+          "pin_name": "VIN",
+          "net": "VIN_5V"
+        }
+      ]
+    }
+  ],
+  "passives": [
+    {
+      "ref": "C1",
+      "type": "C",
+      "value": "0.1uF",
+      "sheet": "LDO_Regulator",
+      "purpose": "Input high-frequency decoupling",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VIN_5V"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C2",
+      "type": "C",
+      "value": "10uF",
+      "sheet": "LDO_Regulator",
+      "purpose": "Input bulk capacitance for stability",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VIN_5V"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C3",
+      "type": "C",
+      "value": "0.1uF",
+      "sheet": "LDO_Regulator",
+      "purpose": "Output high-frequency decoupling",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VOUT_3V3"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C4",
+      "type": "C",
+      "value": "10uF",
+      "sheet": "LDO_Regulator",
+      "purpose": "Output bulk capacitance for stability (critical)",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VOUT_3V3"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    }
+  ],
+  "nets": [
+    {
+      "name": "VIN_5V",
+      "type": "local",
+      "sheet": "LDO_Regulator",
+      "connections": [
+        {
+          "ref": "U1",
+          "pin": "3",
+          "pin_name": "VIN"
+        },
+        {
+          "ref": "C1",
+          "pin": "1"
+        },
+        {
+          "ref": "C2",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "VOUT_3V3",
+      "type": "local",
+      "sheet": "LDO_Regulator",
+      "connections": [
+        {
+          "ref": "U1",
+          "pin": "2",
+          "pin_name": "VOUT"
+        },
+        {
+          "ref": "C3",
+          "pin": "1"
+        },
+        {
+          "ref": "C4",
+          "pin": "1"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,523 @@
+{
+  "project_name": "Buck_Converter_Breakout",
+  "description": "Breakout board for TPS628438DRL buck converter with 3.3V output, fed by 2-pin connector.",
+  "sheets": [
+    {
+      "name": "Buck_Converter_Board",
+      "file": "Buck_Converter_Board.kicad_sch",
+      "page": 1
+    }
+  ],
+  "components": [
+    {
+      "ref": "J1",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "LED_Blink_Circuit",
+      "note": "2-pin header for 5V power input",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "Pin_1",
+          "net": "VCC_5V"
+        },
+        {
+          "pin": "2",
+          "pin_name": "Pin_2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "J2",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "LED_Blink_Circuit",
+      "note": "2-pin header for signal generator input (off-board)",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "Pin_1",
+          "net": "SIGNAL_IN"
+        },
+        {
+          "pin": "2",
+          "pin_name": "Pin_2",
+          "net": "GATE_SIGNAL"
+        }
+      ]
+    },
+    {
+      "ref": "LED1",
+      "part": "LED_TH:LED_D5.0mm",
+      "sheet": "LED_Blink_Circuit",
+      "note": "Red LED",
+      "connections": [
+        {
+          "pin": "A",
+          "pin_name": "K",
+          "net": "LED_DRIVE"
+        },
+        {
+          "pin": "C",
+          "pin_name": "A",
+          "net": "FET_DRAIN"
+        }
+      ]
+    },
+    {
+      "ref": "Q1",
+      "part": "Transistor_FET:BS170",
+      "sheet": "LED_Blink_Circuit",
+      "note": "N-channel MOSFET, general purpose",
+      "connections": [
+        {
+          "pin": "G",
+          "pin_name": "G",
+          "net": "GATE_SIGNAL"
+        },
+        {
+          "pin": "D",
+          "pin_name": "D",
+          "net": "FET_DRAIN"
+        },
+        {
+          "pin": "S",
+          "pin_name": "S",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "J1",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "Buck_Converter_Board",
+      "note": "2-pin header for unregulated power input (e.g., 5V)",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "Pin_1",
+          "net": "VIN_UNREG"
+        },
+        {
+          "pin": "2",
+          "pin_name": "Pin_2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "U1",
+      "part": "TPS628438DRL",
+      "sheet": "Buck_Converter_Board",
+      "note": "600mA Step-Down Converter, 3.3V output",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "GND",
+          "net": "GND"
+        },
+        {
+          "pin": "2",
+          "pin_name": "VIN",
+          "net": "VIN_UNREG"
+        },
+        {
+          "pin": "3",
+          "pin_name": "VSET",
+          "net": "VSET_3V3"
+        },
+        {
+          "pin": "4",
+          "pin_name": "EN",
+          "net": "VIN_UNREG"
+        },
+        {
+          "pin": "5",
+          "pin_name": "SW",
+          "net": "SW_NODE"
+        },
+        {
+          "pin": "6",
+          "pin_name": "VOS",
+          "net": "VOUT_3V3"
+        }
+      ]
+    },
+    {
+      "ref": "J2",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "Buck_Converter_Board",
+      "note": "2-pin header for regulated 3.3V output",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "Pin_1",
+          "net": "VOUT_3V3"
+        },
+        {
+          "pin": "2",
+          "pin_name": "Pin_2",
+          "net": "GND"
+        }
+      ]
+    }
+  ],
+  "passives": [
+    {
+      "ref": "R1",
+      "type": "R",
+      "value": "330",
+      "sheet": "LED_Blink_Circuit",
+      "purpose": "LED current limiting resistor",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VCC_5V"
+        },
+        {
+          "pin": "2",
+          "net": "LED_DRIVE"
+        }
+      ]
+    },
+    {
+      "ref": "R2",
+      "type": "R",
+      "value": "10K",
+      "sheet": "LED_Blink_Circuit",
+      "purpose": "N-FET Gate pull-down resistor",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "GATE_SIGNAL"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C1",
+      "type": "C",
+      "value": "4.7uF",
+      "sheet": "Buck_Converter_Board",
+      "purpose": "VIN bulk decoupling capacitor",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VIN_UNREG"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C2",
+      "type": "C",
+      "value": "0.1uF",
+      "sheet": "Buck_Converter_Board",
+      "purpose": "VIN high-frequency decoupling capacitor",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VIN_UNREG"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "R1",
+      "type": "R",
+      "value": "249K",
+      "sheet": "Buck_Converter_Board",
+      "purpose": "VSET resistor for 3.3V output",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VSET_3V3"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "L1",
+      "type": "L",
+      "value": "1.0uH",
+      "sheet": "Buck_Converter_Board",
+      "purpose": "Buck converter inductor",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "SW_NODE"
+        },
+        {
+          "pin": "2",
+          "net": "VOUT_3V3"
+        }
+      ]
+    },
+    {
+      "ref": "C3",
+      "type": "C",
+      "value": "4.7uF",
+      "sheet": "Buck_Converter_Board",
+      "purpose": "VOS output smoothing capacitor",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VOUT_3V3"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C4",
+      "type": "C",
+      "value": "10uF",
+      "sheet": "Buck_Converter_Board",
+      "purpose": "Additional VOUT bulk capacitor",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VOUT_3V3"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    }
+  ],
+  "nets": [
+    {
+      "name": "VCC_5V",
+      "type": "power",
+      "sheet": "LED_Blink_Circuit",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "1"
+        },
+        {
+          "ref": "R1",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "GND",
+      "type": "power",
+      "sheet": "LED_Blink_Circuit",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "2"
+        },
+        {
+          "ref": "J2",
+          "pin": "2"
+        },
+        {
+          "ref": "Q1",
+          "pin": "S"
+        },
+        {
+          "ref": "R2",
+          "pin": "2"
+        }
+      ]
+    },
+    {
+      "name": "GATE_SIGNAL",
+      "type": "local",
+      "sheet": "LED_Blink_Circuit",
+      "connections": [
+        {
+          "ref": "J2",
+          "pin": "2"
+        },
+        {
+          "ref": "Q1",
+          "pin": "G"
+        },
+        {
+          "ref": "R2",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "SIGNAL_IN",
+      "type": "local",
+      "sheet": "LED_Blink_Circuit",
+      "connections": [
+        {
+          "ref": "J2",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "LED_DRIVE",
+      "type": "local",
+      "sheet": "LED_Blink_Circuit",
+      "connections": [
+        {
+          "ref": "R1",
+          "pin": "2"
+        },
+        {
+          "ref": "LED1",
+          "pin": "A"
+        }
+      ]
+    },
+    {
+      "name": "FET_DRAIN",
+      "type": "local",
+      "sheet": "LED_Blink_Circuit",
+      "connections": [
+        {
+          "ref": "LED1",
+          "pin": "C"
+        },
+        {
+          "ref": "Q1",
+          "pin": "D"
+        }
+      ]
+    },
+    {
+      "name": "VIN_UNREG",
+      "type": "power",
+      "sheet": "Buck_Converter_Board",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "1"
+        },
+        {
+          "ref": "U1",
+          "pin": "2",
+          "pin_name": "VIN"
+        },
+        {
+          "ref": "U1",
+          "pin": "4",
+          "pin_name": "EN"
+        },
+        {
+          "ref": "C1",
+          "pin": "1"
+        },
+        {
+          "ref": "C2",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "GND",
+      "type": "power",
+      "sheet": "Buck_Converter_Board",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "2"
+        },
+        {
+          "ref": "U1",
+          "pin": "1",
+          "pin_name": "GND"
+        },
+        {
+          "ref": "J2",
+          "pin": "2"
+        },
+        {
+          "ref": "C1",
+          "pin": "2"
+        },
+        {
+          "ref": "C2",
+          "pin": "2"
+        },
+        {
+          "ref": "R1",
+          "pin": "2"
+        },
+        {
+          "ref": "C3",
+          "pin": "2"
+        }
+      ]
+    },
+    {
+      "name": "VSET_3V3",
+      "type": "local",
+      "sheet": "Buck_Converter_Board",
+      "connections": [
+        {
+          "ref": "U1",
+          "pin": "3",
+          "pin_name": "VSET"
+        },
+        {
+          "ref": "R1",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "SW_NODE",
+      "type": "local",
+      "sheet": "Buck_Converter_Board",
+      "connections": [
+        {
+          "ref": "U1",
+          "pin": "5",
+          "pin_name": "SW"
+        },
+        {
+          "ref": "L1",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "VOUT_3V3",
+      "type": "power",
+      "sheet": "Buck_Converter_Board",
+      "connections": [
+        {
+          "ref": "U1",
+          "pin": "6",
+          "pin_name": "VOS"
+        },
+        {
+          "ref": "J2",
+          "pin": "1"
+        },
+        {
+          "ref": "L1",
+          "pin": "2"
+        },
+        {
+          "ref": "C3",
+          "pin": "1"
+        }
+      ]
+    }
+  ]
+}

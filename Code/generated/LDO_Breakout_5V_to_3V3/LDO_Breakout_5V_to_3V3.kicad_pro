@@ -1,0 +1,29 @@
+{
+  "meta": {
+    "filename": "LDO_Breakout_5V_to_3V3.kicad_pro",
+    "version": 2
+  },
+  "schematic": {
+    "annotate_start_num": 0,
+    "bom_fmt_settings": {
+      "field_delimiter": ",",
+      "name": "CSV",
+      "ref_delimiter": ",",
+      "string_delimiter": "\""
+    },
+    "connection_grid_size": 50.0,
+    "drawing": {},
+    "page_layout_descr_file": ""
+  },
+  "sheets": [
+    [
+      "f1e87a27-dbe0-4c72-9117-4a575bbda6cd",
+      "Root"
+    ],
+    [
+      "3a55037e-4ebc-447b-800f-4464ecdcfe3f",
+      "LDO_Regulator"
+    ]
+  ],
+  "text_variables": {}
+}

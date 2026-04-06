@@ -1,0 +1,49 @@
+{
+  "missing_components": [],
+  "extra_components": [],
+  "missing_nets": [
+    "INT",
+    "SCL",
+    "SDA"
+  ],
+  "pin_errors": [
+    {
+      "ref": "J1",
+      "pin": "1",
+      "expected_net": "GND",
+      "actual_nets": []
+    },
+    {
+      "ref": "J1",
+      "pin": "2",
+      "expected_net": "VIN_5V",
+      "actual_nets": []
+    },
+    {
+      "ref": "J1",
+      "pin": "3",
+      "expected_net": "SDA",
+      "actual_nets": []
+    },
+    {
+      "ref": "J1",
+      "pin": "4",
+      "expected_net": "SCL",
+      "actual_nets": []
+    },
+    {
+      "ref": "J1",
+      "pin": "5",
+      "expected_net": "INT",
+      "actual_nets": []
+    }
+  ],
+  "summary": {
+    "components_expected": 1,
+    "components_placed": 1,
+    "missing_components": 0,
+    "missing_nets": 3,
+    "pin_errors": 5
+  },
+  "ok": false
+}

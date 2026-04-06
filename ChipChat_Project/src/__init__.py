@@ -1,1 +1,0 @@
-"""ChipChat source code."""

@@ -67,6 +67,8 @@ If you change the API port, update the Vite proxy in `Code/webui/vite.config.ts`
 
 ### 3. Web UI (`Code/webui/`)
 
+`node_modules/` is not tracked in git; install dependencies after every clone.
+
 ```bash
 cd Code/webui
 npm install

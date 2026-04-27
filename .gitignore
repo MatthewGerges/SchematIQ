@@ -27,6 +27,7 @@ node_modules/
 # Official KiCad libraries (cloned repos — too large for git)
 KICAD_Library/kicad-symbols/
 KICAD_Library/kicad-footprints/
+component_database/kicad-symbols/
 
 # External projects (cloned for experimentation; not part of this repo)
 tscircuit/

@@ -1,0 +1,30 @@
+{
+  "missing_components": [],
+  "extra_components": [],
+  "missing_nets": [
+    "SW_NODE_A",
+    "SW_NODE_B"
+  ],
+  "pin_errors": [
+    {
+      "ref": "J5",
+      "pin": "1",
+      "expected_net": "SW_NODE_A",
+      "actual_nets": []
+    },
+    {
+      "ref": "J5",
+      "pin": "2",
+      "expected_net": "SW_NODE_B",
+      "actual_nets": []
+    }
+  ],
+  "summary": {
+    "components_expected": 1,
+    "components_placed": 1,
+    "missing_components": 0,
+    "missing_nets": 2,
+    "pin_errors": 2
+  },
+  "ok": false
+}

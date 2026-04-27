@@ -1,0 +1,54 @@
+{
+  "Boost_Converter_IC": {
+    "name": "Boost_Converter_IC",
+    "manufacturer": "Generic",
+    "part_number": "GENERIC_BOOST_IC",
+    "type": "regulator",
+    "description": "Generic boost converter IC for stepping up voltage (e.g., similar to TPS61021 or MT3608 functionally)",
+    "interfaces": [],
+    "voltage_range": {
+      "input": {
+        "min": 2.7,
+        "max": 5.5,
+        "unit": "V"
+      },
+      "output": {
+        "min": 5.0,
+        "max": 12.0,
+        "unit": "V"
+      }
+    },
+    "pins": [
+      {
+        "number": "1",
+        "name": "VIN",
+        "type": "power_in",
+        "function": "input_voltage"
+      },
+      {
+        "number": "2",
+        "name": "GND",
+        "type": "power_in",
+        "function": "ground"
+      },
+      {
+        "number": "3",
+        "name": "SW",
+        "type": "power_out",
+        "function": "switch_node"
+      },
+      {
+        "number": "4",
+        "name": "FB",
+        "type": "input",
+        "function": "feedback"
+      },
+      {
+        "number": "5",
+        "name": "EN",
+        "type": "input",
+        "function": "enable"
+      }
+    ]
+  }
+}

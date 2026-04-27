@@ -1,0 +1,86 @@
+{
+  "project_name": "Power_Input",
+  "description": "",
+  "sheets": [
+    {
+      "name": "Power_Input",
+      "file": "Power_Input.kicad_sch",
+      "page": 1
+    }
+  ],
+  "components": [
+    {
+      "ref": "J1",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "Power_Input",
+      "note": "Input header for 5V VIN and GND",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VIN_5V"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    }
+  ],
+  "passives": [
+    {
+      "ref": "C1",
+      "type": "C",
+      "value": "4.7uF",
+      "sheet": "Power_Input",
+      "purpose": "Buck converter input bulk capacitor",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VIN_5V"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C2",
+      "type": "C",
+      "value": "0.1uF",
+      "sheet": "Power_Input",
+      "purpose": "Buck converter input decoupling capacitor",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VIN_5V"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    }
+  ],
+  "nets": [
+    {
+      "name": "VIN_5V",
+      "type": "hierarchical",
+      "sheet": "Power_Input",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "1"
+        },
+        {
+          "ref": "C1",
+          "pin": "1"
+        },
+        {
+          "ref": "C2",
+          "pin": "1"
+        }
+      ]
+    }
+  ]
+}

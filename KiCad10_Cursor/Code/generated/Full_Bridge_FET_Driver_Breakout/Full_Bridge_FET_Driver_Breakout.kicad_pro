@@ -1,0 +1,45 @@
+{
+  "meta": {
+    "filename": "Full_Bridge_FET_Driver_Breakout.kicad_pro",
+    "version": 2
+  },
+  "schematic": {
+    "annotate_start_num": 0,
+    "bom_fmt_settings": {
+      "field_delimiter": ",",
+      "name": "CSV",
+      "ref_delimiter": ",",
+      "string_delimiter": "\""
+    },
+    "connection_grid_size": 50.0,
+    "drawing": {},
+    "page_layout_descr_file": ""
+  },
+  "sheets": [
+    [
+      "152a0b97-4f30-40f3-b425-a554d0f9ee18",
+      "Root"
+    ],
+    [
+      "b8ac9ce5-3e98-4dcf-9e71-bd743aabdd15",
+      "Main_Power_Input"
+    ],
+    [
+      "be2d9da7-0b6e-40de-ab81-54fc7717181d",
+      "Half_Bridge_A"
+    ],
+    [
+      "9b310f11-4b0e-468b-a1a8-6c1685739927",
+      "Half_Bridge_B"
+    ],
+    [
+      "1afce5e3-9caa-4e92-ada7-eaf53a22c51f",
+      "Control_Inputs"
+    ],
+    [
+      "478ee842-ccd2-4bb9-9c7b-4b590b820604",
+      "Motor_Output"
+    ]
+  ],
+  "text_variables": {}
+}

@@ -8,10 +8,11 @@ AI-assisted KiCad schematic generation: LLM-driven circuit JSON, deterministic (
 
 | Path | Purpose |
 |------|---------|
+| **`KiCad10_Cursor/`** | **Current minimal workspace for KiCad 10.** Contains `Example_Schematic/` plus a UI-first runtime copy of `Code/` so you can run SchematIQ from one folder while postponing deep migration work. |
 | **`Code/`** | **Main application.** Python backend (`src/`, `scripts/`), FastAPI web API, React+Vite web UI (`webui/`), sample LLM JSON (`data/`), generated KiCad output (`generated/`), tests, and internal docs (`docs/`). **Start here for development.** |
 | **`KICAD_Library/`** | KiCad-related library material for this project. The official **`kicad-symbols`** and **`kicad-footprints`** clones are intentionally **not** committed (see root `.gitignore`); clone them locally if you need the full upstream libraries. |
 | **`BME280_Rev1/`** | Standalone KiCad/hardware project folder (example or reference design), separate from the generator’s `Code/generated/` tree. |
-| **`component_database/`** | Component-related data used alongside the toolchain (not the primary `Code/data/` LLM JSON). |
+| **`component_database/`** | Clone official symbols here: `git clone https://gitlab.com/kicad/libraries/kicad-symbols.git component_database/kicad-symbols` (preferred over `KICAD_Library/`). Matches KiCad’s library names in the symbol chooser; **not committed** (see `.gitignore`). |
 | **`scripts/`** (repo root) | Small utilities that operate from the **repository root**, e.g. `build_llm_context.py` (builds the optional LLM context bundle; output file is gitignored). |
 | **`chat-ui-localhost-demo/`** | Earlier or auxiliary UI demo; the current product UI lives under **`Code/webui/`**. |
 | **`tsci-playground/`** | Experimental tscircuit-related playground. |
@@ -24,6 +25,8 @@ More detail on the Python modules and generator pipeline: **`Code/README.md`** a
 ---
 
 ## New machine: clone and run locally
+
+For KiCad 10 bring-up, use the minimal workspace in `KiCad10_Cursor/` first.
 
 ### Prerequisites
 
@@ -39,21 +42,21 @@ git clone https://github.com/MatthewGerges/SchematIQ.git
 cd SchematIQ
 ```
 
-### 2. Python environment (`Code/`)
+### 2. Python environment (`KiCad10_Cursor/Code/` preferred)
 
-All backend commands assume the **`Code/`** directory as the working tree for imports and paths.
+For the current minimal migration path, run from **`KiCad10_Cursor/Code/`**.
 
 ```bash
-cd Code
+cd KiCad10_Cursor/Code
 python3 -m venv .venv
 source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-Create **`Code/.env`** (never commit secrets):
+Create **`KiCad10_Cursor/Code/.env`** (never commit secrets):
 
 ```bash
-# Code/.env
+# KiCad10_Cursor/Code/.env
 GEMINI_API_KEY=your_key_here
 ```
 
@@ -63,30 +66,30 @@ Optional: change the API port (default **5179**):
 SCHEMATIQ_WEBUI_PORT=5179
 ```
 
-If you change the API port, update the Vite proxy in `Code/webui/vite.config.ts` so `/api` still points at the same host/port.
+If you change the API port, update the Vite proxy in `KiCad10_Cursor/Code/webui/vite.config.ts` so `/api` still points at the same host/port.
 
-### 3. Web UI (`Code/webui/`)
+### 3. Web UI (`KiCad10_Cursor/Code/webui/`)
 
 `node_modules/` is not tracked in git; install dependencies after every clone.
 
 ```bash
-cd Code/webui
+cd KiCad10_Cursor/Code/webui
 npm install
 npm run dev
 ```
 
 - **Frontend:** [http://127.0.0.1:5173](http://127.0.0.1:5173) (Vite dev server).
-- **Backend:** run in a **second** terminal from **`Code/`** with the venv active:
+- **Backend:** run in a **second** terminal from **`KiCad10_Cursor/Code/`** with the venv active:
 
 ```bash
-cd Code
+cd KiCad10_Cursor/Code
 source .venv/bin/activate
 python3 scripts/webui_server.py
 ```
 
 Default API URL: [http://127.0.0.1:5179](http://127.0.0.1:5179) (`/api/health` for a quick check). The Vite dev server **proxies** `/api` to that address.
 
-If `POST /api/chat/start` fails with a `google-genai` import error, from `Code/`:
+If `POST /api/chat/start` fails with a `google-genai` import error, from `KiCad10_Cursor/Code/`:
 
 ```bash
 pip install --upgrade --force-reinstall google-genai

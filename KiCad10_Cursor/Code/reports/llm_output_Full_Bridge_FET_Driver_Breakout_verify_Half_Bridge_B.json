@@ -1,0 +1,144 @@
+{
+  "missing_components": [],
+  "extra_components": [],
+  "missing_nets": [
+    "12V_IN",
+    "HO_B",
+    "LO_B",
+    "PWM_HI_B",
+    "PWM_LI_B",
+    "SW_NODE_B"
+  ],
+  "pin_errors": [
+    {
+      "ref": "U3",
+      "pin": "1",
+      "expected_net": "GND",
+      "actual_nets": []
+    },
+    {
+      "ref": "U3",
+      "pin": "2",
+      "expected_net": "PWM_LI_B",
+      "actual_nets": []
+    },
+    {
+      "ref": "U3",
+      "pin": "3",
+      "expected_net": "PWM_HI_B",
+      "actual_nets": []
+    },
+    {
+      "ref": "U3",
+      "pin": "4",
+      "expected_net": "12V_IN",
+      "actual_nets": []
+    },
+    {
+      "ref": "U3",
+      "pin": "5",
+      "expected_net": "NET_U3_HO",
+      "actual_nets": []
+    },
+    {
+      "ref": "U3",
+      "pin": "6",
+      "expected_net": "NET_U3_VDD",
+      "actual_nets": [
+        "NET_U3_LO"
+      ]
+    },
+    {
+      "ref": "U3",
+      "pin": "7",
+      "expected_net": "NET_U3_LO",
+      "actual_nets": []
+    },
+    {
+      "ref": "U3",
+      "pin": "8",
+      "expected_net": "SW_NODE_B",
+      "actual_nets": []
+    },
+    {
+      "ref": "J3",
+      "pin": "1",
+      "expected_net": "HO_B",
+      "actual_nets": []
+    },
+    {
+      "ref": "J3",
+      "pin": "2",
+      "expected_net": "LO_B",
+      "actual_nets": []
+    },
+    {
+      "ref": "J3",
+      "pin": "3",
+      "expected_net": "SW_NODE_B",
+      "actual_nets": []
+    },
+    {
+      "ref": "J3",
+      "pin": "4",
+      "expected_net": "GND",
+      "actual_nets": []
+    },
+    {
+      "ref": "C4",
+      "pin": "1",
+      "expected_net": "12V_IN",
+      "actual_nets": []
+    },
+    {
+      "ref": "C4",
+      "pin": "2",
+      "expected_net": "GND",
+      "actual_nets": []
+    },
+    {
+      "ref": "C5",
+      "pin": "1",
+      "expected_net": "NET_U3_VDD",
+      "actual_nets": []
+    },
+    {
+      "ref": "C5",
+      "pin": "2",
+      "expected_net": "SW_NODE_B",
+      "actual_nets": []
+    },
+    {
+      "ref": "R4",
+      "pin": "1",
+      "expected_net": "NET_U3_HO",
+      "actual_nets": []
+    },
+    {
+      "ref": "R4",
+      "pin": "2",
+      "expected_net": "HO_B",
+      "actual_nets": []
+    },
+    {
+      "ref": "R5",
+      "pin": "1",
+      "expected_net": "NET_U3_LO",
+      "actual_nets": []
+    },
+    {
+      "ref": "R5",
+      "pin": "2",
+      "expected_net": "LO_B",
+      "actual_nets": []
+    }
+  ],
+  "summary": {
+    "components_expected": 6,
+    "components_placed": 6,
+    "missing_components": 0,
+    "missing_nets": 6,
+    "pin_errors": 20
+  },
+  "ok": false
+}

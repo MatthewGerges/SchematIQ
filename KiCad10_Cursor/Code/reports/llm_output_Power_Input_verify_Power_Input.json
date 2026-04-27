@@ -1,0 +1,43 @@
+{
+  "missing_components": [
+    "J1"
+  ],
+  "extra_components": [],
+  "missing_nets": [
+    "VIN_5V"
+  ],
+  "pin_errors": [
+    {
+      "ref": "C1",
+      "pin": "1",
+      "expected_net": "VIN_5V",
+      "actual_nets": []
+    },
+    {
+      "ref": "C1",
+      "pin": "2",
+      "expected_net": "GND",
+      "actual_nets": []
+    },
+    {
+      "ref": "C2",
+      "pin": "1",
+      "expected_net": "VIN_5V",
+      "actual_nets": []
+    },
+    {
+      "ref": "C2",
+      "pin": "2",
+      "expected_net": "GND",
+      "actual_nets": []
+    }
+  ],
+  "summary": {
+    "components_expected": 3,
+    "components_placed": 2,
+    "missing_components": 1,
+    "missing_nets": 1,
+    "pin_errors": 4
+  },
+  "ok": false
+}

@@ -1,0 +1,1049 @@
+{
+  "project_name": "Full_Bridge_FET_Driver_Breakout",
+  "description": "Breakout board for a full H-bridge N-FET driver using two UCC27284 ICs for brushed DC motor control.",
+  "sheets": [
+    {
+      "name": "Main_Power_Input",
+      "file": "Main_Power_Input.kicad_sch",
+      "page": 1
+    },
+    {
+      "name": "Half_Bridge_A",
+      "file": "Half_Bridge_A.kicad_sch",
+      "page": 2
+    },
+    {
+      "name": "Half_Bridge_B",
+      "file": "Half_Bridge_B.kicad_sch",
+      "page": 3
+    },
+    {
+      "name": "Control_Inputs",
+      "file": "Control_Inputs.kicad_sch",
+      "page": 4
+    },
+    {
+      "name": "Motor_Output",
+      "file": "Motor_Output.kicad_sch",
+      "page": 5
+    }
+  ],
+  "components": [
+    {
+      "ref": "J1",
+      "part": "Connector:Barrel_Jack_Switch_Pin3Ring",
+      "sheet": "Main_Power_Input",
+      "note": "12V DC power input barrel jack",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "12V_IN"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        },
+        {
+          "pin": "3",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "U2",
+      "part": "Driver_FET:2ED21824S06J",
+      "sheet": "Half_Bridge_A",
+      "note": "Half-bridge driver for N-FETs - Half A",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "GND",
+          "net": "GND"
+        },
+        {
+          "pin": "2",
+          "pin_name": "LI",
+          "net": "PWM_LI_A"
+        },
+        {
+          "pin": "3",
+          "pin_name": "HI",
+          "net": "PWM_HI_A"
+        },
+        {
+          "pin": "4",
+          "pin_name": "VCC",
+          "net": "12V_IN"
+        },
+        {
+          "pin": "5",
+          "pin_name": "HO",
+          "net": "NET_U2_HO"
+        },
+        {
+          "pin": "6",
+          "pin_name": "VDD",
+          "net": "NET_U2_VDD"
+        },
+        {
+          "pin": "7",
+          "pin_name": "LO",
+          "net": "NET_U2_LO"
+        },
+        {
+          "pin": "8",
+          "pin_name": "HS",
+          "net": "SW_NODE_A"
+        }
+      ]
+    },
+    {
+      "ref": "J2",
+      "part": "Connector_Generic:Conn_01x04",
+      "sheet": "Half_Bridge_A",
+      "note": "Half-Bridge A Outputs for external FETs",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "HO_A"
+        },
+        {
+          "pin": "2",
+          "net": "LO_A"
+        },
+        {
+          "pin": "3",
+          "net": "SW_NODE_A"
+        },
+        {
+          "pin": "4",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "U3",
+      "part": "Driver_FET:2ED21824S06J",
+      "sheet": "Half_Bridge_B",
+      "note": "Half-bridge driver for N-FETs - Half B",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "GND",
+          "net": "GND"
+        },
+        {
+          "pin": "2",
+          "pin_name": "LI",
+          "net": "PWM_LI_B"
+        },
+        {
+          "pin": "3",
+          "pin_name": "HI",
+          "net": "PWM_HI_B"
+        },
+        {
+          "pin": "4",
+          "pin_name": "VCC",
+          "net": "12V_IN"
+        },
+        {
+          "pin": "5",
+          "pin_name": "HO",
+          "net": "NET_U3_HO"
+        },
+        {
+          "pin": "6",
+          "pin_name": "VDD",
+          "net": "NET_U3_VDD"
+        },
+        {
+          "pin": "7",
+          "pin_name": "LO",
+          "net": "NET_U3_LO"
+        },
+        {
+          "pin": "8",
+          "pin_name": "HS",
+          "net": "SW_NODE_B"
+        }
+      ]
+    },
+    {
+      "ref": "J3",
+      "part": "Connector_Generic:Conn_01x04",
+      "sheet": "Half_Bridge_B",
+      "note": "Half-Bridge B Outputs for external FETs",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "HO_B"
+        },
+        {
+          "pin": "2",
+          "net": "LO_B"
+        },
+        {
+          "pin": "3",
+          "net": "SW_NODE_B"
+        },
+        {
+          "pin": "4",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "J4",
+      "part": "Connector_Generic:Conn_01x05",
+      "sheet": "Control_Inputs",
+      "note": "Control input header for PWM signals",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "PWM_HI_A"
+        },
+        {
+          "pin": "2",
+          "net": "PWM_LI_A"
+        },
+        {
+          "pin": "3",
+          "net": "PWM_HI_B"
+        },
+        {
+          "pin": "4",
+          "net": "PWM_LI_B"
+        },
+        {
+          "pin": "5",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "J5",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "Motor_Output",
+      "note": "Output header for brushed DC motor",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "SW_NODE_A"
+        },
+        {
+          "pin": "2",
+          "net": "SW_NODE_B"
+        }
+      ]
+    }
+  ],
+  "passives": [
+    {
+      "ref": "C1",
+      "type": "C",
+      "value": "10uF",
+      "sheet": "Main_Power_Input",
+      "purpose": "Bulk input capacitance for 12V supply",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "12V_IN"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C2",
+      "type": "C",
+      "value": "100nF",
+      "sheet": "Half_Bridge_A",
+      "purpose": "VCC decoupling for UCC27284",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "12V_IN"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C3",
+      "type": "C",
+      "value": "1uF",
+      "sheet": "Half_Bridge_A",
+      "purpose": "Bootstrap capacitor for UCC27284",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "NET_U2_VDD"
+        },
+        {
+          "pin": "2",
+          "net": "SW_NODE_A"
+        }
+      ]
+    },
+    {
+      "ref": "R2",
+      "type": "R",
+      "value": "0R",
+      "sheet": "Half_Bridge_A",
+      "purpose": "High-side gate series resistor (tune for switching)",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "NET_U2_HO"
+        },
+        {
+          "pin": "2",
+          "net": "HO_A"
+        }
+      ]
+    },
+    {
+      "ref": "R3",
+      "type": "R",
+      "value": "0R",
+      "sheet": "Half_Bridge_A",
+      "purpose": "Low-side gate series resistor (tune for switching)",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "NET_U2_LO"
+        },
+        {
+          "pin": "2",
+          "net": "LO_A"
+        }
+      ]
+    },
+    {
+      "ref": "C4",
+      "type": "C",
+      "value": "100nF",
+      "sheet": "Half_Bridge_B",
+      "purpose": "VCC decoupling for UCC27284",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "12V_IN"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C5",
+      "type": "C",
+      "value": "1uF",
+      "sheet": "Half_Bridge_B",
+      "purpose": "Bootstrap capacitor for UCC27284",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "NET_U3_VDD"
+        },
+        {
+          "pin": "2",
+          "net": "SW_NODE_B"
+        }
+      ]
+    },
+    {
+      "ref": "R4",
+      "type": "R",
+      "value": "0R",
+      "sheet": "Half_Bridge_B",
+      "purpose": "High-side gate series resistor (tune for switching)",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "NET_U3_HO"
+        },
+        {
+          "pin": "2",
+          "net": "HO_B"
+        }
+      ]
+    },
+    {
+      "ref": "R5",
+      "type": "R",
+      "value": "0R",
+      "sheet": "Half_Bridge_B",
+      "purpose": "Low-side gate series resistor (tune for switching)",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "NET_U3_LO"
+        },
+        {
+          "pin": "2",
+          "net": "LO_B"
+        }
+      ]
+    }
+  ],
+  "nets": [
+    {
+      "name": "12V_IN",
+      "type": "local",
+      "sheet": "Main_Power_Input",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "1"
+        },
+        {
+          "ref": "C1",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "GND",
+      "type": "local",
+      "sheet": "Main_Power_Input",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "2"
+        },
+        {
+          "ref": "J1",
+          "pin": "3"
+        },
+        {
+          "ref": "C1",
+          "pin": "2"
+        }
+      ]
+    },
+    {
+      "name": "PWM_LI_A",
+      "type": "hierarchical",
+      "sheet": "Half_Bridge_A",
+      "connections": [
+        {
+          "ref": "U2",
+          "pin": "2",
+          "pin_name": "LI"
+        }
+      ]
+    },
+    {
+      "name": "PWM_HI_A",
+      "type": "hierarchical",
+      "sheet": "Half_Bridge_A",
+      "connections": [
+        {
+          "ref": "U2",
+          "pin": "3",
+          "pin_name": "HI"
+        }
+      ]
+    },
+    {
+      "name": "12V_IN",
+      "type": "hierarchical",
+      "sheet": "Half_Bridge_A",
+      "connections": [
+        {
+          "ref": "U2",
+          "pin": "4",
+          "pin_name": "VCC"
+        },
+        {
+          "ref": "C2",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "GND",
+      "type": "hierarchical",
+      "sheet": "Half_Bridge_A",
+      "connections": [
+        {
+          "ref": "U2",
+          "pin": "1",
+          "pin_name": "GND"
+        },
+        {
+          "ref": "C2",
+          "pin": "2"
+        },
+        {
+          "ref": "J2",
+          "pin": "4"
+        }
+      ]
+    },
+    {
+      "name": "NET_U2_HO",
+      "type": "local",
+      "sheet": "Half_Bridge_A",
+      "connections": [
+        {
+          "ref": "U2",
+          "pin": "5",
+          "pin_name": "HO"
+        },
+        {
+          "ref": "R2",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "NET_U2_VDD",
+      "type": "local",
+      "sheet": "Half_Bridge_A",
+      "connections": [
+        {
+          "ref": "U2",
+          "pin": "6",
+          "pin_name": "VDD"
+        },
+        {
+          "ref": "C3",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "NET_U2_LO",
+      "type": "local",
+      "sheet": "Half_Bridge_A",
+      "connections": [
+        {
+          "ref": "U2",
+          "pin": "7",
+          "pin_name": "LO"
+        },
+        {
+          "ref": "R3",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "SW_NODE_A",
+      "type": "hierarchical",
+      "sheet": "Half_Bridge_A",
+      "connections": [
+        {
+          "ref": "U2",
+          "pin": "8",
+          "pin_name": "HS"
+        },
+        {
+          "ref": "C3",
+          "pin": "2"
+        },
+        {
+          "ref": "J2",
+          "pin": "3"
+        }
+      ]
+    },
+    {
+      "name": "HO_A",
+      "type": "hierarchical",
+      "sheet": "Half_Bridge_A",
+      "connections": [
+        {
+          "ref": "R2",
+          "pin": "2"
+        },
+        {
+          "ref": "J2",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "LO_A",
+      "type": "hierarchical",
+      "sheet": "Half_Bridge_A",
+      "connections": [
+        {
+          "ref": "R3",
+          "pin": "2"
+        },
+        {
+          "ref": "J2",
+          "pin": "2"
+        }
+      ]
+    },
+    {
+      "name": "PWM_LI_B",
+      "type": "hierarchical",
+      "sheet": "Half_Bridge_B",
+      "connections": [
+        {
+          "ref": "U3",
+          "pin": "2",
+          "pin_name": "LI"
+        }
+      ]
+    },
+    {
+      "name": "PWM_HI_B",
+      "type": "hierarchical",
+      "sheet": "Half_Bridge_B",
+      "connections": [
+        {
+          "ref": "U3",
+          "pin": "3",
+          "pin_name": "HI"
+        }
+      ]
+    },
+    {
+      "name": "12V_IN",
+      "type": "hierarchical",
+      "sheet": "Half_Bridge_B",
+      "connections": [
+        {
+          "ref": "U3",
+          "pin": "4",
+          "pin_name": "VCC"
+        },
+        {
+          "ref": "C4",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "GND",
+      "type": "hierarchical",
+      "sheet": "Half_Bridge_B",
+      "connections": [
+        {
+          "ref": "U3",
+          "pin": "1",
+          "pin_name": "GND"
+        },
+        {
+          "ref": "C4",
+          "pin": "2"
+        },
+        {
+          "ref": "J3",
+          "pin": "4"
+        }
+      ]
+    },
+    {
+      "name": "NET_U3_HO",
+      "type": "local",
+      "sheet": "Half_Bridge_B",
+      "connections": [
+        {
+          "ref": "U3",
+          "pin": "5",
+          "pin_name": "HO"
+        },
+        {
+          "ref": "R4",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "NET_U3_VDD",
+      "type": "local",
+      "sheet": "Half_Bridge_B",
+      "connections": [
+        {
+          "ref": "U3",
+          "pin": "6",
+          "pin_name": "VDD"
+        },
+        {
+          "ref": "C5",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "NET_U3_LO",
+      "type": "local",
+      "sheet": "Half_Bridge_B",
+      "connections": [
+        {
+          "ref": "U3",
+          "pin": "7",
+          "pin_name": "LO"
+        },
+        {
+          "ref": "R5",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "SW_NODE_B",
+      "type": "hierarchical",
+      "sheet": "Half_Bridge_B",
+      "connections": [
+        {
+          "ref": "U3",
+          "pin": "8",
+          "pin_name": "HS"
+        },
+        {
+          "ref": "C5",
+          "pin": "2"
+        },
+        {
+          "ref": "J3",
+          "pin": "3"
+        }
+      ]
+    },
+    {
+      "name": "HO_B",
+      "type": "hierarchical",
+      "sheet": "Half_Bridge_B",
+      "connections": [
+        {
+          "ref": "R4",
+          "pin": "2"
+        },
+        {
+          "ref": "J3",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "LO_B",
+      "type": "hierarchical",
+      "sheet": "Half_Bridge_B",
+      "connections": [
+        {
+          "ref": "R5",
+          "pin": "2"
+        },
+        {
+          "ref": "J3",
+          "pin": "2"
+        }
+      ]
+    },
+    {
+      "name": "PWM_HI_A",
+      "type": "hierarchical",
+      "sheet": "Control_Inputs",
+      "connections": [
+        {
+          "ref": "J4",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "PWM_LI_A",
+      "type": "hierarchical",
+      "sheet": "Control_Inputs",
+      "connections": [
+        {
+          "ref": "J4",
+          "pin": "2"
+        }
+      ]
+    },
+    {
+      "name": "PWM_HI_B",
+      "type": "hierarchical",
+      "sheet": "Control_Inputs",
+      "connections": [
+        {
+          "ref": "J4",
+          "pin": "3"
+        }
+      ]
+    },
+    {
+      "name": "PWM_LI_B",
+      "type": "hierarchical",
+      "sheet": "Control_Inputs",
+      "connections": [
+        {
+          "ref": "J4",
+          "pin": "4"
+        }
+      ]
+    },
+    {
+      "name": "GND",
+      "type": "hierarchical",
+      "sheet": "Control_Inputs",
+      "connections": [
+        {
+          "ref": "J4",
+          "pin": "5"
+        }
+      ]
+    },
+    {
+      "name": "SW_NODE_A",
+      "type": "hierarchical",
+      "sheet": "Motor_Output",
+      "connections": [
+        {
+          "ref": "J5",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "SW_NODE_B",
+      "type": "hierarchical",
+      "sheet": "Motor_Output",
+      "connections": [
+        {
+          "ref": "J5",
+          "pin": "2"
+        }
+      ]
+    },
+    {
+      "name": "12V_IN",
+      "type": "hierarchical",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "1",
+          "sheet": "Main_Power_Input"
+        },
+        {
+          "ref": "C1",
+          "pin": "1",
+          "sheet": "Main_Power_Input"
+        },
+        {
+          "ref": "U2",
+          "pin": "4",
+          "pin_name": "VCC",
+          "sheet": "Half_Bridge_A"
+        },
+        {
+          "ref": "C2",
+          "pin": "1",
+          "sheet": "Half_Bridge_A"
+        },
+        {
+          "ref": "U3",
+          "pin": "4",
+          "pin_name": "VCC",
+          "sheet": "Half_Bridge_B"
+        },
+        {
+          "ref": "C4",
+          "pin": "1",
+          "sheet": "Half_Bridge_B"
+        }
+      ]
+    },
+    {
+      "name": "PWM_HI_A",
+      "type": "hierarchical",
+      "connections": [
+        {
+          "ref": "J4",
+          "pin": "1",
+          "sheet": "Control_Inputs"
+        },
+        {
+          "ref": "U2",
+          "pin": "3",
+          "pin_name": "HI",
+          "sheet": "Half_Bridge_A"
+        }
+      ]
+    },
+    {
+      "name": "PWM_LI_A",
+      "type": "hierarchical",
+      "connections": [
+        {
+          "ref": "J4",
+          "pin": "2",
+          "sheet": "Control_Inputs"
+        },
+        {
+          "ref": "U2",
+          "pin": "2",
+          "pin_name": "LI",
+          "sheet": "Half_Bridge_A"
+        }
+      ]
+    },
+    {
+      "name": "PWM_HI_B",
+      "type": "hierarchical",
+      "connections": [
+        {
+          "ref": "J4",
+          "pin": "3",
+          "sheet": "Control_Inputs"
+        },
+        {
+          "ref": "U3",
+          "pin": "3",
+          "pin_name": "HI",
+          "sheet": "Half_Bridge_B"
+        }
+      ]
+    },
+    {
+      "name": "PWM_LI_B",
+      "type": "hierarchical",
+      "connections": [
+        {
+          "ref": "J4",
+          "pin": "4",
+          "sheet": "Control_Inputs"
+        },
+        {
+          "ref": "U3",
+          "pin": "2",
+          "pin_name": "LI",
+          "sheet": "Half_Bridge_B"
+        }
+      ]
+    },
+    {
+      "name": "HO_A",
+      "type": "hierarchical",
+      "connections": [
+        {
+          "ref": "R2",
+          "pin": "2",
+          "sheet": "Half_Bridge_A"
+        },
+        {
+          "ref": "J2",
+          "pin": "1",
+          "sheet": "Half_Bridge_A"
+        }
+      ]
+    },
+    {
+      "name": "LO_A",
+      "type": "hierarchical",
+      "connections": [
+        {
+          "ref": "R3",
+          "pin": "2",
+          "sheet": "Half_Bridge_A"
+        },
+        {
+          "ref": "J2",
+          "pin": "2",
+          "sheet": "Half_Bridge_A"
+        }
+      ]
+    },
+    {
+      "name": "SW_NODE_A",
+      "type": "hierarchical",
+      "connections": [
+        {
+          "ref": "U2",
+          "pin": "8",
+          "pin_name": "HS",
+          "sheet": "Half_Bridge_A"
+        },
+        {
+          "ref": "C3",
+          "pin": "2",
+          "sheet": "Half_Bridge_A"
+        },
+        {
+          "ref": "J2",
+          "pin": "3",
+          "sheet": "Half_Bridge_A"
+        },
+        {
+          "ref": "J5",
+          "pin": "1",
+          "sheet": "Motor_Output"
+        }
+      ]
+    },
+    {
+      "name": "HO_B",
+      "type": "hierarchical",
+      "connections": [
+        {
+          "ref": "R4",
+          "pin": "2",
+          "sheet": "Half_Bridge_B"
+        },
+        {
+          "ref": "J3",
+          "pin": "1",
+          "sheet": "Half_Bridge_B"
+        }
+      ]
+    },
+    {
+      "name": "LO_B",
+      "type": "hierarchical",
+      "connections": [
+        {
+          "ref": "R5",
+          "pin": "2",
+          "sheet": "Half_Bridge_B"
+        },
+        {
+          "ref": "J3",
+          "pin": "2",
+          "sheet": "Half_Bridge_B"
+        }
+      ]
+    },
+    {
+      "name": "SW_NODE_B",
+      "type": "hierarchical",
+      "connections": [
+        {
+          "ref": "U3",
+          "pin": "8",
+          "pin_name": "HS",
+          "sheet": "Half_Bridge_B"
+        },
+        {
+          "ref": "C5",
+          "pin": "2",
+          "sheet": "Half_Bridge_B"
+        },
+        {
+          "ref": "J3",
+          "pin": "3",
+          "sheet": "Half_Bridge_B"
+        },
+        {
+          "ref": "J5",
+          "pin": "2",
+          "sheet": "Motor_Output"
+        }
+      ]
+    }
+  ]
+}

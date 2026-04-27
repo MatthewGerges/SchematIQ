@@ -1,0 +1,123 @@
+{
+  "missing_components": [],
+  "extra_components": [],
+  "missing_nets": [
+    "VSET_SIGNAL"
+  ],
+  "pin_errors": [
+    {
+      "ref": "U1",
+      "pin": "3",
+      "expected_net": "VOUT_REG",
+      "actual_nets": []
+    },
+    {
+      "ref": "U1",
+      "pin": "4",
+      "expected_net": "GND",
+      "actual_nets": []
+    },
+    {
+      "ref": "U1",
+      "pin": "5",
+      "expected_net": "EN_SIGNAL",
+      "actual_nets": []
+    },
+    {
+      "ref": "U1",
+      "pin": "6",
+      "expected_net": "VIN_RAW",
+      "actual_nets": [
+        "VOUT_REG"
+      ]
+    },
+    {
+      "ref": "U1",
+      "pin": "8",
+      "expected_net": "VSET_SIGNAL",
+      "actual_nets": [
+        "GND"
+      ]
+    },
+    {
+      "ref": "C1",
+      "pin": "1",
+      "expected_net": "VIN_RAW",
+      "actual_nets": []
+    },
+    {
+      "ref": "C1",
+      "pin": "2",
+      "expected_net": "GND",
+      "actual_nets": []
+    },
+    {
+      "ref": "C2",
+      "pin": "1",
+      "expected_net": "VOUT_REG",
+      "actual_nets": []
+    },
+    {
+      "ref": "C2",
+      "pin": "2",
+      "expected_net": "GND",
+      "actual_nets": []
+    },
+    {
+      "ref": "L1",
+      "pin": "1",
+      "expected_net": "SW_NODE",
+      "actual_nets": []
+    },
+    {
+      "ref": "L1",
+      "pin": "2",
+      "expected_net": "VOUT_REG",
+      "actual_nets": []
+    },
+    {
+      "ref": "R1",
+      "pin": "1",
+      "expected_net": "VOUT_REG",
+      "actual_nets": []
+    },
+    {
+      "ref": "R1",
+      "pin": "2",
+      "expected_net": "FB_NODE",
+      "actual_nets": []
+    },
+    {
+      "ref": "R2",
+      "pin": "1",
+      "expected_net": "FB_NODE",
+      "actual_nets": []
+    },
+    {
+      "ref": "R2",
+      "pin": "2",
+      "expected_net": "GND",
+      "actual_nets": []
+    },
+    {
+      "ref": "R3",
+      "pin": "1",
+      "expected_net": "VIN_RAW",
+      "actual_nets": []
+    },
+    {
+      "ref": "R3",
+      "pin": "2",
+      "expected_net": "EN_SIGNAL",
+      "actual_nets": []
+    }
+  ],
+  "summary": {
+    "components_expected": 9,
+    "components_placed": 9,
+    "missing_components": 0,
+    "missing_nets": 1,
+    "pin_errors": 17
+  },
+  "ok": false
+}

@@ -1,0 +1,369 @@
+{
+  "project_name": "TPS63900_Breakout",
+  "description": "TPS63900 Buck-Boost Converter Breakout Board with Input/Output Headers",
+  "sheets": [
+    {
+      "name": "Buck_Converter",
+      "file": "Buck_Converter.kicad_sch",
+      "page": 2
+    }
+  ],
+  "components": [
+    {
+      "ref": "U1",
+      "part": "Regulator_Switching:TPS63900",
+      "sheet": "Buck_Converter",
+      "note": "TPS63900 Buck-Boost Converter",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "SW",
+          "net": "SW_NODE"
+        },
+        {
+          "pin": "2",
+          "pin_name": "FB",
+          "net": "FB_NODE"
+        },
+        {
+          "pin": "3",
+          "pin_name": "VOUT",
+          "net": "VOUT_REG"
+        },
+        {
+          "pin": "4",
+          "pin_name": "GND",
+          "net": "GND"
+        },
+        {
+          "pin": "5",
+          "pin_name": "EN",
+          "net": "EN_SIGNAL"
+        },
+        {
+          "pin": "6",
+          "pin_name": "VIN",
+          "net": "VIN_RAW"
+        },
+        {
+          "pin": "7",
+          "pin_name": "MODE",
+          "net": "MODE_SIGNAL"
+        },
+        {
+          "pin": "8",
+          "pin_name": "VSET",
+          "net": "VSET_SIGNAL"
+        }
+      ]
+    },
+    {
+      "ref": "J1",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "Buck_Converter",
+      "note": "Input Power Header",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VIN_RAW"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "J2",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "Buck_Converter",
+      "note": "Output Power Header",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VOUT_REG"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    }
+  ],
+  "passives": [
+    {
+      "ref": "C1",
+      "type": "C",
+      "value": "10uF",
+      "sheet": "Buck_Converter",
+      "purpose": "Input decoupling capacitor for TPS63900",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VIN_RAW"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C2",
+      "type": "C",
+      "value": "10uF",
+      "sheet": "Buck_Converter",
+      "purpose": "Output filtering capacitor for VOUT_REG",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VOUT_REG"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "L1",
+      "type": "L",
+      "value": "3.3uH",
+      "sheet": "Buck_Converter",
+      "purpose": "Main switching inductor for buck-boost conversion",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "SW_NODE"
+        },
+        {
+          "pin": "2",
+          "net": "VOUT_REG"
+        }
+      ]
+    },
+    {
+      "ref": "R1",
+      "type": "R",
+      "value": "560k",
+      "sheet": "Buck_Converter",
+      "purpose": "Feedback resistor for 3.3V output (VOUT to FB)",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VOUT_REG"
+        },
+        {
+          "pin": "2",
+          "net": "FB_NODE"
+        }
+      ]
+    },
+    {
+      "ref": "R2",
+      "type": "R",
+      "value": "100k",
+      "sheet": "Buck_Converter",
+      "purpose": "Feedback resistor for 3.3V output (FB to GND)",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "FB_NODE"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "R3",
+      "type": "R",
+      "value": "100k",
+      "sheet": "Buck_Converter",
+      "purpose": "EN pin pull-up resistor",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VIN_RAW"
+        },
+        {
+          "pin": "2",
+          "net": "EN_SIGNAL"
+        }
+      ]
+    }
+  ],
+  "nets": [
+    {
+      "name": "VIN_RAW",
+      "type": "local",
+      "sheet": "Buck_Converter",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "1"
+        },
+        {
+          "ref": "C1",
+          "pin": "1"
+        },
+        {
+          "ref": "U1",
+          "pin": "6",
+          "pin_name": "VIN"
+        },
+        {
+          "ref": "R3",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "VOUT_REG",
+      "type": "local",
+      "sheet": "Buck_Converter",
+      "connections": [
+        {
+          "ref": "J2",
+          "pin": "1"
+        },
+        {
+          "ref": "C2",
+          "pin": "1"
+        },
+        {
+          "ref": "U1",
+          "pin": "3",
+          "pin_name": "VOUT"
+        },
+        {
+          "ref": "L1",
+          "pin": "2"
+        },
+        {
+          "ref": "R1",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "GND",
+      "type": "local",
+      "sheet": "Buck_Converter",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "2"
+        },
+        {
+          "ref": "J2",
+          "pin": "2"
+        },
+        {
+          "ref": "C1",
+          "pin": "2"
+        },
+        {
+          "ref": "C2",
+          "pin": "2"
+        },
+        {
+          "ref": "U1",
+          "pin": "4",
+          "pin_name": "GND"
+        },
+        {
+          "ref": "R2",
+          "pin": "2"
+        },
+        {
+          "ref": "U1",
+          "pin": "7",
+          "pin_name": "MODE"
+        },
+        {
+          "ref": "U1",
+          "pin": "8",
+          "pin_name": "VSET"
+        }
+      ]
+    },
+    {
+      "name": "SW_NODE",
+      "type": "local",
+      "sheet": "Buck_Converter",
+      "connections": [
+        {
+          "ref": "U1",
+          "pin": "1",
+          "pin_name": "SW"
+        },
+        {
+          "ref": "L1",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "FB_NODE",
+      "type": "local",
+      "sheet": "Buck_Converter",
+      "connections": [
+        {
+          "ref": "U1",
+          "pin": "2",
+          "pin_name": "FB"
+        },
+        {
+          "ref": "R1",
+          "pin": "2"
+        },
+        {
+          "ref": "R2",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "EN_SIGNAL",
+      "type": "local",
+      "sheet": "Buck_Converter",
+      "connections": [
+        {
+          "ref": "U1",
+          "pin": "5",
+          "pin_name": "EN"
+        },
+        {
+          "ref": "R3",
+          "pin": "2"
+        }
+      ]
+    },
+    {
+      "name": "MODE_SIGNAL",
+      "type": "local",
+      "sheet": "Buck_Converter",
+      "connections": [
+        {
+          "ref": "U1",
+          "pin": "7",
+          "pin_name": "MODE"
+        }
+      ]
+    },
+    {
+      "name": "VSET_SIGNAL",
+      "type": "local",
+      "sheet": "Buck_Converter",
+      "connections": [
+        {
+          "ref": "U1",
+          "pin": "8",
+          "pin_name": "VSET"
+        }
+      ]
+    }
+  ]
+}

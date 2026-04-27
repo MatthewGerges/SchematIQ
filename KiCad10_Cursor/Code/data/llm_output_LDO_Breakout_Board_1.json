@@ -1,0 +1,786 @@
+{
+  "project_name": "Buck_Boost_Efficiency_Board",
+  "description": "Board to measure efficiency of a 7V to 5V buck converter and a 5V to 7V boost converter chain.",
+  "sheets": [
+    {
+      "name": "Buck_Converter",
+      "file": "Buck_Converter.kicad_sch",
+      "page": 1
+    },
+    {
+      "name": "Boost_Converter",
+      "file": "Boost_Converter.kicad_sch",
+      "page": 2
+    }
+  ],
+  "components": [
+    {
+      "ref": "U1",
+      "part": "Regulator_Linear:LM1117DT-5.0",
+      "sheet": "LDO_Breakout",
+      "note": "7V to 5V Linear Regulator",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "GND",
+          "net": "GND"
+        },
+        {
+          "pin": "2",
+          "pin_name": "VOUT",
+          "net": "VOUT_5V"
+        },
+        {
+          "pin": "3",
+          "pin_name": "VIN",
+          "net": "VIN_7V"
+        }
+      ]
+    },
+    {
+      "ref": "J1",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "LDO_Breakout",
+      "note": "7V Input Connector",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VIN_7V"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "J2",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "LDO_Breakout",
+      "note": "5V Output Connector",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VOUT_5V"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "U1",
+      "part": "Regulator_Switching:LM2574N-5",
+      "sheet": "Buck_Converter",
+      "note": "7V to 5V Buck Converter, 0.5A",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "VIN",
+          "net": "VIN_BUCK_7V"
+        },
+        {
+          "pin": "2",
+          "pin_name": "OUTPUT",
+          "net": "SW_NODE"
+        },
+        {
+          "pin": "3",
+          "pin_name": "GND",
+          "net": "GND"
+        },
+        {
+          "pin": "4",
+          "pin_name": "FEEDBACK",
+          "net": "VOUT_BUCK_5V"
+        },
+        {
+          "pin": "5",
+          "pin_name": "ON/OFF",
+          "net": "VIN_BUCK_7V"
+        }
+      ]
+    },
+    {
+      "ref": "J1",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "Buck_Converter",
+      "note": "7V Input Connector for Buck Converter",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VIN_BUCK_7V"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "J2",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "Buck_Converter",
+      "note": "5V Output Connector (to Boost Converter)",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VOUT_BUCK_5V"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "U2",
+      "part": "Regulator_Switching:LM2577-ADJ",
+      "sheet": "Boost_Converter",
+      "note": "5V to 7V Boost Converter",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "VIN",
+          "net": "VIN_BOOST_5V"
+        },
+        {
+          "pin": "2",
+          "pin_name": "OUTPUT",
+          "net": "SW_NODE_BOOST"
+        },
+        {
+          "pin": "3",
+          "pin_name": "GND",
+          "net": "GND"
+        },
+        {
+          "pin": "4",
+          "pin_name": "FEEDBACK",
+          "net": "FB_BOOST"
+        },
+        {
+          "pin": "5",
+          "pin_name": "ON/OFF",
+          "net": "VIN_BOOST_5V"
+        }
+      ]
+    },
+    {
+      "ref": "J3",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "Boost_Converter",
+      "note": "5V Input Connector (from Buck Converter)",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VIN_BOOST_5V"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "J4",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "Boost_Converter",
+      "note": "7V Output Connector for Boost Converter",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VOUT_BOOST_7V"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    }
+  ],
+  "passives": [
+    {
+      "ref": "C1",
+      "type": "C",
+      "value": "10uF",
+      "sheet": "LDO_Breakout",
+      "purpose": "Input bulk capacitance for LDO",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VIN_7V"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C2",
+      "type": "C",
+      "value": "0.1uF",
+      "sheet": "LDO_Breakout",
+      "purpose": "Input decoupling capacitance for LDO",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VIN_7V"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C3",
+      "type": "C",
+      "value": "10uF",
+      "sheet": "LDO_Breakout",
+      "purpose": "Output bulk capacitance for LDO stability",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VOUT_5V"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C4",
+      "type": "C",
+      "value": "0.1uF",
+      "sheet": "LDO_Breakout",
+      "purpose": "Output decoupling capacitance for LDO",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VOUT_5V"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C1",
+      "type": "C",
+      "value": "100uF",
+      "sheet": "Buck_Converter",
+      "purpose": "Input bulk capacitance for buck converter",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VIN_BUCK_7V"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C2",
+      "type": "C",
+      "value": "0.1uF",
+      "sheet": "Buck_Converter",
+      "purpose": "Input decoupling capacitance for buck converter",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VIN_BUCK_7V"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "D1",
+      "type": "Diode",
+      "value": "1N5819",
+      "sheet": "Buck_Converter",
+      "purpose": "Freewheeling diode for buck converter",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "GND"
+        },
+        {
+          "pin": "2",
+          "net": "SW_NODE"
+        }
+      ]
+    },
+    {
+      "ref": "L1",
+      "type": "L",
+      "value": "33uH",
+      "sheet": "Buck_Converter",
+      "purpose": "Output inductor for buck converter",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "SW_NODE"
+        },
+        {
+          "pin": "2",
+          "net": "VOUT_BUCK_5V"
+        }
+      ]
+    },
+    {
+      "ref": "C3",
+      "type": "C",
+      "value": "100uF",
+      "sheet": "Buck_Converter",
+      "purpose": "Output bulk capacitance for buck converter",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VOUT_BUCK_5V"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C4",
+      "type": "C",
+      "value": "0.1uF",
+      "sheet": "Buck_Converter",
+      "purpose": "Output decoupling capacitance for buck converter",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VOUT_BUCK_5V"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C5",
+      "type": "C",
+      "value": "100uF",
+      "sheet": "Boost_Converter",
+      "purpose": "Input bulk capacitance for boost converter",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VIN_BOOST_5V"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C6",
+      "type": "C",
+      "value": "0.1uF",
+      "sheet": "Boost_Converter",
+      "purpose": "Input decoupling capacitance for boost converter",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VIN_BOOST_5V"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "L2",
+      "type": "L",
+      "value": "100uH",
+      "sheet": "Boost_Converter",
+      "purpose": "Input inductor for boost converter",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VIN_BOOST_5V"
+        },
+        {
+          "pin": "2",
+          "net": "SW_NODE_BOOST"
+        }
+      ]
+    },
+    {
+      "ref": "D2",
+      "type": "Diode",
+      "value": "1N5819",
+      "sheet": "Boost_Converter",
+      "purpose": "Output rectifier diode for boost converter",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "SW_NODE_BOOST"
+        },
+        {
+          "pin": "2",
+          "net": "VOUT_BOOST_7V"
+        }
+      ]
+    },
+    {
+      "ref": "C7",
+      "type": "C",
+      "value": "100uF",
+      "sheet": "Boost_Converter",
+      "purpose": "Output bulk capacitance for boost converter",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VOUT_BOOST_7V"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C8",
+      "type": "C",
+      "value": "0.1uF",
+      "sheet": "Boost_Converter",
+      "purpose": "Output decoupling capacitance for boost converter",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VOUT_BOOST_7V"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "R3",
+      "type": "R",
+      "value": "1K",
+      "sheet": "Boost_Converter",
+      "purpose": "Feedback resistor (R1) for 7V output",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "FB_BOOST"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "R4",
+      "type": "R",
+      "value": "4.7K",
+      "sheet": "Boost_Converter",
+      "purpose": "Feedback resistor (R2) for 7V output",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VOUT_BOOST_7V"
+        },
+        {
+          "pin": "2",
+          "net": "FB_BOOST"
+        }
+      ]
+    }
+  ],
+  "nets": [
+    {
+      "name": "VIN_5V",
+      "type": "local",
+      "sheet": "LDO_Breakout",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "1"
+        },
+        {
+          "ref": "U1",
+          "pin": "3",
+          "pin_name": "VIN"
+        },
+        {
+          "ref": "C1",
+          "pin": "1"
+        },
+        {
+          "ref": "C2",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "VOUT_3V3",
+      "type": "local",
+      "sheet": "LDO_Breakout",
+      "connections": [
+        {
+          "ref": "J2",
+          "pin": "1"
+        },
+        {
+          "ref": "U1",
+          "pin": "2",
+          "pin_name": "VOUT"
+        },
+        {
+          "ref": "C3",
+          "pin": "1"
+        },
+        {
+          "ref": "C4",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "VIN_7V",
+      "type": "local",
+      "sheet": "LDO_Breakout",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "1"
+        },
+        {
+          "ref": "U1",
+          "pin": "3",
+          "pin_name": "VIN"
+        },
+        {
+          "ref": "C1",
+          "pin": "1"
+        },
+        {
+          "ref": "C2",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "VOUT_5V",
+      "type": "local",
+      "sheet": "LDO_Breakout",
+      "connections": [
+        {
+          "ref": "J2",
+          "pin": "1"
+        },
+        {
+          "ref": "U1",
+          "pin": "2",
+          "pin_name": "VOUT"
+        },
+        {
+          "ref": "C3",
+          "pin": "1"
+        },
+        {
+          "ref": "C4",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "VIN_BUCK_7V",
+      "type": "hierarchical",
+      "sheet": "Buck_Converter",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "1"
+        },
+        {
+          "ref": "U1",
+          "pin": "1",
+          "pin_name": "VIN"
+        },
+        {
+          "ref": "U1",
+          "pin": "5",
+          "pin_name": "ON/OFF"
+        },
+        {
+          "ref": "C1",
+          "pin": "1"
+        },
+        {
+          "ref": "C2",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "SW_NODE",
+      "type": "local",
+      "sheet": "Buck_Converter",
+      "connections": [
+        {
+          "ref": "U1",
+          "pin": "2",
+          "pin_name": "OUTPUT"
+        },
+        {
+          "ref": "D1",
+          "pin": "2"
+        },
+        {
+          "ref": "L1",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "VOUT_BUCK_5V",
+      "type": "hierarchical",
+      "sheet": "Buck_Converter",
+      "connections": [
+        {
+          "ref": "J2",
+          "pin": "1"
+        },
+        {
+          "ref": "U1",
+          "pin": "4",
+          "pin_name": "FEEDBACK"
+        },
+        {
+          "ref": "L1",
+          "pin": "2"
+        },
+        {
+          "ref": "C3",
+          "pin": "1"
+        },
+        {
+          "ref": "C4",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "VIN_BOOST_5V",
+      "type": "hierarchical",
+      "sheet": "Boost_Converter",
+      "connections": [
+        {
+          "ref": "J3",
+          "pin": "1"
+        },
+        {
+          "ref": "U2",
+          "pin": "1",
+          "pin_name": "VIN"
+        },
+        {
+          "ref": "U2",
+          "pin": "5",
+          "pin_name": "ON/OFF"
+        },
+        {
+          "ref": "C5",
+          "pin": "1"
+        },
+        {
+          "ref": "C6",
+          "pin": "1"
+        },
+        {
+          "ref": "L2",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "SW_NODE_BOOST",
+      "type": "local",
+      "sheet": "Boost_Converter",
+      "connections": [
+        {
+          "ref": "U2",
+          "pin": "2",
+          "pin_name": "OUTPUT"
+        },
+        {
+          "ref": "L2",
+          "pin": "2"
+        },
+        {
+          "ref": "D2",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "FB_BOOST",
+      "type": "local",
+      "sheet": "Boost_Converter",
+      "connections": [
+        {
+          "ref": "U2",
+          "pin": "4",
+          "pin_name": "FEEDBACK"
+        },
+        {
+          "ref": "R3",
+          "pin": "1"
+        },
+        {
+          "ref": "R4",
+          "pin": "2"
+        }
+      ]
+    },
+    {
+      "name": "VOUT_BOOST_7V",
+      "type": "hierarchical",
+      "sheet": "Boost_Converter",
+      "connections": [
+        {
+          "ref": "J4",
+          "pin": "1"
+        },
+        {
+          "ref": "D2",
+          "pin": "2"
+        },
+        {
+          "ref": "C7",
+          "pin": "1"
+        },
+        {
+          "ref": "C8",
+          "pin": "1"
+        },
+        {
+          "ref": "R4",
+          "pin": "1"
+        }
+      ]
+    }
+  ]
+}

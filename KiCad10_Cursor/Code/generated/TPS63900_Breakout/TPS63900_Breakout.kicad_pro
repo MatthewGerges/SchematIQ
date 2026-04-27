@@ -1,0 +1,29 @@
+{
+  "meta": {
+    "filename": "TPS63900_Breakout.kicad_pro",
+    "version": 2
+  },
+  "schematic": {
+    "annotate_start_num": 0,
+    "bom_fmt_settings": {
+      "field_delimiter": ",",
+      "name": "CSV",
+      "ref_delimiter": ",",
+      "string_delimiter": "\""
+    },
+    "connection_grid_size": 50.0,
+    "drawing": {},
+    "page_layout_descr_file": ""
+  },
+  "sheets": [
+    [
+      "7e90fdbf-6f92-452c-b543-22761f9d72c5",
+      "Root"
+    ],
+    [
+      "5e24464c-8d65-42d0-9678-3e8cdf099a3c",
+      "Buck_Converter"
+    ]
+  ],
+  "text_variables": {}
+}

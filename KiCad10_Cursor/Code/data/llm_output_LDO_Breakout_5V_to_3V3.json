@@ -1,0 +1,177 @@
+{
+  "project_name": "LDO_Breakout_5V_to_3V3",
+  "description": "Simple breakout board using AMS1117-3.3 to convert 5V to 3.3V, with connectors for input and output.",
+  "sheets": [
+    {
+      "name": "LDO_Regulator",
+      "file": "LDO_Regulator.kicad_sch",
+      "page": 1
+    }
+  ],
+  "components": [
+    {
+      "ref": "U1",
+      "part": "AMS1117-3.3",
+      "sheet": "LDO_Regulator",
+      "note": "1A Low Dropout Voltage Regulator, 5V to 3.3V conversion",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "GND",
+          "net": "GND"
+        },
+        {
+          "pin": "2",
+          "pin_name": "VOUT",
+          "net": "VOUT_3V3"
+        },
+        {
+          "pin": "3",
+          "pin_name": "VIN",
+          "net": "VIN_5V"
+        },
+        {
+          "pin": "PAD",
+          "pin_name": "VOUT_TAB",
+          "net": "VOUT_3V3"
+        }
+      ]
+    },
+    {
+      "ref": "J1",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "LDO_Regulator",
+      "note": "Input Voltage (5V) Connector",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VIN_5V"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "J2",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "LDO_Regulator",
+      "note": "Output Voltage (3.3V) Connector",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VOUT_3V3"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    }
+  ],
+  "passives": [
+    {
+      "ref": "C1",
+      "type": "C",
+      "value": "10uF",
+      "sheet": "LDO_Regulator",
+      "purpose": "Input bulk capacitor for LDO stability",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VIN_5V"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C2",
+      "type": "C",
+      "value": "0.1uF",
+      "sheet": "LDO_Regulator",
+      "purpose": "Input decoupling capacitor for high-frequency noise filtering",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VIN_5V"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C3",
+      "type": "C",
+      "value": "22uF",
+      "sheet": "LDO_Regulator",
+      "purpose": "Output capacitor for LDO stability and ripple filtering",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VOUT_3V3"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    }
+  ],
+  "nets": [
+    {
+      "name": "VIN_5V",
+      "type": "local",
+      "sheet": "LDO_Regulator",
+      "connections": [
+        {
+          "ref": "U1",
+          "pin": "3",
+          "pin_name": "VIN"
+        },
+        {
+          "ref": "C1",
+          "pin": "1"
+        },
+        {
+          "ref": "C2",
+          "pin": "1"
+        },
+        {
+          "ref": "J1",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "VOUT_3V3",
+      "type": "local",
+      "sheet": "LDO_Regulator",
+      "connections": [
+        {
+          "ref": "U1",
+          "pin": "2",
+          "pin_name": "VOUT"
+        },
+        {
+          "ref": "U1",
+          "pin": "PAD",
+          "pin_name": "VOUT_TAB"
+        },
+        {
+          "ref": "C3",
+          "pin": "1"
+        },
+        {
+          "ref": "J2",
+          "pin": "1"
+        }
+      ]
+    }
+  ]
+}

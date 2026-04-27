@@ -1,0 +1,256 @@
+{
+  "project_name": "LED_Driver_Board",
+  "description": "Board that drives an LED using an NPN transistor as a low-side switch.",
+  "sheets": [
+    {
+      "name": "LED_Driver",
+      "file": "LED_Driver.kicad_sch",
+      "page": 1
+    }
+  ],
+  "components": [
+    {
+      "ref": "J1",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "LED_Driver",
+      "note": "Signal Input Connector",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "Pin_1",
+          "net": "SIG_IN"
+        },
+        {
+          "pin": "2",
+          "pin_name": "Pin_2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "J2",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "LED_Driver",
+      "note": "Power Input Connector",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "Pin_1",
+          "net": "VCC"
+        },
+        {
+          "pin": "2",
+          "pin_name": "Pin_2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "U1",
+      "part": "Transistor_BJT:NPN",
+      "sheet": "LED_Driver",
+      "note": "NPN Transistor as Low-Side Switch",
+      "connections": [
+        {
+          "pin": "B",
+          "pin_name": "B",
+          "net": "BASE_CTRL"
+        },
+        {
+          "pin": "C",
+          "pin_name": "C",
+          "net": "LED_CATHODE"
+        },
+        {
+          "pin": "E",
+          "pin_name": "E",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "D1",
+      "part": "Diode:LED",
+      "sheet": "LED_Driver",
+      "note": "Status LED",
+      "connections": [
+        {
+          "pin": "A",
+          "pin_name": "A",
+          "net": "LED_ANODE"
+        },
+        {
+          "pin": "K",
+          "pin_name": "K",
+          "net": "LED_CATHODE"
+        }
+      ]
+    }
+  ],
+  "passives": [
+    {
+      "ref": "R1",
+      "type": "R",
+      "value": "5.1K",
+      "sheet": "LED_Driver",
+      "purpose": "Base current limiting resistor for NPN transistor",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "SIG_IN"
+        },
+        {
+          "pin": "2",
+          "net": "BASE_CTRL"
+        }
+      ]
+    },
+    {
+      "ref": "R2",
+      "type": "R",
+      "value": "270",
+      "sheet": "LED_Driver",
+      "purpose": "LED series current limiting resistor",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VCC"
+        },
+        {
+          "pin": "2",
+          "net": "LED_ANODE"
+        }
+      ]
+    },
+    {
+      "ref": "R3",
+      "type": "R",
+      "value": "10K",
+      "sheet": "LED_Driver",
+      "purpose": "Optional base pull-down resistor for NPN transistor",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "BASE_CTRL"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    }
+  ],
+  "nets": [
+    {
+      "name": "SIG_IN",
+      "type": "local",
+      "sheet": "LED_Driver",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "1",
+          "pin_name": "Pin_1"
+        },
+        {
+          "ref": "R1",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "VCC",
+      "type": "local",
+      "sheet": "LED_Driver",
+      "connections": [
+        {
+          "ref": "J2",
+          "pin": "1",
+          "pin_name": "Pin_1"
+        },
+        {
+          "ref": "R2",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "GND",
+      "type": "local",
+      "sheet": "LED_Driver",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "2",
+          "pin_name": "Pin_2"
+        },
+        {
+          "ref": "J2",
+          "pin": "2",
+          "pin_name": "Pin_2"
+        },
+        {
+          "ref": "U1",
+          "pin": "E",
+          "pin_name": "E"
+        },
+        {
+          "ref": "R3",
+          "pin": "2"
+        }
+      ]
+    },
+    {
+      "name": "BASE_CTRL",
+      "type": "local",
+      "sheet": "LED_Driver",
+      "connections": [
+        {
+          "ref": "R1",
+          "pin": "2"
+        },
+        {
+          "ref": "U1",
+          "pin": "B",
+          "pin_name": "B"
+        },
+        {
+          "ref": "R3",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "LED_ANODE",
+      "type": "local",
+      "sheet": "LED_Driver",
+      "connections": [
+        {
+          "ref": "R2",
+          "pin": "2"
+        },
+        {
+          "ref": "D1",
+          "pin": "A",
+          "pin_name": "A"
+        }
+      ]
+    },
+    {
+      "name": "LED_CATHODE",
+      "type": "local",
+      "sheet": "LED_Driver",
+      "connections": [
+        {
+          "ref": "D1",
+          "pin": "K",
+          "pin_name": "K"
+        },
+        {
+          "ref": "U1",
+          "pin": "C",
+          "pin_name": "C"
+        }
+      ]
+    }
+  ]
+}

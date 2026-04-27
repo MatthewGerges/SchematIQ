@@ -1,0 +1,50 @@
+{
+  "missing_components": [],
+  "extra_components": [],
+  "missing_nets": [
+    "PWM_HI_A",
+    "PWM_HI_B",
+    "PWM_LI_A",
+    "PWM_LI_B"
+  ],
+  "pin_errors": [
+    {
+      "ref": "J4",
+      "pin": "1",
+      "expected_net": "PWM_HI_A",
+      "actual_nets": []
+    },
+    {
+      "ref": "J4",
+      "pin": "2",
+      "expected_net": "PWM_LI_A",
+      "actual_nets": []
+    },
+    {
+      "ref": "J4",
+      "pin": "3",
+      "expected_net": "PWM_HI_B",
+      "actual_nets": []
+    },
+    {
+      "ref": "J4",
+      "pin": "4",
+      "expected_net": "PWM_LI_B",
+      "actual_nets": []
+    },
+    {
+      "ref": "J4",
+      "pin": "5",
+      "expected_net": "GND",
+      "actual_nets": []
+    }
+  ],
+  "summary": {
+    "components_expected": 1,
+    "components_placed": 1,
+    "missing_components": 0,
+    "missing_nets": 4,
+    "pin_errors": 5
+  },
+  "ok": false
+}

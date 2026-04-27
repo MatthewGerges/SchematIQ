@@ -1,0 +1,278 @@
+{
+  "project_name": "5V_to_3V3_LDO_Breakout",
+  "description": "A simple breakout board using the LM1117DT-3.3 LDO to convert 5V to 3.3V at 0.5A, with 2-pin connectors for input and output.",
+  "sheets": [
+    {
+      "name": "Main_Schematic",
+      "file": "Main_Schematic.kicad_sch",
+      "page": 1
+    }
+  ],
+  "components": [
+    {
+      "ref": "U1",
+      "part": "Regulator_Linear:LM1117DT-3.3",
+      "sheet": "Main_Schematic",
+      "note": "800mA Low Dropout Regulator, 5V in to 3.3V out",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "GND",
+          "net": "GND"
+        },
+        {
+          "pin": "2",
+          "pin_name": "VOUT",
+          "net": "VOUT_3V3"
+        },
+        {
+          "pin": "3",
+          "pin_name": "VIN",
+          "net": "VIN_5V"
+        }
+      ]
+    },
+    {
+      "ref": "J1",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "Main_Schematic",
+      "note": "5V Input Connector",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VIN_5V"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "J2",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "Main_Schematic",
+      "note": "3.3V Output Connector",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VOUT_3V3"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    }
+  ],
+  "passives": [
+    {
+      "ref": "C1",
+      "type": "C",
+      "value": "10uF",
+      "sheet": "Main_Schematic",
+      "purpose": "VIN decoupling capacitor for LDO stability",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VIN_5V"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C2",
+      "type": "C",
+      "value": "10uF",
+      "sheet": "Main_Schematic",
+      "purpose": "VOUT filtering capacitor for LDO stability",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VOUT_3V3"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "R1",
+      "type": "R",
+      "value": "249K",
+      "sheet": "Main_Schematic",
+      "purpose": "VSET resistor for 3.3V output",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VSET_R1_1"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "L1",
+      "type": "L",
+      "value": "1.0uH",
+      "sheet": "Main_Schematic",
+      "purpose": "Buck converter inductor",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "SW_NODE"
+        },
+        {
+          "pin": "2",
+          "net": "VOUT_3V3"
+        }
+      ]
+    },
+    {
+      "ref": "C3",
+      "type": "C",
+      "value": "4.7uF",
+      "sheet": "Main_Schematic",
+      "purpose": "VOUT filtering capacitor",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VOUT_3V3"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    }
+  ],
+  "nets": [
+    {
+      "name": "VIN_5V",
+      "type": "power",
+      "sheet": "Main_Schematic",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "1"
+        },
+        {
+          "ref": "U1",
+          "pin": "2",
+          "pin_name": "VIN"
+        },
+        {
+          "ref": "U1",
+          "pin": "4",
+          "pin_name": "EN"
+        },
+        {
+          "ref": "C1",
+          "pin": "1"
+        },
+        {
+          "ref": "C2",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "VOUT_3V3",
+      "type": "power",
+      "sheet": "Main_Schematic",
+      "connections": [
+        {
+          "ref": "J2",
+          "pin": "1"
+        },
+        {
+          "ref": "U1",
+          "pin": "6",
+          "pin_name": "VOS"
+        },
+        {
+          "ref": "L1",
+          "pin": "2"
+        },
+        {
+          "ref": "C3",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "GND",
+      "type": "power",
+      "sheet": "Main_Schematic",
+      "connections": [
+        {
+          "ref": "U1",
+          "pin": "1",
+          "pin_name": "GND"
+        },
+        {
+          "ref": "J1",
+          "pin": "2"
+        },
+        {
+          "ref": "J2",
+          "pin": "2"
+        },
+        {
+          "ref": "C1",
+          "pin": "2"
+        },
+        {
+          "ref": "C2",
+          "pin": "2"
+        },
+        {
+          "ref": "R1",
+          "pin": "2"
+        },
+        {
+          "ref": "C3",
+          "pin": "2"
+        }
+      ]
+    },
+    {
+      "name": "VSET_R1_1",
+      "type": "local",
+      "sheet": "Main_Schematic",
+      "connections": [
+        {
+          "ref": "U1",
+          "pin": "3",
+          "pin_name": "VSET"
+        },
+        {
+          "ref": "R1",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "SW_NODE",
+      "type": "local",
+      "sheet": "Main_Schematic",
+      "connections": [
+        {
+          "ref": "U1",
+          "pin": "5",
+          "pin_name": "SW"
+        },
+        {
+          "ref": "L1",
+          "pin": "1"
+        }
+      ]
+    }
+  ]
+}

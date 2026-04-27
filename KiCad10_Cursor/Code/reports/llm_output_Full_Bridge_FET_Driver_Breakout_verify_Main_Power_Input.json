@@ -1,0 +1,47 @@
+{
+  "missing_components": [],
+  "extra_components": [],
+  "missing_nets": [
+    "12V_IN"
+  ],
+  "pin_errors": [
+    {
+      "ref": "J1",
+      "pin": "1",
+      "expected_net": "12V_IN",
+      "actual_nets": []
+    },
+    {
+      "ref": "J1",
+      "pin": "2",
+      "expected_net": "GND",
+      "actual_nets": []
+    },
+    {
+      "ref": "J1",
+      "pin": "3",
+      "expected_net": "GND",
+      "actual_nets": []
+    },
+    {
+      "ref": "C1",
+      "pin": "1",
+      "expected_net": "12V_IN",
+      "actual_nets": []
+    },
+    {
+      "ref": "C1",
+      "pin": "2",
+      "expected_net": "GND",
+      "actual_nets": []
+    }
+  ],
+  "summary": {
+    "components_expected": 2,
+    "components_placed": 2,
+    "missing_components": 0,
+    "missing_nets": 1,
+    "pin_errors": 5
+  },
+  "ok": false
+}

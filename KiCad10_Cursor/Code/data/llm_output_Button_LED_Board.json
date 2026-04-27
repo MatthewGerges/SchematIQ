@@ -1,0 +1,232 @@
+{
+  "project_name": "Button_LED_Board",
+  "description": "A simple board with a pushbutton-controlled LED.",
+  "sheets": [
+    {
+      "name": "Main_Circuit",
+      "file": "Main_Circuit.kicad_sch",
+      "page": 1
+    }
+  ],
+  "components": [
+    {
+      "ref": "J1",
+      "part": "Conn_01x02",
+      "sheet": "Main_Circuit",
+      "note": "2-pin power input connector",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "Pin_1",
+          "net": "VCC"
+        },
+        {
+          "pin": "2",
+          "pin_name": "Pin_2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "SW1",
+      "part": "Button_Switch_SMD",
+      "sheet": "Main_Circuit",
+      "note": "Pushbutton",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "A",
+          "net": "VCC"
+        },
+        {
+          "pin": "2",
+          "pin_name": "B",
+          "net": "BUTTON_NODE"
+        }
+      ]
+    },
+    {
+      "ref": "LED1",
+      "part": "LED",
+      "sheet": "Main_Circuit",
+      "note": "Indicator LED",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "K",
+          "net": "GND"
+        },
+        {
+          "pin": "2",
+          "pin_name": "A",
+          "net": "LED_ANODE_NODE"
+        }
+      ]
+    },
+    {
+      "ref": "TP1",
+      "part": "TestPoint",
+      "sheet": "Main_Circuit",
+      "note": "Test point for BUTTON_NODE",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "1",
+          "net": "BUTTON_NODE"
+        }
+      ]
+    },
+    {
+      "ref": "TP2",
+      "part": "TestPoint",
+      "sheet": "Main_Circuit",
+      "note": "Test point for LED_ANODE_NODE",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "1",
+          "net": "LED_ANODE_NODE"
+        }
+      ]
+    }
+  ],
+  "passives": [
+    {
+      "ref": "R1",
+      "type": "R",
+      "value": "10K",
+      "sheet": "Main_Circuit",
+      "purpose": "Pull-down resistor for pushbutton",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "BUTTON_NODE"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C1",
+      "type": "C",
+      "value": "0.1uF",
+      "sheet": "Main_Circuit",
+      "purpose": "Debounce capacitor for pushbutton",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "BUTTON_NODE"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "R2",
+      "type": "R",
+      "value": "150R",
+      "sheet": "Main_Circuit",
+      "purpose": "Current-limiting resistor for LED",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "BUTTON_NODE"
+        },
+        {
+          "pin": "2",
+          "net": "LED_ANODE_NODE"
+        }
+      ]
+    }
+  ],
+  "nets": [
+    {
+      "name": "VCC",
+      "type": "power",
+      "sheet": "Main_Circuit",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "1"
+        },
+        {
+          "ref": "SW1",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "GND",
+      "type": "power",
+      "sheet": "Main_Circuit",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "2"
+        },
+        {
+          "ref": "R1",
+          "pin": "2"
+        },
+        {
+          "ref": "C1",
+          "pin": "2"
+        },
+        {
+          "ref": "LED1",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "BUTTON_NODE",
+      "type": "local",
+      "sheet": "Main_Circuit",
+      "connections": [
+        {
+          "ref": "SW1",
+          "pin": "2"
+        },
+        {
+          "ref": "R1",
+          "pin": "1"
+        },
+        {
+          "ref": "C1",
+          "pin": "1"
+        },
+        {
+          "ref": "TP1",
+          "pin": "1"
+        },
+        {
+          "ref": "R2",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "LED_ANODE_NODE",
+      "type": "local",
+      "sheet": "Main_Circuit",
+      "connections": [
+        {
+          "ref": "R2",
+          "pin": "2"
+        },
+        {
+          "ref": "LED1",
+          "pin": "2"
+        },
+        {
+          "ref": "TP2",
+          "pin": "1"
+        }
+      ]
+    }
+  ]
+}

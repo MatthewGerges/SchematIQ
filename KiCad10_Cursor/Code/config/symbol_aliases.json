@@ -1,0 +1,9 @@
+{
+  "_comment": "Map LLM/common wrong names to real KiCad lib:symbol. Edit this instead of Python when the model invents new aliases.",
+  "Diode:LED": "Device:LED",
+  "Transistor_BJT:NPN": "Transistor_BJT:Q_NPN_BCE",
+  "Transistor_BJT:PNP": "Transistor_BJT:Q_PNP_BCE",
+  "OpAmp_Single": "Amplifier_Operational:LM741",
+  "GENERIC_OPAMP_SINGLE": "Amplifier_Operational:LM741",
+  "Connector_Generic:Conn_02x05_SWD_JTAG_ARM": "Connector:Conn_ARM_JTAG_SWD_10"
+}

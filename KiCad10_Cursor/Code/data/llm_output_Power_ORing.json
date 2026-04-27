@@ -1,0 +1,204 @@
+{
+  "project_name": "Power_ORing",
+  "description": "",
+  "sheets": [
+    {
+      "name": "Power_ORing",
+      "file": "Power_ORing.kicad_sch",
+      "page": 1
+    }
+  ],
+  "components": [
+    {
+      "ref": "J1",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "Power_ORing",
+      "note": "Input Power Connector 1 (V1/GND)",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "Pin_1",
+          "net": "V1_IN"
+        },
+        {
+          "pin": "2",
+          "pin_name": "Pin_2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "J2",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "Power_ORing",
+      "note": "Input Power Connector 2 (V2/GND)",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "Pin_1",
+          "net": "V2_IN"
+        },
+        {
+          "pin": "2",
+          "pin_name": "Pin_2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "J3",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "Power_ORing",
+      "note": "Output Power Connector (VOUT/GND)",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "Pin_1",
+          "net": "VOUT_ORed"
+        },
+        {
+          "pin": "2",
+          "pin_name": "Pin_2",
+          "net": "GND"
+        }
+      ]
+    }
+  ],
+  "passives": [
+    {
+      "ref": "D1",
+      "type": "Diode",
+      "value": "Schottky",
+      "sheet": "Power_ORing",
+      "purpose": "OR-ing diode for V1",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "V1_IN"
+        },
+        {
+          "pin": "2",
+          "net": "VOUT_ORed"
+        }
+      ]
+    },
+    {
+      "ref": "D2",
+      "type": "Diode",
+      "value": "Schottky",
+      "sheet": "Power_ORing",
+      "purpose": "OR-ing diode for V2",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "V2_IN"
+        },
+        {
+          "pin": "2",
+          "net": "VOUT_ORed"
+        }
+      ]
+    },
+    {
+      "ref": "C1",
+      "type": "C",
+      "value": "0.1uF",
+      "sheet": "Power_ORing",
+      "purpose": "Output stability capacitor",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VOUT_ORed"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    }
+  ],
+  "nets": [
+    {
+      "name": "V1_IN",
+      "type": "local",
+      "sheet": "Power_ORing",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "1",
+          "pin_name": "Pin_1"
+        },
+        {
+          "ref": "D1",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "V2_IN",
+      "type": "local",
+      "sheet": "Power_ORing",
+      "connections": [
+        {
+          "ref": "J2",
+          "pin": "1",
+          "pin_name": "Pin_1"
+        },
+        {
+          "ref": "D2",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "VOUT_ORed",
+      "type": "local",
+      "sheet": "Power_ORing",
+      "connections": [
+        {
+          "ref": "D1",
+          "pin": "2"
+        },
+        {
+          "ref": "D2",
+          "pin": "2"
+        },
+        {
+          "ref": "C1",
+          "pin": "1"
+        },
+        {
+          "ref": "J3",
+          "pin": "1",
+          "pin_name": "Pin_1"
+        }
+      ]
+    },
+    {
+      "name": "GND",
+      "type": "power",
+      "sheet": "Power_ORing",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "2",
+          "pin_name": "Pin_2"
+        },
+        {
+          "ref": "J2",
+          "pin": "2",
+          "pin_name": "Pin_2"
+        },
+        {
+          "ref": "J3",
+          "pin": "2",
+          "pin_name": "Pin_2"
+        },
+        {
+          "ref": "C1",
+          "pin": "2"
+        }
+      ]
+    }
+  ]
+}

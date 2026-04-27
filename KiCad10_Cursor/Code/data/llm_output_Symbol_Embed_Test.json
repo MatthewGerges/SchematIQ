@@ -1,0 +1,156 @@
+{
+  "project_name": "Symbol_Embed_Test",
+  "description": "Test project to verify symbol embedding across many libraries",
+  "sheets": [
+    {"name": "Regulators", "file": "Regulators.kicad_sch", "page": 1},
+    {"name": "OpAmps_Timers", "file": "OpAmps_Timers.kicad_sch", "page": 2},
+    {"name": "Sensors", "file": "Sensors.kicad_sch", "page": 3},
+    {"name": "Connectors_USB", "file": "Connectors_USB.kicad_sch", "page": 4},
+    {"name": "MCU", "file": "MCU.kicad_sch", "page": 5}
+  ],
+  "components": [
+    {
+      "ref": "U1",
+      "part": "Regulator_Linear:LM1117DT-3.3",
+      "sheet": "Regulators",
+      "note": "extends AP1117-15 (TO-252)",
+      "connections": [
+        {"pin": "1", "pin_name": "GND", "net": "GND"},
+        {"pin": "2", "pin_name": "VOUT", "net": "OUT_3V3"},
+        {"pin": "3", "pin_name": "VIN", "net": "VIN_5V"}
+      ]
+    },
+    {
+      "ref": "U2",
+      "part": "Regulator_Linear:LM1117LD-3.3",
+      "sheet": "Regulators",
+      "note": "extends LM1117LD-1.8 (WSON) - pin numbers differ from DT variant",
+      "connections": [
+        {"pin": "1", "pin_name": "GND", "net": "GND"},
+        {"pin": "2", "pin_name": "VIN", "net": "VIN_5V_B"},
+        {"pin": "5", "pin_name": "VOUT", "net": "OUT_3V3_B"}
+      ]
+    },
+    {
+      "ref": "U3",
+      "part": "Regulator_Linear:LM1117MP-5.0",
+      "sheet": "Regulators",
+      "note": "extends AP1117-15 (SOT-223)",
+      "connections": [
+        {"pin": "1", "pin_name": "GND", "net": "GND"},
+        {"pin": "2", "pin_name": "VOUT", "net": "OUT_5V"},
+        {"pin": "3", "pin_name": "VIN", "net": "VIN_7V"}
+      ]
+    },
+    {
+      "ref": "U4",
+      "part": "Amplifier_Operational:TL071",
+      "sheet": "OpAmps_Timers",
+      "note": "extends LM741 (single opamp)",
+      "connections": [
+        {"pin": "2", "pin_name": "IN-", "net": "OPAMP_INN"},
+        {"pin": "3", "pin_name": "IN+", "net": "OPAMP_INP"},
+        {"pin": "6", "pin_name": "OUT", "net": "OPAMP_OUT"},
+        {"pin": "7", "pin_name": "V+", "net": "VCC"},
+        {"pin": "4", "pin_name": "V-", "net": "VEE"}
+      ]
+    },
+    {
+      "ref": "U5",
+      "part": "Timer:NE555P",
+      "sheet": "OpAmps_Timers",
+      "note": "extends NE555D (DIP variant)",
+      "connections": [
+        {"pin": "1", "pin_name": "GND", "net": "GND"},
+        {"pin": "2", "pin_name": "TR", "net": "TRIG"},
+        {"pin": "3", "pin_name": "Q", "net": "TIMER_OUT"},
+        {"pin": "4", "pin_name": "R", "net": "VCC"},
+        {"pin": "5", "pin_name": "CV", "net": "NC_CV"},
+        {"pin": "6", "pin_name": "THR", "net": "THRESH"},
+        {"pin": "7", "pin_name": "DIS", "net": "DISCH"},
+        {"pin": "8", "pin_name": "VCC", "net": "VCC"}
+      ]
+    },
+    {
+      "ref": "U6",
+      "part": "Sensor:BME280",
+      "sheet": "Sensors",
+      "note": "no extends (standalone env sensor)",
+      "connections": [
+        {"pin": "1", "pin_name": "GND", "net": "GND"},
+        {"pin": "2", "pin_name": "CSB", "net": "VCC"},
+        {"pin": "3", "pin_name": "SDI", "net": "I2C_SDA"},
+        {"pin": "4", "pin_name": "SCK", "net": "I2C_SCL"},
+        {"pin": "5", "pin_name": "SDO", "net": "GND"},
+        {"pin": "6", "pin_name": "VDDIO", "net": "VCC"},
+        {"pin": "7", "pin_name": "GND", "net": "GND"},
+        {"pin": "8", "pin_name": "VDD", "net": "VCC"}
+      ]
+    },
+    {
+      "ref": "U7",
+      "part": "Sensor:DHT11",
+      "sheet": "Sensors",
+      "note": "no extends (base sensor for CHT11)",
+      "connections": [
+        {"pin": "1", "pin_name": "VCC", "net": "VCC"},
+        {"pin": "2", "pin_name": "IO", "net": "DHT_DATA"},
+        {"pin": "3", "pin_name": "NC", "net": "NC_1"},
+        {"pin": "4", "pin_name": "GND", "net": "GND"}
+      ]
+    },
+    {
+      "ref": "J1",
+      "part": "Connector_Generic:Conn_01x04",
+      "sheet": "Connectors_USB",
+      "note": "no extends (4-pin header)",
+      "connections": [
+        {"pin": "1", "net": "SIG1"},
+        {"pin": "2", "net": "SIG2"},
+        {"pin": "3", "net": "SIG3"},
+        {"pin": "4", "net": "GND"}
+      ]
+    },
+    {
+      "ref": "J2",
+      "part": "Connector:USB_B_Micro",
+      "sheet": "Connectors_USB",
+      "note": "may use extends",
+      "connections": [
+        {"pin": "1", "pin_name": "VBUS", "net": "USB_VBUS"},
+        {"pin": "2", "pin_name": "D-", "net": "USB_DM"},
+        {"pin": "3", "pin_name": "D+", "net": "USB_DP"},
+        {"pin": "4", "pin_name": "ID", "net": "NC_ID"},
+        {"pin": "5", "pin_name": "GND", "net": "GND"}
+      ]
+    },
+    {
+      "ref": "Y1",
+      "part": "Device:Crystal",
+      "sheet": "Connectors_USB",
+      "note": "no extends (basic crystal)",
+      "connections": [
+        {"pin": "1", "net": "XL1"},
+        {"pin": "2", "net": "XL2"}
+      ]
+    },
+    {
+      "ref": "U8",
+      "part": "MCU_Nordic:nRF52840",
+      "sheet": "MCU",
+      "note": "no extends (large BGA MCU, many pins)",
+      "connections": [
+        {"pin": "A8", "pin_name": "VDD", "net": "VCC"},
+        {"pin": "A12", "pin_name": "VSS", "net": "GND"},
+        {"pin": "D2", "pin_name": "P0.13", "net": "LED1"},
+        {"pin": "B1", "pin_name": "P0.06", "net": "UART_TX"},
+        {"pin": "A20", "pin_name": "SWDIO", "net": "SWDIO"},
+        {"pin": "B6", "pin_name": "SWDCLK", "net": "SWDCLK"}
+      ]
+    }
+  ],
+  "passives": [],
+  "nets": [],
+  "cross_sheet_nets": [],
+  "gnd_power_nets": []
+}

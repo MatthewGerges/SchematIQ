@@ -66,5 +66,5 @@ python scripts/generate_from_llm.py --review --target both data/board.json
 ## Where “the database” lives
 
 - **KiCad symbols**: bundled/custom `.kicad_sym` under the project + `config/symbol_aliases.json`; resolution in `src/lib/symbol_resolver.py`.
-- **LLM component hints**: `../component_database/components.json` (relative to `ChipChat_Project`).
+- **LLM parts**: use **KiCad official** `Library:Symbol` names (no bundled `components.json` in prompts).
 - **tscircuit**: no local symbol index for arbitrary `<chip>` schematic graphics (chips render as boxes). Passives use tscircuit built-in primitives. **MPN / footprint**: `config/tscircuit_part_overrides.json` + heuristics in `src/lib/tscircuit_generator.py`.

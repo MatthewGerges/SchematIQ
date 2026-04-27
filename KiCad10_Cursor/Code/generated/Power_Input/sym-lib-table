@@ -1,0 +1,7 @@
+(sym_lib_table
+  (lib (name "SchematIQ") (type "KiCad") (uri "${KIPRJMOD}/_schematiq_embedded.kicad_sym") (options "") (descr "SchematIQ embedded symbols"))
+  (lib (name "power") (type "KiCad") (uri "/Applications/KiCad/KiCad.app/Contents/SharedSupport/symbols/power.kicad_sym") (options "") (descr "KiCad power symbols"))
+  (lib (name "Connector_Generic") (type "KiCad") (uri "/Applications/KiCad/KiCad.app/Contents/SharedSupport/symbols/Connector_Generic.kicad_sym") (options "") (descr "KiCad Connector_Generic symbols"))
+  (lib (name "Regulator_Linear") (type "KiCad") (uri "/Applications/KiCad/KiCad.app/Contents/SharedSupport/symbols/Regulator_Linear.kicad_sym") (options "") (descr "KiCad Regulator_Linear symbols"))
+  (lib (name "Device") (type "KiCad") (uri "/Applications/KiCad/KiCad.app/Contents/SharedSupport/symbols/Device.kicad_sym") (options "") (descr "KiCad Device symbols"))
+)

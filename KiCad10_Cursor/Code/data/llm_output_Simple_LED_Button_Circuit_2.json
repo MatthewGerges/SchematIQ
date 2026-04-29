@@ -1,0 +1,241 @@
+{
+  "project_name": "Simple_LED_Button_Circuit",
+  "description": "A basic circuit where a push button controls an LED, powered by a 5V supply.",
+  "sheets": [
+    {
+      "name": "Main",
+      "file": "Main.kicad_sch",
+      "page": 1
+    }
+  ],
+  "components": [
+    {
+      "ref": "J1",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "Main",
+      "note": "2-pin connector for 5V power input",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "Pin_1",
+          "net": "VCC_5V"
+        },
+        {
+          "pin": "2",
+          "pin_name": "Pin_2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "SW1",
+      "part": "SW_Push_Open_Dual",
+      "sheet": "Main",
+      "note": "Momentary push button",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "1",
+          "net": "VCC_5V"
+        },
+        {
+          "pin": "2",
+          "pin_name": "2",
+          "net": "VCC_5V"
+        },
+        {
+          "pin": "3",
+          "pin_name": "3",
+          "net": "NET_BUTTON_SIG"
+        },
+        {
+          "pin": "4",
+          "pin_name": "4",
+          "net": "NET_BUTTON_SIG"
+        }
+      ]
+    },
+    {
+      "ref": "D1",
+      "part": "Device:LED",
+      "sheet": "Main",
+      "note": "LED indicator",
+      "connections": [
+        {
+          "pin": "A",
+          "pin_name": "K",
+          "net": "NET_LED_ANODE"
+        },
+        {
+          "pin": "K",
+          "pin_name": "A",
+          "net": "GND"
+        }
+      ]
+    }
+  ],
+  "passives": [
+    {
+      "ref": "C1",
+      "type": "C",
+      "value": "10uF",
+      "sheet": "Main",
+      "purpose": "Bulk decoupling for 5V supply",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VCC_5V"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C2",
+      "type": "C",
+      "value": "0.1uF",
+      "sheet": "Main",
+      "purpose": "High-frequency decoupling for 5V supply",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VCC_5V"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "R1",
+      "type": "R",
+      "value": "10k",
+      "sheet": "Main",
+      "purpose": "Pull-down resistor for push button",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "NET_BUTTON_SIG"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "R2",
+      "type": "R",
+      "value": "220",
+      "sheet": "Main",
+      "purpose": "Current-limiting resistor for LED",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "NET_BUTTON_SIG"
+        },
+        {
+          "pin": "2",
+          "net": "NET_LED_ANODE"
+        }
+      ]
+    }
+  ],
+  "nets": [
+    {
+      "name": "VCC_5V",
+      "type": "power",
+      "sheet": "Main",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "1"
+        },
+        {
+          "ref": "C1",
+          "pin": "1"
+        },
+        {
+          "ref": "C2",
+          "pin": "1"
+        },
+        {
+          "ref": "SW1",
+          "pin": "1"
+        },
+        {
+          "ref": "SW1",
+          "pin": "2"
+        }
+      ]
+    },
+    {
+      "name": "GND",
+      "type": "power",
+      "sheet": "Main",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "2"
+        },
+        {
+          "ref": "C1",
+          "pin": "2"
+        },
+        {
+          "ref": "C2",
+          "pin": "2"
+        },
+        {
+          "ref": "R1",
+          "pin": "2"
+        },
+        {
+          "ref": "D1",
+          "pin": "K"
+        }
+      ]
+    },
+    {
+      "name": "NET_BUTTON_SIG",
+      "type": "local",
+      "sheet": "Main",
+      "connections": [
+        {
+          "ref": "SW1",
+          "pin": "3"
+        },
+        {
+          "ref": "SW1",
+          "pin": "4"
+        },
+        {
+          "ref": "R1",
+          "pin": "1"
+        },
+        {
+          "ref": "R2",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "NET_LED_ANODE",
+      "type": "local",
+      "sheet": "Main",
+      "connections": [
+        {
+          "ref": "R2",
+          "pin": "2"
+        },
+        {
+          "ref": "D1",
+          "pin": "A"
+        }
+      ]
+    }
+  ]
+}

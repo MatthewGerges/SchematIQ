@@ -1,0 +1,19 @@
+// vite.config.ts
+import { defineConfig } from "file:///Users/matthewgerges/Documents/AI-PCB/SchematIQ/KiCad10_Cursor/Code/webui/node_modules/vite/dist/node/index.js";
+import react from "file:///Users/matthewgerges/Documents/AI-PCB/SchematIQ/KiCad10_Cursor/Code/webui/node_modules/@vitejs/plugin-react/dist/index.js";
+var vite_config_default = defineConfig({
+  plugins: [react()],
+  server: {
+    // Bind IPv4 explicitly — on some macOS setups "localhost" hits ::1 while Vite listens on 127.0.0.1 only.
+    host: "127.0.0.1",
+    port: 5173,
+    strictPort: false,
+    proxy: {
+      "/api": "http://127.0.0.1:5179"
+    }
+  }
+});
+export {
+  vite_config_default as default
+};
+//# sourceMappingURL=data:application/json;base64,ewogICJ2ZXJzaW9uIjogMywKICAic291cmNlcyI6IFsidml0ZS5jb25maWcudHMiXSwKICAic291cmNlc0NvbnRlbnQiOiBbImNvbnN0IF9fdml0ZV9pbmplY3RlZF9vcmlnaW5hbF9kaXJuYW1lID0gXCIvVXNlcnMvbWF0dGhld2dlcmdlcy9Eb2N1bWVudHMvQUktUENCL1NjaGVtYXRJUS9LaUNhZDEwX0N1cnNvci9Db2RlL3dlYnVpXCI7Y29uc3QgX192aXRlX2luamVjdGVkX29yaWdpbmFsX2ZpbGVuYW1lID0gXCIvVXNlcnMvbWF0dGhld2dlcmdlcy9Eb2N1bWVudHMvQUktUENCL1NjaGVtYXRJUS9LaUNhZDEwX0N1cnNvci9Db2RlL3dlYnVpL3ZpdGUuY29uZmlnLnRzXCI7Y29uc3QgX192aXRlX2luamVjdGVkX29yaWdpbmFsX2ltcG9ydF9tZXRhX3VybCA9IFwiZmlsZTovLy9Vc2Vycy9tYXR0aGV3Z2VyZ2VzL0RvY3VtZW50cy9BSS1QQ0IvU2NoZW1hdElRL0tpQ2FkMTBfQ3Vyc29yL0NvZGUvd2VidWkvdml0ZS5jb25maWcudHNcIjtpbXBvcnQgeyBkZWZpbmVDb25maWcgfSBmcm9tIFwidml0ZVwiO1xuaW1wb3J0IHJlYWN0IGZyb20gXCJAdml0ZWpzL3BsdWdpbi1yZWFjdFwiO1xuXG5leHBvcnQgZGVmYXVsdCBkZWZpbmVDb25maWcoe1xuICBwbHVnaW5zOiBbcmVhY3QoKV0sXG4gIHNlcnZlcjoge1xuICAgIC8vIEJpbmQgSVB2NCBleHBsaWNpdGx5IFx1MjAxNCBvbiBzb21lIG1hY09TIHNldHVwcyBcImxvY2FsaG9zdFwiIGhpdHMgOjoxIHdoaWxlIFZpdGUgbGlzdGVucyBvbiAxMjcuMC4wLjEgb25seS5cbiAgICBob3N0OiBcIjEyNy4wLjAuMVwiLFxuICAgIHBvcnQ6IDUxNzMsXG4gICAgc3RyaWN0UG9ydDogZmFsc2UsXG4gICAgcHJveHk6IHtcbiAgICAgIFwiL2FwaVwiOiBcImh0dHA6Ly8xMjcuMC4wLjE6NTE3OVwiLFxuICAgIH0sXG4gIH0sXG59KTtcblxuIl0sCiAgIm1hcHBpbmdzIjogIjtBQUE2WSxTQUFTLG9CQUFvQjtBQUMxYSxPQUFPLFdBQVc7QUFFbEIsSUFBTyxzQkFBUSxhQUFhO0FBQUEsRUFDMUIsU0FBUyxDQUFDLE1BQU0sQ0FBQztBQUFBLEVBQ2pCLFFBQVE7QUFBQTtBQUFBLElBRU4sTUFBTTtBQUFBLElBQ04sTUFBTTtBQUFBLElBQ04sWUFBWTtBQUFBLElBQ1osT0FBTztBQUFBLE1BQ0wsUUFBUTtBQUFBLElBQ1Y7QUFBQSxFQUNGO0FBQ0YsQ0FBQzsiLAogICJuYW1lcyI6IFtdCn0K

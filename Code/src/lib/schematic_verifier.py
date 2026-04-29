@@ -14,6 +14,7 @@ Usage from Python:
 from __future__ import annotations
 
 import json
+import math
 import re
 import sys
 from pathlib import Path
@@ -27,6 +28,22 @@ _GRID_SNAP = 1.27
 
 def _snap(v: float) -> float:
     return round(round(v / _GRID_SNAP) * _GRID_SNAP, 4)
+
+
+def _schematic_pin_world_xy(
+    comp_x: float, comp_y: float, lib_pin_x: float, lib_pin_y: float, angle_deg: float
+) -> tuple[float, float]:
+    """Map a library pin (x, y) to schematic coords, matching generator Y-flip + ``(at … R)`` rotation."""
+    sx = lib_pin_x
+    sy = -lib_pin_y
+    th = math.radians(angle_deg)
+    if abs(th) < 1e-9:
+        wx, wy = sx, sy
+    else:
+        c, s = math.cos(th), math.sin(th)
+        wx = sx * c - sy * s
+        wy = sx * s + sy * c
+    return _snap(comp_x + wx), _snap(comp_y + wy)
 
 
 def _parse_placed_symbols(text: str) -> list[dict[str, Any]]:
@@ -80,14 +97,19 @@ def _parse_labels(text: str) -> list[dict[str, Any]]:
     """Extract all (label ...) and (hierarchical_label ...) entries."""
     labels: list[dict[str, Any]] = []
     for m in re.finditer(
-        r'\t\((?:label|hierarchical_label) "([^"]+)"\n'
-        r'\t\t\(at ([-\d.]+) ([-\d.]+)',
-        text, re.MULTILINE,
+        r'^\t\((?:label|hierarchical_label) "([^"]+)"',
+        text,
+        re.MULTILINE,
     ):
+        name = m.group(1)
+        tail = text[m.end() : m.end() + 600]
+        at_m = re.search(r"\(at\s+([-\d.]+)\s+([-\d.]+)\s+[-\d.]+\)", tail)
+        if not at_m:
+            continue
         labels.append({
-            "net": m.group(1),
-            "x": float(m.group(2)),
-            "y": float(m.group(3)),
+            "net": name,
+            "x": float(at_m.group(1)),
+            "y": float(at_m.group(2)),
         })
     return labels
 
@@ -144,6 +166,28 @@ def _flood_fill(graph: dict, start: tuple[float, float]) -> set[tuple[float, flo
     return visited
 
 
+def _augment_label_map_from_power_gnd(
+    sch_text: str,
+    label_map: dict[tuple[float, float], list[str]],
+    placed_symbols: list[dict[str, Any]],
+) -> None:
+    """Treat ``power:GND`` pin connection points as carrying the ``GND`` net."""
+    for sym in placed_symbols:
+        if sym.get("lib_id") != "power:GND":
+            continue
+        pins = _parse_symbol_pin_positions(sch_text, "power:GND")
+        for pnum in sym.get("pins") or ["1"]:
+            if pnum not in pins:
+                continue
+            px, py = pins[pnum]
+            abs_x = _snap(sym["x"] + px)
+            abs_y = _snap(sym["y"] - py)
+            key = (abs_x, abs_y)
+            names = label_map.setdefault(key, [])
+            if "GND" not in names:
+                names.append("GND")
+
+
 def _nets_at_point(
     point: tuple[float, float],
     label_map: dict[tuple[float, float], list[str]],
@@ -190,7 +234,15 @@ def verify_schematic(
         label_map.setdefault(key, []).append(lb["net"])
     wire_graph = _build_wire_graph(parsed["wires"])
 
-    all_label_nets = {lb["net"] for lb in parsed["labels"]}
+    sch_text = Path(sch_path).read_text(encoding="utf-8")
+    _augment_label_map_from_power_gnd(sch_text, label_map, parsed["symbols"])
+
+    all_label_nets: set[str] = set()
+    for names in label_map.values():
+        for n in names:
+            all_label_nets.add(n)
+    for lb in parsed["labels"]:
+        all_label_nets.add(lb["net"])
 
     # Collect expected components + passives
     json_components = list(design.get("components", []))
@@ -214,9 +266,9 @@ def verify_schematic(
         if ref not in sch_refs:
             report["missing_components"].append(ref)
 
-    # 2. Extra components (ignore PWR_FLAG / FLG)
+    # 2. Extra components (ignore PWR_FLAG / FLG / local power symbols)
     for ref in sorted(sch_refs.keys()):
-        if ref not in json_refs and not ref.startswith("FLG"):
+        if ref not in json_refs and not ref.startswith("FLG") and not ref.startswith("#GND"):
             report["extra_components"].append(ref)
 
     # 3. Missing net labels
@@ -234,7 +286,6 @@ def verify_schematic(
     #    net is reachable via wires from the pin's physical position.
     # We need the embedded symbol pin positions for this; parse them from the
     # kicad_sch lib_symbols section.
-    sch_text = Path(sch_path).read_text(encoding="utf-8")
 
     for item in json_items:
         ref = item["ref"]
@@ -242,6 +293,7 @@ def verify_schematic(
             continue
         sym = sch_refs[ref]
         comp_x, comp_y = sym["x"], sym["y"]
+        angle_deg = float(sym.get("angle") or 0)
 
         # Get pin positions from the embedded symbol definition
         lib_id = sym["lib_id"]
@@ -257,9 +309,7 @@ def verify_schematic(
                 continue
 
             pin_x, pin_y = sym_pins[pin_num]
-            # Convert from symbol coords to schematic coords (negate Y)
-            abs_x = _snap(comp_x + pin_x)
-            abs_y = _snap(comp_y - pin_y)
+            abs_x, abs_y = _schematic_pin_world_xy(comp_x, comp_y, pin_x, pin_y, angle_deg)
 
             actual_nets = _nets_at_point((abs_x, abs_y), label_map, wire_graph)
             if expected_net not in actual_nets:
@@ -278,7 +328,8 @@ def verify_schematic(
     report["ok"] = n_errors == 0
     report["summary"] = {
         "components_expected": len(json_refs),
-        "components_placed": len(sch_refs) - sum(1 for r in sch_refs if r.startswith("FLG")),
+        "components_placed": len(sch_refs)
+        - sum(1 for r in sch_refs if r.startswith("FLG") or r.startswith("#GND")),
         "missing_components": len(report["missing_components"]),
         "missing_nets": len(report["missing_nets"]),
         "pin_errors": len(report["pin_errors"]),

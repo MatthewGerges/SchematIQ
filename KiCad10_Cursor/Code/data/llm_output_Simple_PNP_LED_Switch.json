@@ -1,0 +1,229 @@
+{
+  "project_name": "Simple_PNP_LED_Switch",
+  "description": "5V high-side PNP transistor switch for an LED load with bias resistors and connectors. LED cathode connected directly to GND.",
+  "sheets": [
+    {
+      "name": "Simple_PNP_LED_Switch",
+      "file": "Simple_PNP_LED_Switch.kicad_sch",
+      "page": 1
+    }
+  ],
+  "components": [
+    {
+      "ref": "J1",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "Simple_PNP_LED_Switch",
+      "note": "Power Input Connector",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "5V"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "J2",
+      "part": "Connector_Generic:Conn_01x01",
+      "sheet": "Simple_PNP_LED_Switch",
+      "note": "Control Input Connector",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VIN_CTRL"
+        }
+      ]
+    },
+    {
+      "ref": "Q1",
+      "part": "Transistor_BJT:2N3906",
+      "sheet": "Simple_PNP_LED_Switch",
+      "note": "PNP High-Side Switch",
+      "connections": [
+        {
+          "pin": "E",
+          "pin_name": "E",
+          "net": "5V"
+        },
+        {
+          "pin": "B",
+          "pin_name": "B",
+          "net": "Q1_Base_Net"
+        },
+        {
+          "pin": "C",
+          "pin_name": "C",
+          "net": "Q1_Collector_Net"
+        }
+      ]
+    },
+    {
+      "ref": "D1",
+      "part": "Device:LED",
+      "sheet": "Simple_PNP_LED_Switch",
+      "note": "LED Load",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "A",
+          "net": "D1_Anode_Net"
+        },
+        {
+          "pin": "2",
+          "pin_name": "K",
+          "net": "GND"
+        }
+      ]
+    }
+  ],
+  "passives": [
+    {
+      "ref": "R1",
+      "type": "R",
+      "value": "2.2k",
+      "sheet": "Simple_PNP_LED_Switch",
+      "purpose": "PNP Base Resistor",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VIN_CTRL"
+        },
+        {
+          "pin": "2",
+          "net": "Q1_Base_Net"
+        }
+      ]
+    },
+    {
+      "ref": "R2",
+      "type": "R",
+      "value": "150",
+      "sheet": "Simple_PNP_LED_Switch",
+      "purpose": "LED Current Limiting Resistor",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "Q1_Collector_Net"
+        },
+        {
+          "pin": "2",
+          "net": "D1_Anode_Net"
+        }
+      ]
+    }
+  ],
+  "nets": [
+    {
+      "name": "5V",
+      "type": "hierarchical",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "1",
+          "sheet": "Simple_PNP_LED_Switch"
+        },
+        {
+          "ref": "Q1",
+          "pin": "E",
+          "pin_name": "E",
+          "sheet": "Simple_PNP_LED_Switch"
+        }
+      ]
+    },
+    {
+      "name": "GND",
+      "type": "hierarchical",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "2",
+          "sheet": "Simple_PNP_LED_Switch"
+        }
+      ]
+    },
+    {
+      "name": "VIN_CTRL",
+      "type": "hierarchical",
+      "connections": [
+        {
+          "ref": "J2",
+          "pin": "1",
+          "sheet": "Simple_PNP_LED_Switch"
+        },
+        {
+          "ref": "R1",
+          "pin": "1",
+          "sheet": "Simple_PNP_LED_Switch"
+        }
+      ]
+    },
+    {
+      "name": "LOAD_OUT",
+      "type": "hierarchical",
+      "connections": [
+        {
+          "ref": "J3",
+          "pin": "1",
+          "sheet": "Simple_PNP_LED_Switch"
+        },
+        {
+          "ref": "D1",
+          "pin": "2",
+          "pin_name": "K",
+          "sheet": "Simple_PNP_LED_Switch"
+        }
+      ]
+    },
+    {
+      "name": "Q1_Base_Net",
+      "type": "local",
+      "sheet": "Simple_PNP_LED_Switch",
+      "connections": [
+        {
+          "ref": "Q1",
+          "pin": "B",
+          "pin_name": "B"
+        },
+        {
+          "ref": "R1",
+          "pin": "2"
+        }
+      ]
+    },
+    {
+      "name": "Q1_Collector_Net",
+      "type": "local",
+      "sheet": "Simple_PNP_LED_Switch",
+      "connections": [
+        {
+          "ref": "Q1",
+          "pin": "C",
+          "pin_name": "C"
+        },
+        {
+          "ref": "R2",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "D1_Anode_Net",
+      "type": "local",
+      "sheet": "Simple_PNP_LED_Switch",
+      "connections": [
+        {
+          "ref": "R2",
+          "pin": "2"
+        },
+        {
+          "ref": "D1",
+          "pin": "1",
+          "pin_name": "A"
+        }
+      ]
+    }
+  ]
+}

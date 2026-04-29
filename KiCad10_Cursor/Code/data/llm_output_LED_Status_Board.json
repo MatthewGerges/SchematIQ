@@ -1,0 +1,264 @@
+{
+  "project_name": "LED_Status_Board",
+  "description": "A simple two-LED status board with independent control.",
+  "sheets": [
+    {
+      "name": "LED_Status_Board",
+      "file": "LED_Status_Board.kicad_sch",
+      "page": 1
+    }
+  ],
+  "components": [
+    {
+      "ref": "J1",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "LED_Status_Board",
+      "note": "5V Power Input",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "Pin_1",
+          "net": "5V"
+        },
+        {
+          "pin": "2",
+          "pin_name": "Pin_2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "J2",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "LED_Status_Board",
+      "note": "LED1 Control Input",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "Pin_1",
+          "net": "LED1_CTRL"
+        },
+        {
+          "pin": "2",
+          "pin_name": "Pin_2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "J3",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "LED_Status_Board",
+      "note": "LED2 Control Input",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "Pin_1",
+          "net": "LED2_CTRL"
+        },
+        {
+          "pin": "2",
+          "pin_name": "Pin_2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "D1",
+      "part": "Device:LED",
+      "sheet": "LED_Status_Board",
+      "note": "Status LED 1",
+      "connections": [
+        {
+          "pin": "A",
+          "pin_name": "A",
+          "net": "LED1_ANODE"
+        },
+        {
+          "pin": "K",
+          "pin_name": "K",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "D2",
+      "part": "Device:LED",
+      "sheet": "LED_Status_Board",
+      "note": "Status LED 2",
+      "connections": [
+        {
+          "pin": "A",
+          "pin_name": "A",
+          "net": "LED2_ANODE"
+        },
+        {
+          "pin": "K",
+          "pin_name": "K",
+          "net": "GND"
+        }
+      ]
+    }
+  ],
+  "passives": [
+    {
+      "ref": "R1",
+      "type": "R",
+      "value": "330R",
+      "sheet": "LED_Status_Board",
+      "purpose": "Current limiting for D1",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "LED1_CTRL"
+        },
+        {
+          "pin": "2",
+          "net": "LED1_ANODE"
+        }
+      ]
+    },
+    {
+      "ref": "R2",
+      "type": "R",
+      "value": "330R",
+      "sheet": "LED_Status_Board",
+      "purpose": "Current limiting for D2",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "LED2_CTRL"
+        },
+        {
+          "pin": "2",
+          "net": "LED2_ANODE"
+        }
+      ]
+    },
+    {
+      "ref": "C1",
+      "type": "C",
+      "value": "100nF",
+      "sheet": "LED_Status_Board",
+      "purpose": "5V power decoupling",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "5V"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    }
+  ],
+  "nets": [
+    {
+      "name": "5V",
+      "type": "local",
+      "sheet": "LED_Status_Board",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "1"
+        },
+        {
+          "ref": "C1",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "GND",
+      "type": "local",
+      "sheet": "LED_Status_Board",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "2"
+        },
+        {
+          "ref": "J2",
+          "pin": "2"
+        },
+        {
+          "ref": "J3",
+          "pin": "2"
+        },
+        {
+          "ref": "C1",
+          "pin": "2"
+        },
+        {
+          "ref": "D1",
+          "pin": "K"
+        },
+        {
+          "ref": "D2",
+          "pin": "K"
+        }
+      ]
+    },
+    {
+      "name": "LED1_CTRL",
+      "type": "local",
+      "sheet": "LED_Status_Board",
+      "connections": [
+        {
+          "ref": "J2",
+          "pin": "1"
+        },
+        {
+          "ref": "R1",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "LED2_CTRL",
+      "type": "local",
+      "sheet": "LED_Status_Board",
+      "connections": [
+        {
+          "ref": "J3",
+          "pin": "1"
+        },
+        {
+          "ref": "R2",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "LED1_ANODE",
+      "type": "local",
+      "sheet": "LED_Status_Board",
+      "connections": [
+        {
+          "ref": "R1",
+          "pin": "2"
+        },
+        {
+          "ref": "D1",
+          "pin": "A"
+        }
+      ]
+    },
+    {
+      "name": "LED2_ANODE",
+      "type": "local",
+      "sheet": "LED_Status_Board",
+      "connections": [
+        {
+          "ref": "R2",
+          "pin": "2"
+        },
+        {
+          "ref": "D2",
+          "pin": "A"
+        }
+      ]
+    }
+  ]
+}

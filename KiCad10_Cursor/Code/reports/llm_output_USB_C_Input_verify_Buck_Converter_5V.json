@@ -1,0 +1,61 @@
+{
+  "missing_components": [],
+  "extra_components": [],
+  "missing_nets": [],
+  "pin_errors": [
+    {
+      "ref": "U1",
+      "pin": "1",
+      "expected_net": "VBUS_USBC",
+      "actual_nets": [
+        "GND"
+      ]
+    },
+    {
+      "ref": "U1",
+      "pin": "2",
+      "expected_net": "FB_NODE",
+      "actual_nets": [
+        "VBUS_USBC"
+      ]
+    },
+    {
+      "ref": "U1",
+      "pin": "3",
+      "expected_net": "VOUT_5V",
+      "actual_nets": [
+        "VBUS_USBC"
+      ]
+    },
+    {
+      "ref": "U1",
+      "pin": "5",
+      "expected_net": "VBUS_USBC",
+      "actual_nets": [
+        "FB_NODE"
+      ]
+    },
+    {
+      "ref": "U1",
+      "pin": "6",
+      "expected_net": "SW_NODE",
+      "actual_nets": []
+    },
+    {
+      "ref": "U1",
+      "pin": "7",
+      "expected_net": "GND",
+      "actual_nets": [
+        "SW_NODE"
+      ]
+    }
+  ],
+  "summary": {
+    "components_expected": 8,
+    "components_placed": 8,
+    "missing_components": 0,
+    "missing_nets": 0,
+    "pin_errors": 6
+  },
+  "ok": false
+}

@@ -1,0 +1,211 @@
+{
+  "project_name": "Simple_Buzzer_Driver",
+  "description": "5V Buzzer Driver with NPN Transistor",
+  "sheets": [
+    {
+      "name": "Simple_Buzzer_Driver",
+      "file": "Simple_Buzzer_Driver.kicad_sch",
+      "page": 1
+    }
+  ],
+  "components": [
+    {
+      "ref": "BZ1",
+      "part": "Device:Buzzer",
+      "sheet": "Simple_Buzzer_Driver",
+      "note": "5V DC Buzzer",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "+",
+          "net": "5V"
+        },
+        {
+          "pin": "2",
+          "pin_name": "-",
+          "net": "BUZZ_OUT"
+        }
+      ]
+    },
+    {
+      "ref": "Q1",
+      "part": "Transistor_BJT:BC547",
+      "sheet": "Simple_Buzzer_Driver",
+      "note": "NPN Switching Transistor",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "C",
+          "net": "BUZZ_OUT"
+        },
+        {
+          "pin": "2",
+          "pin_name": "B",
+          "net": "BUZZ_CTRL_BASE"
+        },
+        {
+          "pin": "3",
+          "pin_name": "E",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "J1",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "Simple_Buzzer_Driver",
+      "note": "Power Input Connector",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "5V"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "J2",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "Simple_Buzzer_Driver",
+      "note": "Control Input Connector",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "BUZZ_CTRL"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    }
+  ],
+  "passives": [
+    {
+      "ref": "R1",
+      "type": "R",
+      "value": "1.5K",
+      "sheet": "Simple_Buzzer_Driver",
+      "purpose": "Base current limiting resistor for Q1",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "BUZZ_CTRL"
+        },
+        {
+          "pin": "2",
+          "net": "BUZZ_CTRL_BASE"
+        }
+      ]
+    },
+    {
+      "ref": "D1",
+      "type": "Diode",
+      "value": "1N4007",
+      "sheet": "Simple_Buzzer_Driver",
+      "purpose": "Flyback diode for buzzer protection",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "BUZZ_OUT"
+        },
+        {
+          "pin": "2",
+          "net": "5V"
+        }
+      ]
+    }
+  ],
+  "nets": [
+    {
+      "name": "5V",
+      "type": "power",
+      "sheet": "Simple_Buzzer_Driver",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "1"
+        },
+        {
+          "ref": "BZ1",
+          "pin": "1"
+        },
+        {
+          "ref": "D1",
+          "pin": "2"
+        }
+      ]
+    },
+    {
+      "name": "GND",
+      "type": "power",
+      "sheet": "Simple_Buzzer_Driver",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "2"
+        },
+        {
+          "ref": "Q1",
+          "pin": "3"
+        },
+        {
+          "ref": "J2",
+          "pin": "2"
+        }
+      ]
+    },
+    {
+      "name": "BUZZ_CTRL",
+      "type": "local",
+      "sheet": "Simple_Buzzer_Driver",
+      "connections": [
+        {
+          "ref": "J2",
+          "pin": "1"
+        },
+        {
+          "ref": "R1",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "BUZZ_CTRL_BASE",
+      "type": "local",
+      "sheet": "Simple_Buzzer_Driver",
+      "connections": [
+        {
+          "ref": "R1",
+          "pin": "2"
+        },
+        {
+          "ref": "Q1",
+          "pin": "2"
+        }
+      ]
+    },
+    {
+      "name": "BUZZ_OUT",
+      "type": "local",
+      "sheet": "Simple_Buzzer_Driver",
+      "connections": [
+        {
+          "ref": "BZ1",
+          "pin": "2"
+        },
+        {
+          "ref": "Q1",
+          "pin": "1"
+        },
+        {
+          "ref": "D1",
+          "pin": "1"
+        }
+      ]
+    }
+  ]
+}

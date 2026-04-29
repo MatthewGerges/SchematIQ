@@ -21,6 +21,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from dotenv import load_dotenv
 from src.lib import project_generator, schematic_generator, tscircuit_generator
 from src.lib.electrical_review_llm import run_two_llm_review, severity_meets_or_exceeds
+from src.lib.footprint_preflight import validate_footprints_in_llm_data
 from src.lib.symbol_preflight import find_unresolved_components, validate_components_in_llm_data
 
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -93,6 +94,8 @@ def _run_kicad_generation(data: dict, json_path: str, output_dir: str) -> int:
             print(f"    {name}: {err}")
         print("=" * 60)
         return 1
+
+    project_generator.write_fp_lib_table(output_dir)
 
     print("  Done! Open in KiCad:")
     print(f"  {os.path.join(output_dir, f'{project_name}.kicad_pro')}")
@@ -249,7 +252,22 @@ def main() -> int:
                 "scripts/validate_llm_symbols.py for details."
             )
             return 1
-        print("(validate) All component symbols resolve.\n")
+        print("(validate) All component symbols resolve.")
+        from src.lib.kicad_library_paths import official_kicad_footprints_root
+
+        if official_kicad_footprints_root():
+            fp_errs = validate_footprints_in_llm_data(data, print_ok=False)
+            if fp_errs:
+                print(
+                    "\nFootprint validation failed (--validate). "
+                    "Fix symbols or clone kicad-footprints (see README):\n"
+                )
+                for e in fp_errs:
+                    print(f"  - {e}")
+                return 1
+            print("(validate) Footprints resolve against kicad-footprints.\n")
+        else:
+            print("(validate) No kicad-footprints clone; footprint checks skipped.\n")
 
     project_name = data.get("project_name", "LLM_Project")
     output_dir = os.path.join(GEN_DIR, project_name)

@@ -1,0 +1,37 @@
+{
+  "meta": {
+    "filename": "USB_C_5V_Supply.kicad_pro",
+    "version": 2
+  },
+  "schematic": {
+    "annotate_start_num": 0,
+    "bom_fmt_settings": {
+      "field_delimiter": ",",
+      "name": "CSV",
+      "ref_delimiter": ",",
+      "string_delimiter": "\""
+    },
+    "connection_grid_size": 50.0,
+    "drawing": {},
+    "page_layout_descr_file": ""
+  },
+  "sheets": [
+    [
+      "8cb122b1-6a77-4e1a-8a0d-45f54b97d6bf",
+      "Root"
+    ],
+    [
+      "99dff410-a7b4-41e0-8102-d4ae255a9bf2",
+      "USB_C_Input"
+    ],
+    [
+      "6c7076af-ba2d-456f-a1b5-867b14d68088",
+      "Buck_Converter_5V"
+    ],
+    [
+      "c094db5d-e324-4c47-a167-4c6666968718",
+      "5V_Output"
+    ]
+  ],
+  "text_variables": {}
+}

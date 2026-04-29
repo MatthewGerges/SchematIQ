@@ -1,0 +1,8 @@
+(fp_lib_table
+  (lib (name "Capacitor_SMD") (type "KiCad") (uri "${KIPRJMOD}/../../../../KICAD_Library/kicad-footprints/Capacitor_SMD.pretty") (options "") (descr ""))
+  (lib (name "Connector_PinHeader_2.54mm") (type "KiCad") (uri "${KIPRJMOD}/../../../../KICAD_Library/kicad-footprints/Connector_PinHeader_2.54mm.pretty") (options "") (descr ""))
+  (lib (name "Diode_SMD") (type "KiCad") (uri "${KIPRJMOD}/../../../../KICAD_Library/kicad-footprints/Diode_SMD.pretty") (options "") (descr ""))
+  (lib (name "Inductor_SMD") (type "KiCad") (uri "${KIPRJMOD}/../../../../KICAD_Library/kicad-footprints/Inductor_SMD.pretty") (options "") (descr ""))
+  (lib (name "Package_SON") (type "KiCad") (uri "${KIPRJMOD}/../../../../KICAD_Library/kicad-footprints/Package_SON.pretty") (options "") (descr ""))
+  (lib (name "Resistor_SMD") (type "KiCad") (uri "${KIPRJMOD}/../../../../KICAD_Library/kicad-footprints/Resistor_SMD.pretty") (options "") (descr ""))
+)

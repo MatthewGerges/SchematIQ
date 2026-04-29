@@ -2,11 +2,11 @@
 	(version 20250114)
 	(generator "SchematIQ")
 	(generator_version "9.0")
-	(uuid "cbcae63a-13dc-424a-9730-a776c4371097")
+	(uuid "f316426c-1356-4341-a7f3-e4ea06f88663")
 	(paper "A4")
 
 	(lib_symbols
-		(symbol "Capacitor"
+		(symbol "SchematIQ:Capacitor"
 		(pin_numbers
 			(hide yes)
 		)
@@ -145,7 +145,7 @@
 		)
 		(embedded_fonts no)
 	)
-		(symbol "Resistor"
+		(symbol "SchematIQ:Resistor"
 		(pin_numbers
 			(hide yes)
 		)
@@ -269,7 +269,7 @@
 		)
 		(embedded_fonts no)
 	)
-		(symbol "BME280" (pin_names (offset 1.016)) (in_bom yes) (on_board yes)
+		(symbol "SchematIQ:BME280" (pin_names (offset 1.016)) (in_bom yes) (on_board yes)
     (property "Reference" "U" (id 0) (at -10.1662 13.3431 0)
       (effects (font (size 1.27 1.27)) (justify bottom left))
     )
@@ -391,19 +391,222 @@
       )
     )
   )
+		(symbol "power:GND"
+		(power global)
+		(pin_numbers
+			(hide yes)
+		)
+		(pin_names
+			(offset 0)
+			(hide yes)
+		)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(property "Reference" "#PWR"
+			(at 0 -6.35 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 0 -3.81 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 0 0 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 0 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 0 0 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "ki_keywords" "global power"
+			(at 0 0 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(symbol "GND_0_1"
+			(polyline
+				(pts
+					(xy 0 0) (xy 0 -1.27) (xy 1.27 -1.27) (xy 0 -2.54) (xy -1.27 -1.27) (xy 0 -1.27)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+		)
+		(symbol "GND_1_1"
+			(pin power_in line
+				(at 0 0 270)
+				(length 0)
+				(name ""
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+		)
+		(embedded_fonts no)
+	)
+		(symbol "power:PWR_FLAG"
+		(power global)
+		(pin_numbers
+			(hide yes)
+		)
+		(pin_names
+			(offset 0)
+			(hide yes)
+		)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(property "Reference" "#FLG"
+			(at 0 1.905 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "PWR_FLAG"
+			(at 0 3.81 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 0 0 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 0 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Special symbol for telling ERC where power comes from"
+			(at 0 0 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "ki_keywords" "flag power"
+			(at 0 0 0)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(symbol "PWR_FLAG_0_0"
+			(pin power_out line
+				(at 0 0 90)
+				(length 0)
+				(name ""
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+		)
+		(symbol "PWR_FLAG_0_1"
+			(polyline
+				(pts
+					(xy 0 0) (xy 0 1.27) (xy -1.016 1.905) (xy 0 2.54) (xy 1.016 1.905) (xy 0 1.27)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+		)
+		(embedded_fonts no)
+	)
 	)
 
 	(symbol
-		(lib_id "BME280")
-		(at 200.0 100.0 0)
+		(lib_id "SchematIQ:BME280")
+		(at 199.39 99.06 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "e1952c00-d3a0-4bdf-9844-02b188328170")
+		(fields_autoplaced yes)
+		(uuid "bb544b6a-58a6-4605-b95d-e145c75f0773")
 		(property "Reference" "U3"
-			(at 200.0 97.46 0)
+			(at 199.39 96.52 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -411,15 +614,15 @@
 			)
 		)
 		(property "Value" "BME280"
-			(at 200.0 102.54 0)
+			(at 199.39 101.60000000000001 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Footprint" ""
-			(at 200.0 100.0 0)
+		(property "Footprint" "BME280:PSON65P250X250X100-8N"
+			(at 199.39 99.06 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -428,7 +631,16 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 200.0 100.0 0)
+			(at 199.39 99.06 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "\n                        \n                            Board Mount Humidity Sensors MEMS humidity, pressure and temperature sensor\n                        \n"
+			(at 199.39 99.06 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -437,163 +649,164 @@
 			)
 		)
 		(pin "1"
-			(uuid "28fdf0f7-28fc-49a6-b732-1b58135ab492")
+			(uuid "cc8ed372-4fe8-430c-a867-b772312afd06")
 		)
 		(pin "2"
-			(uuid "0f0c4f01-58cd-410c-ae25-6fe97f732d43")
+			(uuid "fe9904aa-2416-4bbb-80ad-3ac14a7135cf")
 		)
 		(pin "3"
-			(uuid "ebdcea41-7141-4ced-8a71-8c22572d2906")
+			(uuid "3562611a-3506-47f7-9c55-fe0ab12ffc1d")
 		)
 		(pin "4"
-			(uuid "52116957-754c-41ec-81bc-57a8dd0dd574")
+			(uuid "40b03c6d-9a66-4358-91b4-752697e38157")
 		)
 		(pin "5"
-			(uuid "cffec30d-bb8b-4ea0-906e-277520e00cf1")
+			(uuid "be748d20-7aed-4af2-ba74-f8021dfe0dd9")
 		)
 		(pin "6"
-			(uuid "bb30a1b1-7414-4cf9-8abe-1ad5f911a99c")
+			(uuid "32c61aec-64f8-4e08-98cc-0cf1ba73953a")
 		)
 		(pin "7"
-			(uuid "0ac37d6f-ba16-4328-b97c-cc81542afa51")
+			(uuid "c669dfdb-1dd3-4c1c-ad42-31c38cb102bb")
 		)
 		(pin "8"
-			(uuid "a16a8888-a8be-4b50-9708-1f57c41934b9")
+			(uuid "b0c46bed-35a9-4df7-9189-8b21b52fbefa")
 		)
 	)
 	(wire
 		(pts
-			(xy 215.24 110.16) (xy 222.86 110.16)
+			(xy 214.63 109.22) (xy 222.25 109.22)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "98610832-7cf5-492d-8e88-baf5b88a6d0b")
+		(uuid "821b99a8-93bd-4c8c-aa49-0840e8e71a45")
 	)
 	(label "GND"
-		(at 222.86 110.16 0)
+		(at 222.25 109.22 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify left bottom)
 		)
-		(uuid "bee2d9c1-6bba-42ee-8c0f-c78a43050923")
+		(uuid "4e16b1b6-f275-4698-a889-6aa78fab5591")
 	)
 	(wire
 		(pts
-			(xy 184.76 102.54) (xy 177.14 102.54)
+			(xy 184.15 101.6) (xy 176.53 101.6)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "01097aec-aab4-4de7-8f7c-593dacfaadbf")
+		(uuid "a6c17839-e56b-4aa8-bfcf-1bb949dbcc06")
 	)
 	(label "I2C_SDA_0R"
-		(at 177.14 102.54 0)
+		(at 176.53 101.6 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify right bottom)
 		)
-		(uuid "76e45419-0ef3-4d7c-af93-1281b41a0b3b")
+		(uuid "d9171fd0-90c2-46f7-901b-88cb7f0295b7")
 	)
 	(wire
 		(pts
-			(xy 184.76 100.0) (xy 177.14 100.0)
+			(xy 184.15 99.06) (xy 176.53 99.06)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "67766fa8-9053-4ca1-8a47-a631a799b688")
+		(uuid "80bb5490-c95d-4d9c-9a80-51a6add48027")
 	)
 	(label "I2C_SCL_0R"
-		(at 177.14 100.0 0)
+		(at 176.53 99.06 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify right bottom)
 		)
-		(uuid "9cab008c-ee40-4a13-b8dc-61addaf0398a")
+		(uuid "1cfefd93-76cc-4f33-a68f-13ecd31d1caf")
 	)
 	(wire
 		(pts
-			(xy 184.76 105.08) (xy 177.14 105.08)
+			(xy 184.15 104.14) (xy 176.53 104.14)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "7d0ed298-424c-4902-8d38-833a3c410fc8")
+		(uuid "d254c712-18d3-474f-a10d-a7a3bcef1e6e")
 	)
 	(label "SDO_ADD"
-		(at 177.14 105.08 0)
+		(at 176.53 104.14 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify right bottom)
 		)
-		(uuid "ae0a8154-8342-4c70-beb7-db276c20ccd6")
+		(uuid "89f406e2-b1d1-405f-aff9-3ccab8912cb4")
 	)
 	(wire
 		(pts
-			(xy 215.24 89.84) (xy 222.86 89.84)
+			(xy 214.63 88.9) (xy 222.25 88.9)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "8ce910df-5a9a-42bc-a850-a5f46a120425")
+		(uuid "db386140-4f98-42c3-832e-a0000616da9d")
 	)
 	(hierarchical_label "PP_3V3_OUT"
 		(shape bidirectional)
-		(at 222.86 89.84 0)
+		(at 222.25 88.9 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify left)
 		)
-		(uuid "d66c7902-f259-4047-826a-35018b04ab2d")
+		(uuid "f3e72dc7-b0e3-40d8-9e87-1dff1dc44bed")
 	)
 	(wire
 		(pts
-			(xy 215.24 92.38) (xy 222.86 92.38)
+			(xy 214.63 91.44) (xy 222.25 91.44)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "5f568baf-52f9-43e6-8ee7-9d9df287d7e5")
+		(uuid "7fec51c0-ca7b-4d32-9a9f-4d5e232d158a")
 	)
 	(hierarchical_label "PP_3V3_OUT"
 		(shape bidirectional)
-		(at 222.86 92.38 0)
+		(at 222.25 91.44 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify left)
 		)
-		(uuid "b8df667f-7045-4481-9133-e5e60514a9b8")
+		(uuid "aea7912e-f5f9-4f6a-830b-e2e0de81a791")
 	)
 	(symbol
-		(lib_id "Resistor")
-		(at 80.0 35.0 90)
+		(lib_id "SchematIQ:Resistor")
+		(at 80.01 34.29 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "2584c155-651f-4cc1-8037-126eddd9a700")
+		(fields_autoplaced yes)
+		(uuid "e540ef32-2071-4a91-b4b4-ed987a04c57b")
 		(property "Reference" "R5"
-			(at 80.0 32.46 90)
+			(at 80.01 31.75 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -601,15 +814,15 @@
 			)
 		)
 		(property "Value" "4.7K"
-			(at 80.0 37.54 90)
+			(at 80.01 36.83 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Footprint" ""
-			(at 80.0 35.0 0)
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+			(at 80.01 34.29 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -618,7 +831,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 80.0 35.0 0)
+			(at 80.01 34.29 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -627,65 +840,66 @@
 			)
 		)
 		(pin "1"
-			(uuid "db8b0fb7-4d01-4753-bed5-8a89df14521b")
+			(uuid "478c9597-1c6c-4da7-a305-cd8a67154b58")
 		)
 		(pin "2"
-			(uuid "a0a05001-5524-47ce-9cba-b7a4767e01fb")
+			(uuid "04c167a2-a512-4f4c-815f-2d9e5f4bd482")
 		)
 	)
 	(wire
 		(pts
-			(xy 83.81 35.0) (xy 91.43 35.0)
+			(xy 83.82 34.29) (xy 91.44 34.29)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "52f90e18-7430-4613-9388-2206bbfbbcc4")
+		(uuid "5f24d945-ed24-4af0-90cb-b91e72a0ca52")
 	)
 	(hierarchical_label "I2C_SCL_BME"
 		(shape bidirectional)
-		(at 91.43 35.0 0)
+		(at 91.44 34.29 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify left)
 		)
-		(uuid "f6ae70e8-657c-485e-9a90-78a0b883c460")
+		(uuid "ba838d8d-e953-43ab-9302-52a356575b2b")
 	)
 	(wire
 		(pts
-			(xy 76.19 35.0) (xy 68.57 35.0)
+			(xy 76.2 34.29) (xy 68.58 34.29)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "ef9f3216-fe0c-44bf-835d-dada67abb1a7")
+		(uuid "8ff9bcf1-43aa-4831-8fdd-582f023f62e0")
 	)
 	(hierarchical_label "PP_3V3_OUT"
 		(shape bidirectional)
-		(at 68.57 35.0 180)
+		(at 68.58 34.29 180)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify right)
 		)
-		(uuid "81a9398d-5944-4388-b647-46a7bd3ac8ce")
+		(uuid "7b250ad0-7d0d-4aa4-a924-4478db162998")
 	)
 	(symbol
-		(lib_id "Resistor")
-		(at 80.0 50.24 90)
+		(lib_id "SchematIQ:Resistor")
+		(at 80.01 52.07 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "7e661fcf-7426-4046-9f16-2c1b0344ac96")
+		(fields_autoplaced yes)
+		(uuid "a071b000-9978-451c-acdb-b9f16243fa64")
 		(property "Reference" "R6"
-			(at 80.0 47.7 90)
+			(at 80.01 49.53 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -693,15 +907,15 @@
 			)
 		)
 		(property "Value" "4.7K"
-			(at 80.0 52.78 90)
+			(at 80.01 54.61 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Footprint" ""
-			(at 80.0 50.24 0)
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+			(at 80.01 52.07 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -710,7 +924,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 80.0 50.24 0)
+			(at 80.01 52.07 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -719,65 +933,66 @@
 			)
 		)
 		(pin "1"
-			(uuid "99352c0f-ef08-44cf-be87-681398c02b32")
+			(uuid "5712c5b3-368d-4225-aefe-40109b8537a7")
 		)
 		(pin "2"
-			(uuid "7d5b73a5-82e3-420f-8399-de037b2e10d1")
+			(uuid "b62cb024-af27-4950-98bb-173ab45a5b9d")
 		)
 	)
 	(wire
 		(pts
-			(xy 83.81 50.24) (xy 91.43 50.24)
+			(xy 83.82 52.07) (xy 91.44 52.07)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "c49663f5-8c09-4a40-9307-04ae10869e1c")
+		(uuid "ad2a1fe7-9a2f-4d98-bfc7-7daef925c779")
 	)
 	(hierarchical_label "I2C_SDA_BME"
 		(shape bidirectional)
-		(at 91.43 50.24 0)
+		(at 91.44 52.07 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify left)
 		)
-		(uuid "09c92079-6914-4919-ab3f-7ff4511f12c2")
+		(uuid "bcb3b24c-90ab-4311-a357-b5d90df14955")
 	)
 	(wire
 		(pts
-			(xy 76.19 50.24) (xy 68.57 50.24)
+			(xy 76.2 52.07) (xy 68.58 52.07)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "addb884f-4963-4213-83ea-a7a7a9375e99")
+		(uuid "a7f2978e-2d1a-4cf1-b3e8-08fd64386a6e")
 	)
 	(hierarchical_label "PP_3V3_OUT"
 		(shape bidirectional)
-		(at 68.57 50.24 180)
+		(at 68.58 52.07 180)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify right)
 		)
-		(uuid "c6b5140c-4da1-4faa-9b36-a792635b0eb2")
+		(uuid "538e3d3b-8560-4054-bafe-ef662419f4cf")
 	)
 	(symbol
-		(lib_id "Resistor")
-		(at 80.0 65.48 90)
+		(lib_id "SchematIQ:Resistor")
+		(at 80.01 69.85 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "5bdc60d2-db0e-49d6-962b-f7a4b2a469ee")
+		(fields_autoplaced yes)
+		(uuid "45b3461a-f036-49b3-9278-63782333b0ec")
 		(property "Reference" "R7"
-			(at 80.0 62.940000000000005 90)
+			(at 80.01 67.30999999999999 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -785,15 +1000,15 @@
 			)
 		)
 		(property "Value" "0R"
-			(at 80.0 68.02000000000001 90)
+			(at 80.01 72.39 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Footprint" ""
-			(at 80.0 65.48 0)
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+			(at 80.01 69.85 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -802,7 +1017,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 80.0 65.48 0)
+			(at 80.01 69.85 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -811,64 +1026,75 @@
 			)
 		)
 		(pin "1"
-			(uuid "ab89e326-3fbc-42a6-b8e4-7e8e5f63f530")
+			(uuid "964c2196-2a8f-45c7-a6c4-68a843e45483")
 		)
 		(pin "2"
-			(uuid "17a38ac2-fe5f-40b5-82d4-e698cbe5bfdf")
+			(uuid "8c5c6973-696c-4588-9df0-e99e44f5f08a")
 		)
 	)
 	(wire
 		(pts
-			(xy 83.81 65.48) (xy 91.43 65.48)
+			(xy 83.82 69.85) (xy 91.44 69.85)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "0174c736-d500-4dc4-9fae-59852194e089")
+		(uuid "c0191a45-9b32-4aa1-a411-388bd6bada4c")
 	)
 	(hierarchical_label "I2C_SCL_BME"
 		(shape bidirectional)
-		(at 91.43 65.48 0)
+		(at 91.44 69.85 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify left)
 		)
-		(uuid "c98df73c-cc32-4936-b7dd-17de26c6ead5")
+		(uuid "2fdfeb00-1793-4355-b4a5-f4c8cab96326")
 	)
 	(wire
 		(pts
-			(xy 76.19 65.48) (xy 68.57 65.48)
+			(xy 76.2 69.85) (xy 68.58 69.85)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "1bf74cf5-39a7-42c0-acfc-e7bdb7bcf3aa")
+		(uuid "cd37cc11-0d97-4529-851f-6b86b7a9fc6d")
+	)
+	(wire
+		(pts
+			(xy 68.58 69.85) (xy 68.58 71.12)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "203d66a3-9db3-4760-aaf7-4802a61b825e")
 	)
 	(label "I2C_SCL_0R"
-		(at 68.57 65.48 0)
+		(at 68.58 71.12 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify right bottom)
 		)
-		(uuid "c1192ae1-08cc-4d69-8b2b-5ba227743499")
+		(uuid "63d282ac-9825-4063-80ad-ef4838208141")
 	)
 	(symbol
-		(lib_id "Resistor")
-		(at 80.0 80.72 90)
+		(lib_id "SchematIQ:Resistor")
+		(at 80.01 87.63 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "a12257f2-4458-4079-901b-39a42cf39939")
+		(fields_autoplaced yes)
+		(uuid "c99ae316-f59b-407e-93ba-87177162e178")
 		(property "Reference" "R8"
-			(at 80.0 78.17999999999999 90)
+			(at 80.01 85.08999999999999 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -876,15 +1102,15 @@
 			)
 		)
 		(property "Value" "0R"
-			(at 80.0 83.26 90)
+			(at 80.01 90.17 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Footprint" ""
-			(at 80.0 80.72 0)
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+			(at 80.01 87.63 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -893,7 +1119,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 80.0 80.72 0)
+			(at 80.01 87.63 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -902,64 +1128,75 @@
 			)
 		)
 		(pin "1"
-			(uuid "c1672e7f-916a-4da5-91fd-04afc601ef55")
+			(uuid "f990464f-c076-42d7-9109-5faff2536efc")
 		)
 		(pin "2"
-			(uuid "dbd375f6-5f2a-41cb-9eed-9b33f34b1fb7")
+			(uuid "cf49f28d-2591-4fee-a57a-03a6d0d0f834")
 		)
 	)
 	(wire
 		(pts
-			(xy 83.81 80.72) (xy 91.43 80.72)
+			(xy 83.82 87.63) (xy 91.44 87.63)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "7dc8ca95-5db3-4f99-9f88-3e7020cdaedd")
+		(uuid "6c62c77c-1277-49a5-bb49-11d3d85c81c8")
 	)
 	(hierarchical_label "I2C_SDA_BME"
 		(shape bidirectional)
-		(at 91.43 80.72 0)
+		(at 91.44 87.63 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify left)
 		)
-		(uuid "ed3faed7-022f-4e46-b2e1-ff48338a4f68")
+		(uuid "a674f484-978b-4c4e-a2d1-4055c32c463b")
 	)
 	(wire
 		(pts
-			(xy 76.19 80.72) (xy 68.57 80.72)
+			(xy 76.2 87.63) (xy 68.58 87.63)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "cc02364c-356a-4032-844a-78d961a6c0a1")
+		(uuid "d8550de3-8da9-4cae-8563-d5e593cd6c93")
+	)
+	(wire
+		(pts
+			(xy 68.58 87.63) (xy 68.58 86.36)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "03ca264b-db38-4565-a513-9b6efcf166a2")
 	)
 	(label "I2C_SDA_0R"
-		(at 68.57 80.72 0)
+		(at 68.58 86.36 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify right bottom)
 		)
-		(uuid "54c2335e-a8dc-4d9a-b04e-e522974f33d0")
+		(uuid "5de682c0-e884-46f3-b96d-28afd7f6ab8f")
 	)
 	(symbol
-		(lib_id "Resistor")
-		(at 80.0 95.96 90)
+		(lib_id "SchematIQ:Resistor")
+		(at 80.01 105.41 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "48101ad6-e7cc-4a3a-b908-4381c8ae3e7b")
+		(fields_autoplaced yes)
+		(uuid "768e775d-da25-46bb-b4da-4acf920b5f80")
 		(property "Reference" "R9"
-			(at 80.0 93.41999999999999 90)
+			(at 80.01 102.86999999999999 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -967,15 +1204,15 @@
 			)
 		)
 		(property "Value" "0R"
-			(at 80.0 98.5 90)
+			(at 80.01 107.95 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Footprint" ""
-			(at 80.0 95.96 0)
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+			(at 80.01 105.41 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -984,7 +1221,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 80.0 95.96 0)
+			(at 80.01 105.41 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -993,63 +1230,102 @@
 			)
 		)
 		(pin "1"
-			(uuid "19ff16f1-3584-46cb-b97a-4589a7f094b9")
+			(uuid "064a19d1-5fd8-4217-ab85-f38dd4346f68")
 		)
 		(pin "2"
-			(uuid "535712f9-f359-4f73-8acc-e6f90681fa76")
+			(uuid "334de292-83c1-4f86-ba5e-8f1914520188")
 		)
 	)
 	(wire
 		(pts
-			(xy 83.81 95.96) (xy 91.43 95.96)
+			(xy 83.82 105.41) (xy 91.44 105.41)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "206f5039-0a8a-4022-b052-fab547369952")
+		(uuid "59406962-9b2c-44f9-954e-bcc0061a3a8a")
 	)
 	(label "SDO_ADD"
-		(at 91.43 95.96 0)
+		(at 91.44 105.41 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify left bottom)
 		)
-		(uuid "bc2b7597-9224-4d8c-b71b-7f2b82f1c12f")
+		(uuid "1f8f3ba9-91d3-4f4d-9fd6-04766ac5c7fe")
 	)
 	(wire
 		(pts
-			(xy 76.19 95.96) (xy 68.57 95.96)
+			(xy 76.2 105.41) (xy 68.58 105.41)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "13cfde17-cfec-4f3f-8178-d1d3be055e86")
-	)
-	(label "GND"
-		(at 68.57 95.96 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right bottom)
-		)
-		(uuid "9e83acbe-f552-45d8-b1ff-c4a0bd6ac72d")
+		(uuid "92deb611-8560-46eb-9a85-6cf487ce0677")
 	)
 	(symbol
-		(lib_id "Capacitor")
-		(at 80.0 111.2 90)
+		(lib_id "power:GND")
+		(at 68.58 105.41 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "3f597515-7690-47b7-b1df-d98f40ccda02")
+		(fields_autoplaced yes)
+		(uuid "b04527de-7164-48f5-9ab4-cc5347e52899")
+		(property "Reference" "#GND1"
+			(at 68.58 102.86999999999999 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 68.58 107.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 68.58 105.41 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 68.58 105.41 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "00d01215-82de-42af-94e9-8f963caa6c66")
+		)
+	)
+	(symbol
+		(lib_id "SchematIQ:Capacitor")
+		(at 80.01 123.19 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "c0d8f9a7-be3d-4624-98c9-e251a450de63")
 		(property "Reference" "C9"
-			(at 80.0 108.66 90)
+			(at 80.01 120.64999999999999 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1057,15 +1333,15 @@
 			)
 		)
 		(property "Value" "0.1uF"
-			(at 80.0 113.74000000000001 90)
+			(at 80.01 125.73 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Footprint" ""
-			(at 80.0 111.2 0)
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+			(at 80.01 123.19 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1074,7 +1350,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 80.0 111.2 0)
+			(at 80.01 123.19 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1083,72 +1359,63 @@
 			)
 		)
 		(pin "1"
-			(uuid "364f2d78-4d7a-4b3f-b178-b859eff1b977")
+			(uuid "23aa33d0-c446-4baa-b6f5-2629feba201a")
 		)
 		(pin "2"
-			(uuid "b6df9d39-a29a-46cd-b2f5-63d2f420450d")
+			(uuid "8315c22e-b4e7-4818-be9c-9186f1754ef9")
 		)
 	)
 	(wire
 		(pts
-			(xy 83.81 111.2) (xy 91.43 111.2)
+			(xy 83.82 123.19) (xy 91.44 123.19)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "a78b1c03-2dd5-4e31-967d-c91aac917c66")
+		(uuid "71a4bbe2-6c54-41ed-bb6e-8c61442c2338")
 	)
 	(hierarchical_label "PP_3V3_OUT"
 		(shape bidirectional)
-		(at 91.43 111.2 0)
+		(at 91.44 123.19 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify left)
 		)
-		(uuid "14fcfc6f-5759-4d9a-903b-7bd27b6f01ce")
+		(uuid "01344505-f4b2-494a-bc0c-1ff6942bbd3d")
 	)
 	(wire
 		(pts
-			(xy 76.19 111.2) (xy 68.57 111.2)
+			(xy 76.2 123.19) (xy 68.58 123.19)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "f704d8b7-4169-4f84-9341-cf063e1c98ed")
-	)
-	(label "GND"
-		(at 68.57 111.2 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right bottom)
-		)
-		(uuid "724997f4-becc-46bc-a48e-1f9038faa429")
+		(uuid "b0926575-d88b-4125-bba0-fce73a1ef5e3")
 	)
 	(symbol
-		(lib_id "Capacitor")
-		(at 80.0 126.44 90)
+		(lib_id "power:GND")
+		(at 68.58 123.19 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "c6f7622c-979c-4317-a409-13c88580f211")
-		(property "Reference" "C10"
-			(at 80.0 123.89999999999999 90)
+		(fields_autoplaced yes)
+		(uuid "320a167c-64f4-414a-bc6e-71d1e7e9f3e6")
+		(property "Reference" "#GND2"
+			(at 68.58 120.64999999999999 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "0.1uF"
-			(at 80.0 128.98 90)
+		(property "Value" "GND"
+			(at 68.58 125.73 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1156,7 +1423,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 80.0 126.44 0)
+			(at 68.58 123.19 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1165,7 +1432,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 80.0 126.44 0)
+			(at 68.58 123.19 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1174,51 +1441,285 @@
 			)
 		)
 		(pin "1"
-			(uuid "1fd6921c-97b3-46ce-92f3-b771ccdf8fce")
+			(uuid "db94a396-5a53-4197-8ed8-4ab5cd67c1c1")
+		)
+	)
+	(symbol
+		(lib_id "SchematIQ:Capacitor")
+		(at 80.01 140.97 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "fb67a658-887a-414a-9780-f4352f8dcf74")
+		(property "Reference" "C10"
+			(at 80.01 138.43 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "0.1uF"
+			(at 80.01 143.51 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+			(at 80.01 140.97 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 80.01 140.97 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "4567c0f7-e0f7-41d7-b7f6-9fb143253213")
 		)
 		(pin "2"
-			(uuid "41461d9c-e513-4c55-8253-bac9b5ca6909")
+			(uuid "ed5d464d-1e4b-4b79-9695-b55dc893930e")
 		)
 	)
 	(wire
 		(pts
-			(xy 83.81 126.44) (xy 91.43 126.44)
+			(xy 83.82 140.97) (xy 91.44 140.97)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "9ae5a6b1-ce60-4c17-bea2-e009b734ae27")
+		(uuid "6785a5de-c4af-45d8-8fc3-492cacc425ca")
 	)
 	(hierarchical_label "PP_3V3_OUT"
 		(shape bidirectional)
-		(at 91.43 126.44 0)
+		(at 91.44 140.97 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify left)
 		)
-		(uuid "e805c75b-38ad-4293-b2ec-6259a837b6a9")
+		(uuid "ba69b23c-cc93-4219-8f18-d1128e713cb9")
 	)
 	(wire
 		(pts
-			(xy 76.19 126.44) (xy 68.57 126.44)
+			(xy 76.2 140.97) (xy 68.58 140.97)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "8dad2a01-9ed4-4881-84e7-28507b98acce")
+		(uuid "2051a006-5fc9-454c-84b4-02cc060cb283")
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 68.58 140.97 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "cfe6e33f-06b7-47cb-9b98-95afb7798e91")
+		(property "Reference" "#GND3"
+			(at 68.58 138.43 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 68.58 143.51 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 68.58 140.97 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 68.58 140.97 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "ec98898a-abf4-460a-83cc-b7ca6bac5b8f")
+		)
+	)
+	(symbol
+		(lib_id "power:PWR_FLAG")
+		(at 240.03 229.87 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "3a511ac6-dd3d-4ff7-89a6-a0fd48f447a8")
+		(property "Reference" "FLG1"
+			(at 240.03 227.33 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "PWR_FLAG"
+			(at 240.03 232.41 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 240.03 229.87 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 240.03 229.87 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "cb14de1d-eb6b-436f-a75e-1ab575484927")
+		)
+	)
+	(wire
+		(pts
+			(xy 240.03 229.87) (xy 247.65 229.87)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "fe576fc7-a84f-4e87-aa54-0f7cbaa8cd03")
 	)
 	(label "GND"
-		(at 68.57 126.44 0)
+		(at 247.65 229.87 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify right bottom)
+			(justify left bottom)
 		)
-		(uuid "b7bcfbdd-5897-4113-b66f-c4fb647957cf")
+		(uuid "b31f5248-2b1c-4868-8b84-f081e7783726")
 	)
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+	)
+	(symbol_instances
+		(path "/bb544b6a-58a6-4605-b95d-e145c75f0773"
+			(reference "U3")
+			(unit 1)
+			(value "BME280")
+			(footprint "BME280:PSON65P250X250X100-8N")
+		)
+		(path "/e540ef32-2071-4a91-b4b4-ed987a04c57b"
+			(reference "R5")
+			(unit 1)
+			(value "4.7K")
+			(footprint "Resistor_SMD:R_0603_1608Metric")
+		)
+		(path "/a071b000-9978-451c-acdb-b9f16243fa64"
+			(reference "R6")
+			(unit 1)
+			(value "4.7K")
+			(footprint "Resistor_SMD:R_0603_1608Metric")
+		)
+		(path "/45b3461a-f036-49b3-9278-63782333b0ec"
+			(reference "R7")
+			(unit 1)
+			(value "0R")
+			(footprint "Resistor_SMD:R_0603_1608Metric")
+		)
+		(path "/c99ae316-f59b-407e-93ba-87177162e178"
+			(reference "R8")
+			(unit 1)
+			(value "0R")
+			(footprint "Resistor_SMD:R_0603_1608Metric")
+		)
+		(path "/768e775d-da25-46bb-b4da-4acf920b5f80"
+			(reference "R9")
+			(unit 1)
+			(value "0R")
+			(footprint "Resistor_SMD:R_0603_1608Metric")
+		)
+		(path "/b04527de-7164-48f5-9ab4-cc5347e52899"
+			(reference "#GND1")
+			(unit 1)
+			(value "GND")
+			(footprint "")
+		)
+		(path "/c0d8f9a7-be3d-4624-98c9-e251a450de63"
+			(reference "C9")
+			(unit 1)
+			(value "0.1uF")
+			(footprint "Capacitor_SMD:C_0603_1608Metric")
+		)
+		(path "/320a167c-64f4-414a-bc6e-71d1e7e9f3e6"
+			(reference "#GND2")
+			(unit 1)
+			(value "GND")
+			(footprint "")
+		)
+		(path "/fb67a658-887a-414a-9780-f4352f8dcf74"
+			(reference "C10")
+			(unit 1)
+			(value "0.1uF")
+			(footprint "Capacitor_SMD:C_0603_1608Metric")
+		)
+		(path "/cfe6e33f-06b7-47cb-9b98-95afb7798e91"
+			(reference "#GND3")
+			(unit 1)
+			(value "GND")
+			(footprint "")
+		)
+		(path "/3a511ac6-dd3d-4ff7-89a6-a0fd48f447a8"
+			(reference "FLG1")
+			(unit 1)
+			(value "PWR_FLAG")
+			(footprint "")
+		)
+	)
+	(embedded_fonts no)
 )

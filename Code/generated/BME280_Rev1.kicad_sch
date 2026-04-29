@@ -2,7 +2,7 @@
 	(version 20250114)
 	(generator "SchematIQ")
 	(generator_version "9.0")
-	(uuid "6ed48051-3c76-4a6d-8d35-4a5266c3f4be")
+	(uuid "3ed11ea9-b56b-4fe6-8b27-bf58756f7885")
 	(paper "A4")
 	(lib_symbols)
 
@@ -20,7 +20,7 @@
 		(fill
 			(color 0 0 0 0.0000)
 		)
-		(uuid "daf2e792-4fd3-4793-97ea-b5320afdf8ef")
+		(uuid "c2660ae9-9ad1-4af3-9e7b-6318e4a94569")
 		(property "Sheetname" "USBC"
 			(at 25.0 24.32 0)
 			(effects
@@ -55,7 +55,7 @@
 		(fill
 			(color 0 0 0 0.0000)
 		)
-		(uuid "e7e674c2-ec3a-4014-979d-9607cc30a811")
+		(uuid "891e85e4-b8e8-4a20-a5d2-39550a43bc02")
 		(property "Sheetname" "Buck_Converter"
 			(at 85.0 24.32 0)
 			(effects
@@ -90,7 +90,7 @@
 		(fill
 			(color 0 0 0 0.0000)
 		)
-		(uuid "1dacad18-df02-4b45-99be-559c38a50852")
+		(uuid "34f67f56-ffb4-47ef-bd04-cea44d84754d")
 		(property "Sheetname" "USB_To_I2C"
 			(at 145.0 24.32 0)
 			(effects
@@ -125,7 +125,7 @@
 		(fill
 			(color 0 0 0 0.0000)
 		)
-		(uuid "87caa5ab-d07e-4b47-b68e-a8072381abdf")
+		(uuid "a58d4f99-e595-413e-b487-1c668a08eac2")
 		(property "Sheetname" "BME280_Sensor"
 			(at 205.0 24.32 0)
 			(effects
@@ -150,16 +150,16 @@
 		(path "/"
 			(page "1")
 		)
-		(path "/daf2e792-4fd3-4793-97ea-b5320afdf8ef"
+		(path "/c2660ae9-9ad1-4af3-9e7b-6318e4a94569"
 			(page "2")
 		)
-		(path "/e7e674c2-ec3a-4014-979d-9607cc30a811"
+		(path "/891e85e4-b8e8-4a20-a5d2-39550a43bc02"
 			(page "3")
 		)
-		(path "/1dacad18-df02-4b45-99be-559c38a50852"
+		(path "/34f67f56-ffb4-47ef-bd04-cea44d84754d"
 			(page "4")
 		)
-		(path "/87caa5ab-d07e-4b47-b68e-a8072381abdf"
+		(path "/a58d4f99-e595-413e-b487-1c668a08eac2"
 			(page "5")
 		)
 	)

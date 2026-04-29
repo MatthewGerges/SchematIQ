@@ -1,0 +1,2386 @@
+{
+  "project_name": "STM32F401_CoreBoard",
+  "description": "A core board schematic for the STM32F401RCT6 microcontroller, featuring USB, SWD, external crystal, 3.3V power regulation, and peripheral headers (UART, SPI).",
+  "sheets": [
+    {
+      "name": "Power_Input",
+      "file": "Power_Input.kicad_sch",
+      "page": 2
+    },
+    {
+      "name": "MCU_Core",
+      "file": "MCU_Core.kicad_sch",
+      "page": 3
+    },
+    {
+      "name": "Connectivity",
+      "file": "Connectivity.kicad_sch",
+      "page": 4
+    },
+    {
+      "name": "Peripherals",
+      "file": "Peripherals.kicad_sch",
+      "page": 5
+    }
+  ],
+  "components": [
+    {
+      "ref": "J1",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "Power_Input",
+      "note": "5V DC Power Input Header",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "Pin_1",
+          "net": "VIN_5V"
+        },
+        {
+          "pin": "2",
+          "pin_name": "Pin_2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "D1",
+      "part": "Diode:1N5819",
+      "sheet": "Power_Input",
+      "note": "Reverse polarity protection for 5V input",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "A",
+          "net": "VIN_5V"
+        },
+        {
+          "pin": "2",
+          "pin_name": "K",
+          "net": "VIN_5V_PROT"
+        }
+      ]
+    },
+    {
+      "ref": "U1",
+      "part": "Regulator_Linear:AMS1117-3.3",
+      "sheet": "Power_Input",
+      "note": "3.3V Linear Regulator",
+      "connections": [
+        {
+          "pin": "3",
+          "pin_name": "VIN",
+          "net": "VIN_5V_PROT"
+        },
+        {
+          "pin": "1",
+          "pin_name": "GND",
+          "net": "GND"
+        },
+        {
+          "pin": "2",
+          "pin_name": "VOUT",
+          "net": "VDD_3V3"
+        }
+      ]
+    },
+    {
+      "ref": "U2",
+      "part": "MCU_ST_STM32F4:STM32F401RCTx",
+      "sheet": "MCU_Core",
+      "note": "STM32F401RCT6 Microcontroller",
+      "connections": [
+        {
+          "pin": "9",
+          "pin_name": "VBAT",
+          "net": "VDD_3V3"
+        },
+        {
+          "pin": "15",
+          "pin_name": "VDD",
+          "net": "VDD_3V3"
+        },
+        {
+          "pin": "16",
+          "pin_name": "VSS",
+          "net": "GND"
+        },
+        {
+          "pin": "17",
+          "pin_name": "VCAP1",
+          "net": "VCAP1_U2"
+        },
+        {
+          "pin": "18",
+          "pin_name": "VCAP2",
+          "net": "VCAP2_U2"
+        },
+        {
+          "pin": "31",
+          "pin_name": "VSS",
+          "net": "GND"
+        },
+        {
+          "pin": "32",
+          "pin_name": "VDD",
+          "net": "VDD_3V3"
+        },
+        {
+          "pin": "46",
+          "pin_name": "VSS",
+          "net": "GND"
+        },
+        {
+          "pin": "47",
+          "pin_name": "VDD",
+          "net": "VDD_3V3"
+        },
+        {
+          "pin": "48",
+          "pin_name": "VDDA",
+          "net": "VDD_3V3"
+        },
+        {
+          "pin": "49",
+          "pin_name": "VSSA",
+          "net": "GND"
+        },
+        {
+          "pin": "63",
+          "pin_name": "VDD",
+          "net": "VDD_3V3"
+        },
+        {
+          "pin": "64",
+          "pin_name": "VSS",
+          "net": "GND"
+        },
+        {
+          "pin": "5",
+          "pin_name": "PH0/OSC_IN",
+          "net": "MCU_PH0"
+        },
+        {
+          "pin": "6",
+          "pin_name": "PH1/OSC_OUT",
+          "net": "MCU_PH1"
+        },
+        {
+          "pin": "7",
+          "pin_name": "NRST",
+          "net": "NRST"
+        },
+        {
+          "pin": "59",
+          "pin_name": "PB2/BOOT1",
+          "net": "BOOT1_PB2"
+        },
+        {
+          "pin": "60",
+          "pin_name": "BOOT0",
+          "net": "BOOT0_PIN"
+        }
+      ]
+    },
+    {
+      "ref": "Y1",
+      "part": "Device:Crystal",
+      "sheet": "MCU_Core",
+      "note": "8MHz HSE Crystal",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "MCU_PH0"
+        },
+        {
+          "pin": "2",
+          "net": "MCU_PH1"
+        }
+      ]
+    },
+    {
+      "ref": "SW1",
+      "part": "Connector:Conn_01x02_Pin",
+      "sheet": "MCU_Core",
+      "note": "Manual Reset Button",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "NRST"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "J2",
+      "part": "Connector_Generic:Conn_01x03",
+      "sheet": "MCU_Core",
+      "note": "BOOT0 Selection Header",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "GND",
+          "net": "GND"
+        },
+        {
+          "pin": "2",
+          "pin_name": "BOOT0",
+          "net": "BOOT0_PIN"
+        },
+        {
+          "pin": "3",
+          "pin_name": "3V3",
+          "net": "VDD_3V3"
+        }
+      ]
+    },
+    {
+      "ref": "J3",
+      "part": "Connector:USB_C_Receptacle_USB2.0_14P",
+      "sheet": "Connectivity",
+      "note": "USB 2.0 Type-C Data and Power",
+      "connections": [
+        {
+          "pin": "A4",
+          "pin_name": "VBUS",
+          "net": "VIN_5V_PROT"
+        },
+        {
+          "pin": "B9",
+          "pin_name": "VBUS",
+          "net": "VIN_5V_PROT"
+        },
+        {
+          "pin": "A9",
+          "pin_name": "VBUS",
+          "net": "VIN_5V_PROT"
+        },
+        {
+          "pin": "B4",
+          "pin_name": "VBUS",
+          "net": "VIN_5V_PROT"
+        },
+        {
+          "pin": "A1",
+          "pin_name": "GND",
+          "net": "GND"
+        },
+        {
+          "pin": "B12",
+          "pin_name": "GND",
+          "net": "GND"
+        },
+        {
+          "pin": "A12",
+          "pin_name": "GND",
+          "net": "GND"
+        },
+        {
+          "pin": "B1",
+          "pin_name": "GND",
+          "net": "GND"
+        },
+        {
+          "pin": "A6",
+          "pin_name": "DP1",
+          "net": "USB_DP"
+        },
+        {
+          "pin": "B6",
+          "pin_name": "DP2",
+          "net": "USB_DP"
+        },
+        {
+          "pin": "A7",
+          "pin_name": "DN1",
+          "net": "USB_DM"
+        },
+        {
+          "pin": "B7",
+          "pin_name": "DN2",
+          "net": "USB_DM"
+        },
+        {
+          "pin": "A5",
+          "pin_name": "CC1",
+          "net": "CC1_J3"
+        },
+        {
+          "pin": "B5",
+          "pin_name": "CC2",
+          "net": "CC2_J3"
+        }
+      ]
+    },
+    {
+      "ref": "D2",
+      "part": "Power_Protection:USBLC6-2SC6",
+      "sheet": "Connectivity",
+      "note": "USB Data Line ESD Protection",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "USB_DM"
+        },
+        {
+          "pin": "2",
+          "net": "USB_DP"
+        },
+        {
+          "pin": "3",
+          "net": "GND"
+        },
+        {
+          "pin": "4",
+          "net": "USB_DM_MCU"
+        },
+        {
+          "pin": "5",
+          "net": "USB_DP_MCU"
+        },
+        {
+          "pin": "6",
+          "net": "VDD_3V3"
+        }
+      ]
+    },
+    {
+      "ref": "J4",
+      "part": "Connector:Conn_01x10_Pin",
+      "sheet": "Connectivity",
+      "note": "10-pin 1.27mm SWD Debug Header",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "VTref",
+          "net": "VDD_3V3"
+        },
+        {
+          "pin": "2",
+          "pin_name": "SWDIO",
+          "net": "SWDIO"
+        },
+        {
+          "pin": "3",
+          "pin_name": "GND",
+          "net": "GND"
+        },
+        {
+          "pin": "4",
+          "pin_name": "SWCLK",
+          "net": "SWCLK"
+        },
+        {
+          "pin": "5",
+          "pin_name": "GND",
+          "net": "GND"
+        },
+        {
+          "pin": "6",
+          "pin_name": "SWO",
+          "net": "SWO"
+        },
+        {
+          "pin": "8",
+          "pin_name": "NC",
+          "net": "NC_J4_8"
+        },
+        {
+          "pin": "9",
+          "pin_name": "GNDDETECT",
+          "net": "GND"
+        },
+        {
+          "pin": "10",
+          "pin_name": "NRST",
+          "net": "NRST"
+        }
+      ]
+    },
+    {
+      "ref": "J5",
+      "part": "Connector_Generic:Conn_01x04",
+      "sheet": "Peripherals",
+      "note": "UART (USART2) Peripheral Header",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "VCC",
+          "net": "VDD_3V3"
+        },
+        {
+          "pin": "2",
+          "pin_name": "TX",
+          "net": "USART2_TX"
+        },
+        {
+          "pin": "3",
+          "pin_name": "RX",
+          "net": "USART2_RX"
+        },
+        {
+          "pin": "4",
+          "pin_name": "GND",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "J6",
+      "part": "Connector_Generic:Conn_01x06",
+      "sheet": "Peripherals",
+      "note": "SPI (SPI1) Peripheral Header",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "VCC",
+          "net": "VDD_3V3"
+        },
+        {
+          "pin": "2",
+          "pin_name": "NSS",
+          "net": "SPI1_NSS"
+        },
+        {
+          "pin": "3",
+          "pin_name": "SCK",
+          "net": "SPI1_SCK"
+        },
+        {
+          "pin": "4",
+          "pin_name": "MISO",
+          "net": "SPI1_MISO"
+        },
+        {
+          "pin": "5",
+          "pin_name": "MOSI",
+          "net": "SPI1_MOSI"
+        },
+        {
+          "pin": "6",
+          "pin_name": "GND",
+          "net": "GND"
+        }
+      ]
+    }
+  ],
+  "passives": [
+    {
+      "ref": "C1",
+      "type": "C",
+      "value": "10uF",
+      "sheet": "Power_Input",
+      "purpose": "Input bulk capacitor for U1",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VIN_5V_PROT"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C2",
+      "type": "C",
+      "value": "10uF",
+      "sheet": "Power_Input",
+      "purpose": "Output bulk capacitor for U1",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VDD_3V3"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C3",
+      "type": "C",
+      "value": "100nF",
+      "sheet": "Power_Input",
+      "purpose": "Input high-frequency decoupling for U1",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VIN_5V_PROT"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C4",
+      "type": "C",
+      "value": "100nF",
+      "sheet": "Power_Input",
+      "purpose": "Output high-frequency decoupling for U1",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VDD_3V3"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C5",
+      "type": "C",
+      "value": "100nF",
+      "sheet": "MCU_Core",
+      "purpose": "VDD decoupling for U2 (Pin 15)",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VDD_3V3"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C6",
+      "type": "C",
+      "value": "100nF",
+      "sheet": "MCU_Core",
+      "purpose": "VDD decoupling for U2 (Pin 32)",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VDD_3V3"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C7",
+      "type": "C",
+      "value": "100nF",
+      "sheet": "MCU_Core",
+      "purpose": "VDD decoupling for U2 (Pin 47)",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VDD_3V3"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C8",
+      "type": "C",
+      "value": "100nF",
+      "sheet": "MCU_Core",
+      "purpose": "VDD decoupling for U2 (Pin 63)",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VDD_3V3"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C9",
+      "type": "C",
+      "value": "10uF",
+      "sheet": "MCU_Core",
+      "purpose": "Bulk VDD_3V3 decoupling for U2",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VDD_3V3"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C10",
+      "type": "C",
+      "value": "10uF",
+      "sheet": "MCU_Core",
+      "purpose": "Bulk VDD_3V3 decoupling for U2",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VDD_3V3"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C11",
+      "type": "C",
+      "value": "100nF",
+      "sheet": "MCU_Core",
+      "purpose": "VDDA decoupling for U2",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VDD_3V3"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C12",
+      "type": "C",
+      "value": "2.2uF",
+      "sheet": "MCU_Core",
+      "purpose": "VCAP1 capacitor for U2",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VCAP1_U2"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C13",
+      "type": "C",
+      "value": "2.2uF",
+      "sheet": "MCU_Core",
+      "purpose": "VCAP2 capacitor for U2",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VCAP2_U2"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C14",
+      "type": "C",
+      "value": "22pF",
+      "sheet": "MCU_Core",
+      "purpose": "Load capacitor for HSE crystal Y1",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "MCU_PH0"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C15",
+      "type": "C",
+      "value": "22pF",
+      "sheet": "MCU_Core",
+      "purpose": "Load capacitor for HSE crystal Y1",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "MCU_PH1"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "R5",
+      "type": "R",
+      "value": "10k",
+      "sheet": "MCU_Core",
+      "purpose": "NRST Pull-up",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VDD_3V3"
+        },
+        {
+          "pin": "2",
+          "net": "NRST"
+        }
+      ]
+    },
+    {
+      "ref": "C16",
+      "type": "C",
+      "value": "100nF",
+      "sheet": "MCU_Core",
+      "purpose": "NRST Debounce Capacitor",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "NRST"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "R6",
+      "type": "R",
+      "value": "10k",
+      "sheet": "MCU_Core",
+      "purpose": "BOOT0 Pull-down",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "BOOT0_PIN"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "R7",
+      "type": "R",
+      "value": "10k",
+      "sheet": "MCU_Core",
+      "purpose": "BOOT1 (PB2) Pull-down",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "BOOT1_PB2"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "R8",
+      "type": "R",
+      "value": "1.5k",
+      "sheet": "Connectivity",
+      "purpose": "USB_DP Pull-up for Full-Speed Device",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "USB_DP_MCU"
+        },
+        {
+          "pin": "2",
+          "net": "VDD_3V3"
+        }
+      ]
+    },
+    {
+      "ref": "R9",
+      "type": "R",
+      "value": "10k",
+      "sheet": "Connectivity",
+      "purpose": "OTG_FS_ID Pull-down for Device Mode",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "OTG_FS_ID"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "R10",
+      "type": "R",
+      "value": "5.1k",
+      "sheet": "Connectivity",
+      "purpose": "USB-C CC1 pull-down for Sink detection",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "CC1_J3"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "R11",
+      "type": "R",
+      "value": "5.1k",
+      "sheet": "Connectivity",
+      "purpose": "USB-C CC2 pull-down for Sink detection",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "CC2_J3"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    }
+  ],
+  "nets": [
+    {
+      "name": "VIN_5V",
+      "type": "local",
+      "sheet": "Power_Input",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "1",
+          "pin_name": "Pin_1"
+        },
+        {
+          "ref": "D1",
+          "pin": "1",
+          "pin_name": "A"
+        }
+      ]
+    },
+    {
+      "name": "VIN_5V_PROT",
+      "type": "local",
+      "sheet": "Power_Input",
+      "connections": [
+        {
+          "ref": "D1",
+          "pin": "2",
+          "pin_name": "K"
+        },
+        {
+          "ref": "U1",
+          "pin": "3",
+          "pin_name": "VIN"
+        },
+        {
+          "ref": "C1",
+          "pin": "1"
+        },
+        {
+          "ref": "C3",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "VDD_3V3",
+      "type": "local",
+      "sheet": "Power_Input",
+      "connections": [
+        {
+          "ref": "U1",
+          "pin": "2",
+          "pin_name": "VOUT"
+        },
+        {
+          "ref": "C2",
+          "pin": "1"
+        },
+        {
+          "ref": "C4",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "GND",
+      "type": "local",
+      "sheet": "Power_Input",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "2",
+          "pin_name": "Pin_2"
+        },
+        {
+          "ref": "U1",
+          "pin": "1",
+          "pin_name": "GND"
+        },
+        {
+          "ref": "C1",
+          "pin": "2"
+        },
+        {
+          "ref": "C2",
+          "pin": "2"
+        },
+        {
+          "ref": "C3",
+          "pin": "2"
+        },
+        {
+          "ref": "C4",
+          "pin": "2"
+        }
+      ]
+    },
+    {
+      "name": "VCAP1_U2",
+      "type": "local",
+      "sheet": "MCU_Core",
+      "connections": [
+        {
+          "ref": "U2",
+          "pin": "17",
+          "pin_name": "VCAP1"
+        },
+        {
+          "ref": "C12",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "VCAP2_U2",
+      "type": "local",
+      "sheet": "MCU_Core",
+      "connections": [
+        {
+          "ref": "U2",
+          "pin": "18",
+          "pin_name": "VCAP2"
+        },
+        {
+          "ref": "C13",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "MCU_PH0",
+      "type": "local",
+      "sheet": "MCU_Core",
+      "connections": [
+        {
+          "ref": "U2",
+          "pin": "5",
+          "pin_name": "PH0/OSC_IN"
+        },
+        {
+          "ref": "Y1",
+          "pin": "1"
+        },
+        {
+          "ref": "C14",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "MCU_PH1",
+      "type": "local",
+      "sheet": "MCU_Core",
+      "connections": [
+        {
+          "ref": "U2",
+          "pin": "6",
+          "pin_name": "PH1/OSC_OUT"
+        },
+        {
+          "ref": "Y1",
+          "pin": "2"
+        },
+        {
+          "ref": "C15",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "NRST",
+      "type": "local",
+      "sheet": "MCU_Core",
+      "connections": [
+        {
+          "ref": "U2",
+          "pin": "7",
+          "pin_name": "NRST"
+        },
+        {
+          "ref": "R5",
+          "pin": "2"
+        },
+        {
+          "ref": "C16",
+          "pin": "1"
+        },
+        {
+          "ref": "SW1",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "BOOT0_PIN",
+      "type": "local",
+      "sheet": "MCU_Core",
+      "connections": [
+        {
+          "ref": "U2",
+          "pin": "60",
+          "pin_name": "BOOT0"
+        },
+        {
+          "ref": "R6",
+          "pin": "1"
+        },
+        {
+          "ref": "J2",
+          "pin": "2",
+          "pin_name": "BOOT0"
+        }
+      ]
+    },
+    {
+      "name": "BOOT1_PB2",
+      "type": "local",
+      "sheet": "MCU_Core",
+      "connections": [
+        {
+          "ref": "U2",
+          "pin": "59",
+          "pin_name": "PB2/BOOT1"
+        },
+        {
+          "ref": "R7",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "VDD_3V3",
+      "type": "hierarchical",
+      "sheet": "MCU_Core",
+      "connections": [
+        {
+          "ref": "U2",
+          "pin": "9",
+          "pin_name": "VBAT"
+        },
+        {
+          "ref": "U2",
+          "pin": "15",
+          "pin_name": "VDD"
+        },
+        {
+          "ref": "U2",
+          "pin": "32",
+          "pin_name": "VDD"
+        },
+        {
+          "ref": "U2",
+          "pin": "47",
+          "pin_name": "VDD"
+        },
+        {
+          "ref": "U2",
+          "pin": "63",
+          "pin_name": "VDD"
+        },
+        {
+          "ref": "U2",
+          "pin": "48",
+          "pin_name": "VDDA"
+        },
+        {
+          "ref": "C5",
+          "pin": "1"
+        },
+        {
+          "ref": "C6",
+          "pin": "1"
+        },
+        {
+          "ref": "C7",
+          "pin": "1"
+        },
+        {
+          "ref": "C8",
+          "pin": "1"
+        },
+        {
+          "ref": "C9",
+          "pin": "1"
+        },
+        {
+          "ref": "C10",
+          "pin": "1"
+        },
+        {
+          "ref": "C11",
+          "pin": "1"
+        },
+        {
+          "ref": "R5",
+          "pin": "1"
+        },
+        {
+          "ref": "J2",
+          "pin": "3",
+          "pin_name": "3V3"
+        }
+      ]
+    },
+    {
+      "name": "GND",
+      "type": "hierarchical",
+      "sheet": "MCU_Core",
+      "connections": [
+        {
+          "ref": "U2",
+          "pin": "16",
+          "pin_name": "VSS"
+        },
+        {
+          "ref": "U2",
+          "pin": "31",
+          "pin_name": "VSS"
+        },
+        {
+          "ref": "U2",
+          "pin": "46",
+          "pin_name": "VSS"
+        },
+        {
+          "ref": "U2",
+          "pin": "64",
+          "pin_name": "VSS"
+        },
+        {
+          "ref": "U2",
+          "pin": "49",
+          "pin_name": "VSSA"
+        },
+        {
+          "ref": "C5",
+          "pin": "2"
+        },
+        {
+          "ref": "C6",
+          "pin": "2"
+        },
+        {
+          "ref": "C7",
+          "pin": "2"
+        },
+        {
+          "ref": "C8",
+          "pin": "2"
+        },
+        {
+          "ref": "C9",
+          "pin": "2"
+        },
+        {
+          "ref": "C10",
+          "pin": "2"
+        },
+        {
+          "ref": "C11",
+          "pin": "2"
+        },
+        {
+          "ref": "C12",
+          "pin": "2"
+        },
+        {
+          "ref": "C13",
+          "pin": "2"
+        },
+        {
+          "ref": "C14",
+          "pin": "2"
+        },
+        {
+          "ref": "C15",
+          "pin": "2"
+        },
+        {
+          "ref": "C16",
+          "pin": "2"
+        },
+        {
+          "ref": "SW1",
+          "pin": "2"
+        },
+        {
+          "ref": "R6",
+          "pin": "2"
+        },
+        {
+          "ref": "R7",
+          "pin": "2"
+        },
+        {
+          "ref": "J2",
+          "pin": "1",
+          "pin_name": "GND"
+        }
+      ]
+    },
+    {
+      "name": "USB_DP",
+      "type": "local",
+      "sheet": "Connectivity",
+      "connections": [
+        {
+          "ref": "J3",
+          "pin": "A6",
+          "pin_name": "DP1"
+        },
+        {
+          "ref": "J3",
+          "pin": "B6",
+          "pin_name": "DP2"
+        },
+        {
+          "ref": "D2",
+          "pin": "2"
+        }
+      ]
+    },
+    {
+      "name": "USB_DM",
+      "type": "local",
+      "sheet": "Connectivity",
+      "connections": [
+        {
+          "ref": "J3",
+          "pin": "A7",
+          "pin_name": "DN1"
+        },
+        {
+          "ref": "J3",
+          "pin": "B7",
+          "pin_name": "DN2"
+        },
+        {
+          "ref": "D2",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "CC1_J3",
+      "type": "local",
+      "sheet": "Connectivity",
+      "connections": [
+        {
+          "ref": "J3",
+          "pin": "A5",
+          "pin_name": "CC1"
+        },
+        {
+          "ref": "R10",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "CC2_J3",
+      "type": "local",
+      "sheet": "Connectivity",
+      "connections": [
+        {
+          "ref": "J3",
+          "pin": "B5",
+          "pin_name": "CC2"
+        },
+        {
+          "ref": "R11",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "NC_J4_8",
+      "type": "local",
+      "sheet": "Connectivity",
+      "connections": [
+        {
+          "ref": "J4",
+          "pin": "8",
+          "pin_name": "NC"
+        }
+      ]
+    },
+    {
+      "name": "USB_DP_MCU",
+      "type": "hierarchical",
+      "sheet": "Connectivity",
+      "connections": [
+        {
+          "ref": "U2",
+          "pin": "45",
+          "pin_name": "PA12/USB_DP",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "D2",
+          "pin": "5"
+        },
+        {
+          "ref": "R8",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "USB_DM_MCU",
+      "type": "hierarchical",
+      "sheet": "Connectivity",
+      "connections": [
+        {
+          "ref": "U2",
+          "pin": "44",
+          "pin_name": "PA11/USB_DM",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "D2",
+          "pin": "4"
+        }
+      ]
+    },
+    {
+      "name": "OTG_FS_ID",
+      "type": "hierarchical",
+      "sheet": "Connectivity",
+      "connections": [
+        {
+          "ref": "U2",
+          "pin": "43",
+          "pin_name": "PA10/USB_ID",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "R9",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "OTG_FS_VBUS",
+      "type": "hierarchical",
+      "sheet": "Connectivity",
+      "connections": [
+        {
+          "ref": "U2",
+          "pin": "19",
+          "pin_name": "PC0/OTG_FS_VBUS",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "J3",
+          "pin": "A4",
+          "pin_name": "VBUS"
+        }
+      ]
+    },
+    {
+      "name": "SWDIO",
+      "type": "hierarchical",
+      "sheet": "Connectivity",
+      "connections": [
+        {
+          "ref": "U2",
+          "pin": "40",
+          "pin_name": "PA13/SWDIO",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "J4",
+          "pin": "2",
+          "pin_name": "SWDIO"
+        }
+      ]
+    },
+    {
+      "name": "SWCLK",
+      "type": "hierarchical",
+      "sheet": "Connectivity",
+      "connections": [
+        {
+          "ref": "U2",
+          "pin": "41",
+          "pin_name": "PA14/SWCLK",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "J4",
+          "pin": "4",
+          "pin_name": "SWCLK"
+        }
+      ]
+    },
+    {
+      "name": "SWO",
+      "type": "hierarchical",
+      "sheet": "Connectivity",
+      "connections": [
+        {
+          "ref": "U2",
+          "pin": "36",
+          "pin_name": "PB3/SWO",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "J4",
+          "pin": "6",
+          "pin_name": "SWO"
+        }
+      ]
+    },
+    {
+      "name": "NRST",
+      "type": "hierarchical",
+      "sheet": "Connectivity",
+      "connections": [
+        {
+          "ref": "U2",
+          "pin": "7",
+          "pin_name": "NRST",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "J4",
+          "pin": "10",
+          "pin_name": "NRST"
+        }
+      ]
+    },
+    {
+      "name": "VDD_3V3",
+      "type": "hierarchical",
+      "sheet": "Connectivity",
+      "connections": [
+        {
+          "ref": "J4",
+          "pin": "1",
+          "pin_name": "VTref"
+        },
+        {
+          "ref": "R8",
+          "pin": "2"
+        },
+        {
+          "ref": "D2",
+          "pin": "6"
+        }
+      ]
+    },
+    {
+      "name": "VIN_5V_PROT",
+      "type": "hierarchical",
+      "sheet": "Connectivity",
+      "connections": [
+        {
+          "ref": "J3",
+          "pin": "A4",
+          "pin_name": "VBUS"
+        },
+        {
+          "ref": "J3",
+          "pin": "B9",
+          "pin_name": "VBUS"
+        },
+        {
+          "ref": "J3",
+          "pin": "A9",
+          "pin_name": "VBUS"
+        },
+        {
+          "ref": "J3",
+          "pin": "B4",
+          "pin_name": "VBUS"
+        },
+        {
+          "ref": "U2",
+          "pin": "19",
+          "pin_name": "PC0/OTG_FS_VBUS",
+          "sheet": "MCU_Core"
+        }
+      ]
+    },
+    {
+      "name": "GND",
+      "type": "hierarchical",
+      "sheet": "Connectivity",
+      "connections": [
+        {
+          "ref": "J3",
+          "pin": "A1",
+          "pin_name": "GND"
+        },
+        {
+          "ref": "J3",
+          "pin": "B12",
+          "pin_name": "GND"
+        },
+        {
+          "ref": "J3",
+          "pin": "A12",
+          "pin_name": "GND"
+        },
+        {
+          "ref": "J3",
+          "pin": "B1",
+          "pin_name": "GND"
+        },
+        {
+          "ref": "D2",
+          "pin": "3"
+        },
+        {
+          "ref": "J4",
+          "pin": "3",
+          "pin_name": "GND"
+        },
+        {
+          "ref": "J4",
+          "pin": "5",
+          "pin_name": "GND"
+        },
+        {
+          "ref": "J4",
+          "pin": "9",
+          "pin_name": "GNDDETECT"
+        },
+        {
+          "ref": "R9",
+          "pin": "2"
+        },
+        {
+          "ref": "R10",
+          "pin": "2"
+        },
+        {
+          "ref": "R11",
+          "pin": "2"
+        }
+      ]
+    },
+    {
+      "name": "USART2_TX",
+      "type": "hierarchical",
+      "sheet": "Peripherals",
+      "connections": [
+        {
+          "ref": "J5",
+          "pin": "2",
+          "pin_name": "TX"
+        },
+        {
+          "ref": "U2",
+          "pin": "13",
+          "pin_name": "PA2/USART2_TX",
+          "sheet": "MCU_Core"
+        }
+      ]
+    },
+    {
+      "name": "USART2_RX",
+      "type": "hierarchical",
+      "sheet": "Peripherals",
+      "connections": [
+        {
+          "ref": "J5",
+          "pin": "3",
+          "pin_name": "RX"
+        },
+        {
+          "ref": "U2",
+          "pin": "14",
+          "pin_name": "PA3/USART2_RX",
+          "sheet": "MCU_Core"
+        }
+      ]
+    },
+    {
+      "name": "SPI1_NSS",
+      "type": "hierarchical",
+      "sheet": "Peripherals",
+      "connections": [
+        {
+          "ref": "J6",
+          "pin": "2",
+          "pin_name": "NSS"
+        },
+        {
+          "ref": "U2",
+          "pin": "23",
+          "pin_name": "PA4/SPI1_NSS",
+          "sheet": "MCU_Core"
+        }
+      ]
+    },
+    {
+      "name": "SPI1_SCK",
+      "type": "hierarchical",
+      "sheet": "Peripherals",
+      "connections": [
+        {
+          "ref": "J6",
+          "pin": "3",
+          "pin_name": "SCK"
+        },
+        {
+          "ref": "U2",
+          "pin": "24",
+          "pin_name": "PA5/SPI1_SCK",
+          "sheet": "MCU_Core"
+        }
+      ]
+    },
+    {
+      "name": "SPI1_MISO",
+      "type": "hierarchical",
+      "sheet": "Peripherals",
+      "connections": [
+        {
+          "ref": "J6",
+          "pin": "4",
+          "pin_name": "MISO"
+        },
+        {
+          "ref": "U2",
+          "pin": "25",
+          "pin_name": "PA6/SPI1_MISO",
+          "sheet": "MCU_Core"
+        }
+      ]
+    },
+    {
+      "name": "SPI1_MOSI",
+      "type": "hierarchical",
+      "sheet": "Peripherals",
+      "connections": [
+        {
+          "ref": "J6",
+          "pin": "5",
+          "pin_name": "MOSI"
+        },
+        {
+          "ref": "U2",
+          "pin": "26",
+          "pin_name": "PA7/SPI1_MOSI",
+          "sheet": "MCU_Core"
+        }
+      ]
+    },
+    {
+      "name": "VDD_3V3",
+      "type": "hierarchical",
+      "sheet": "Peripherals",
+      "connections": [
+        {
+          "ref": "J5",
+          "pin": "1",
+          "pin_name": "VCC"
+        },
+        {
+          "ref": "J6",
+          "pin": "1",
+          "pin_name": "VCC"
+        }
+      ]
+    },
+    {
+      "name": "GND",
+      "type": "hierarchical",
+      "sheet": "Peripherals",
+      "connections": [
+        {
+          "ref": "J5",
+          "pin": "4",
+          "pin_name": "GND"
+        },
+        {
+          "ref": "J6",
+          "pin": "6",
+          "pin_name": "GND"
+        }
+      ]
+    },
+    {
+      "name": "VDD_3V3",
+      "type": "hierarchical",
+      "connections": [
+        {
+          "ref": "U1",
+          "pin": "2",
+          "pin_name": "VOUT",
+          "sheet": "Power_Input"
+        },
+        {
+          "ref": "U2",
+          "pin": "9",
+          "pin_name": "VBAT",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "U2",
+          "pin": "15",
+          "pin_name": "VDD",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "U2",
+          "pin": "32",
+          "pin_name": "VDD",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "U2",
+          "pin": "47",
+          "pin_name": "VDD",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "U2",
+          "pin": "63",
+          "pin_name": "VDD",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "U2",
+          "pin": "48",
+          "pin_name": "VDDA",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "C5",
+          "pin": "1",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "C6",
+          "pin": "1",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "C7",
+          "pin": "1",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "C8",
+          "pin": "1",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "C9",
+          "pin": "1",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "C10",
+          "pin": "1",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "C11",
+          "pin": "1",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "R5",
+          "pin": "1",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "J2",
+          "pin": "3",
+          "pin_name": "3V3",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "J4",
+          "pin": "1",
+          "pin_name": "VTref",
+          "sheet": "Connectivity"
+        },
+        {
+          "ref": "R8",
+          "pin": "2",
+          "sheet": "Connectivity"
+        },
+        {
+          "ref": "D2",
+          "pin": "6",
+          "sheet": "Connectivity"
+        },
+        {
+          "ref": "J5",
+          "pin": "1",
+          "pin_name": "VCC",
+          "sheet": "Peripherals"
+        },
+        {
+          "ref": "J6",
+          "pin": "1",
+          "pin_name": "VCC",
+          "sheet": "Peripherals"
+        }
+      ]
+    },
+    {
+      "name": "GND",
+      "type": "hierarchical",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "2",
+          "pin_name": "Pin_2",
+          "sheet": "Power_Input"
+        },
+        {
+          "ref": "U1",
+          "pin": "1",
+          "pin_name": "GND",
+          "sheet": "Power_Input"
+        },
+        {
+          "ref": "C1",
+          "pin": "2",
+          "sheet": "Power_Input"
+        },
+        {
+          "ref": "C2",
+          "pin": "2",
+          "sheet": "Power_Input"
+        },
+        {
+          "ref": "C3",
+          "pin": "2",
+          "sheet": "Power_Input"
+        },
+        {
+          "ref": "C4",
+          "pin": "2",
+          "sheet": "Power_Input"
+        },
+        {
+          "ref": "U2",
+          "pin": "16",
+          "pin_name": "VSS",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "U2",
+          "pin": "31",
+          "pin_name": "VSS",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "U2",
+          "pin": "46",
+          "pin_name": "VSS",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "U2",
+          "pin": "64",
+          "pin_name": "VSS",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "U2",
+          "pin": "49",
+          "pin_name": "VSSA",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "C5",
+          "pin": "2",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "C6",
+          "pin": "2",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "C7",
+          "pin": "2",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "C8",
+          "pin": "2",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "C9",
+          "pin": "2",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "C10",
+          "pin": "2",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "C11",
+          "pin": "2",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "C12",
+          "pin": "2",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "C13",
+          "pin": "2",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "C14",
+          "pin": "2",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "C15",
+          "pin": "2",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "C16",
+          "pin": "2",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "SW1",
+          "pin": "2",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "R6",
+          "pin": "2",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "R7",
+          "pin": "2",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "J2",
+          "pin": "1",
+          "pin_name": "GND",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "J3",
+          "pin": "A1",
+          "pin_name": "GND",
+          "sheet": "Connectivity"
+        },
+        {
+          "ref": "J3",
+          "pin": "B12",
+          "pin_name": "GND",
+          "sheet": "Connectivity"
+        },
+        {
+          "ref": "J3",
+          "pin": "A12",
+          "pin_name": "GND",
+          "sheet": "Connectivity"
+        },
+        {
+          "ref": "J3",
+          "pin": "B1",
+          "pin_name": "GND",
+          "sheet": "Connectivity"
+        },
+        {
+          "ref": "D2",
+          "pin": "3",
+          "sheet": "Connectivity"
+        },
+        {
+          "ref": "J4",
+          "pin": "3",
+          "pin_name": "GND",
+          "sheet": "Connectivity"
+        },
+        {
+          "ref": "J4",
+          "pin": "5",
+          "pin_name": "GND",
+          "sheet": "Connectivity"
+        },
+        {
+          "ref": "J4",
+          "pin": "9",
+          "pin_name": "GNDDETECT",
+          "sheet": "Connectivity"
+        },
+        {
+          "ref": "R9",
+          "pin": "2",
+          "sheet": "Connectivity"
+        },
+        {
+          "ref": "R10",
+          "pin": "2",
+          "sheet": "Connectivity"
+        },
+        {
+          "ref": "R11",
+          "pin": "2",
+          "sheet": "Connectivity"
+        },
+        {
+          "ref": "J5",
+          "pin": "4",
+          "pin_name": "GND",
+          "sheet": "Peripherals"
+        },
+        {
+          "ref": "J6",
+          "pin": "6",
+          "pin_name": "GND",
+          "sheet": "Peripherals"
+        }
+      ]
+    },
+    {
+      "name": "VIN_5V_PROT",
+      "type": "hierarchical",
+      "connections": [
+        {
+          "ref": "D1",
+          "pin": "2",
+          "pin_name": "K",
+          "sheet": "Power_Input"
+        },
+        {
+          "ref": "U1",
+          "pin": "3",
+          "pin_name": "VIN",
+          "sheet": "Power_Input"
+        },
+        {
+          "ref": "C1",
+          "pin": "1",
+          "sheet": "Power_Input"
+        },
+        {
+          "ref": "C3",
+          "pin": "1",
+          "sheet": "Power_Input"
+        },
+        {
+          "ref": "J3",
+          "pin": "A4",
+          "pin_name": "VBUS",
+          "sheet": "Connectivity"
+        },
+        {
+          "ref": "J3",
+          "pin": "B9",
+          "pin_name": "VBUS",
+          "sheet": "Connectivity"
+        },
+        {
+          "ref": "J3",
+          "pin": "A9",
+          "pin_name": "VBUS",
+          "sheet": "Connectivity"
+        },
+        {
+          "ref": "J3",
+          "pin": "B4",
+          "pin_name": "VBUS",
+          "sheet": "Connectivity"
+        },
+        {
+          "ref": "U2",
+          "pin": "19",
+          "pin_name": "PC0/OTG_FS_VBUS",
+          "sheet": "MCU_Core"
+        }
+      ]
+    },
+    {
+      "name": "USB_DP_MCU",
+      "type": "hierarchical",
+      "connections": [
+        {
+          "ref": "U2",
+          "pin": "45",
+          "pin_name": "PA12/USB_DP",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "D2",
+          "pin": "5",
+          "sheet": "Connectivity"
+        },
+        {
+          "ref": "R8",
+          "pin": "1",
+          "sheet": "Connectivity"
+        }
+      ]
+    },
+    {
+      "name": "USB_DM_MCU",
+      "type": "hierarchical",
+      "connections": [
+        {
+          "ref": "U2",
+          "pin": "44",
+          "pin_name": "PA11/USB_DM",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "D2",
+          "pin": "4",
+          "sheet": "Connectivity"
+        }
+      ]
+    },
+    {
+      "name": "OTG_FS_ID",
+      "type": "hierarchical",
+      "connections": [
+        {
+          "ref": "U2",
+          "pin": "43",
+          "pin_name": "PA10/USB_ID",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "R9",
+          "pin": "1",
+          "sheet": "Connectivity"
+        }
+      ]
+    },
+    {
+      "name": "SWDIO",
+      "type": "hierarchical",
+      "connections": [
+        {
+          "ref": "U2",
+          "pin": "40",
+          "pin_name": "PA13/SWDIO",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "J4",
+          "pin": "2",
+          "pin_name": "SWDIO",
+          "sheet": "Connectivity"
+        }
+      ]
+    },
+    {
+      "name": "SWCLK",
+      "type": "hierarchical",
+      "connections": [
+        {
+          "ref": "U2",
+          "pin": "41",
+          "pin_name": "PA14/SWCLK",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "J4",
+          "pin": "4",
+          "pin_name": "SWCLK",
+          "sheet": "Connectivity"
+        }
+      ]
+    },
+    {
+      "name": "SWO",
+      "type": "hierarchical",
+      "connections": [
+        {
+          "ref": "U2",
+          "pin": "36",
+          "pin_name": "PB3/SWO",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "J4",
+          "pin": "6",
+          "pin_name": "SWO",
+          "sheet": "Connectivity"
+        }
+      ]
+    },
+    {
+      "name": "NRST",
+      "type": "hierarchical",
+      "connections": [
+        {
+          "ref": "U2",
+          "pin": "7",
+          "pin_name": "NRST",
+          "sheet": "MCU_Core"
+        },
+        {
+          "ref": "J4",
+          "pin": "10",
+          "pin_name": "NRST",
+          "sheet": "Connectivity"
+        }
+      ]
+    },
+    {
+      "name": "USART2_TX",
+      "type": "hierarchical",
+      "connections": [
+        {
+          "ref": "J5",
+          "pin": "2",
+          "pin_name": "TX",
+          "sheet": "Peripherals"
+        },
+        {
+          "ref": "U2",
+          "pin": "13",
+          "pin_name": "PA2/USART2_TX",
+          "sheet": "MCU_Core"
+        }
+      ]
+    },
+    {
+      "name": "USART2_RX",
+      "type": "hierarchical",
+      "connections": [
+        {
+          "ref": "J5",
+          "pin": "3",
+          "pin_name": "RX",
+          "sheet": "Peripherals"
+        },
+        {
+          "ref": "U2",
+          "pin": "14",
+          "pin_name": "PA3/USART2_RX",
+          "sheet": "MCU_Core"
+        }
+      ]
+    },
+    {
+      "name": "SPI1_NSS",
+      "type": "hierarchical",
+      "connections": [
+        {
+          "ref": "J6",
+          "pin": "2",
+          "pin_name": "NSS",
+          "sheet": "Peripherals"
+        },
+        {
+          "ref": "U2",
+          "pin": "23",
+          "pin_name": "PA4/SPI1_NSS",
+          "sheet": "MCU_Core"
+        }
+      ]
+    },
+    {
+      "name": "SPI1_SCK",
+      "type": "hierarchical",
+      "connections": [
+        {
+          "ref": "J6",
+          "pin": "3",
+          "pin_name": "SCK",
+          "sheet": "Peripherals"
+        },
+        {
+          "ref": "U2",
+          "pin": "24",
+          "pin_name": "PA5/SPI1_SCK",
+          "sheet": "MCU_Core"
+        }
+      ]
+    },
+    {
+      "name": "SPI1_MISO",
+      "type": "hierarchical",
+      "connections": [
+        {
+          "ref": "J6",
+          "pin": "4",
+          "pin_name": "MISO",
+          "sheet": "Peripherals"
+        },
+        {
+          "ref": "U2",
+          "pin": "25",
+          "pin_name": "PA6/SPI1_MISO",
+          "sheet": "MCU_Core"
+        }
+      ]
+    },
+    {
+      "name": "SPI1_MOSI",
+      "type": "hierarchical",
+      "connections": [
+        {
+          "ref": "J6",
+          "pin": "5",
+          "pin_name": "MOSI",
+          "sheet": "Peripherals"
+        },
+        {
+          "ref": "U2",
+          "pin": "26",
+          "pin_name": "PA7/SPI1_MOSI",
+          "sheet": "MCU_Core"
+        }
+      ]
+    }
+  ]
+}

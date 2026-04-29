@@ -1,0 +1,29 @@
+{
+  "meta": {
+    "filename": "Simple_Buzzer_Driver.kicad_pro",
+    "version": 2
+  },
+  "schematic": {
+    "annotate_start_num": 0,
+    "bom_fmt_settings": {
+      "field_delimiter": ",",
+      "name": "CSV",
+      "ref_delimiter": ",",
+      "string_delimiter": "\""
+    },
+    "connection_grid_size": 50.0,
+    "drawing": {},
+    "page_layout_descr_file": ""
+  },
+  "sheets": [
+    [
+      "f91120ab-4c38-4f5e-9ada-31f80fd0338a",
+      "Root"
+    ],
+    [
+      "1aa884da-fa71-4a8f-8fae-728f190d1ebb",
+      "Simple_Buzzer_Driver"
+    ]
+  ],
+  "text_variables": {}
+}

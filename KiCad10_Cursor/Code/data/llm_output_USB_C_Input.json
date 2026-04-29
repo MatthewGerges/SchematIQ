@@ -1,0 +1,804 @@
+{
+  "project_name": "USB_C_5V_Supply",
+  "description": "USB-C Input to Regulated 5V Output Power Supply",
+  "sheets": [
+    {
+      "name": "USB_C_Input",
+      "file": "USB_C_Input.kicad_sch",
+      "page": 2
+    },
+    {
+      "name": "Buck_Converter_5V",
+      "file": "Buck_Converter_5V.kicad_sch",
+      "page": 3
+    },
+    {
+      "name": "5V_Output",
+      "file": "5V_Output.kicad_sch",
+      "page": 4
+    }
+  ],
+  "components": [
+    {
+      "ref": "J1",
+      "part": "Connector:USB_C_Receptacle",
+      "sheet": "USB_C_Input",
+      "note": "USB-C receptacle for power input, 5.1kohm pull-downs on CC1/CC2 for sink detection.",
+      "connections": [
+        {
+          "pin": "A4",
+          "pin_name": "VBUS",
+          "net": "VBUS_USBC"
+        },
+        {
+          "pin": "A9",
+          "pin_name": "VBUS",
+          "net": "VBUS_USBC"
+        },
+        {
+          "pin": "B4",
+          "pin_name": "VBUS",
+          "net": "VBUS_USBC"
+        },
+        {
+          "pin": "B9",
+          "pin_name": "VBUS",
+          "net": "VBUS_USBC"
+        },
+        {
+          "pin": "A1",
+          "pin_name": "GND",
+          "net": "GND"
+        },
+        {
+          "pin": "A12",
+          "pin_name": "GND",
+          "net": "GND"
+        },
+        {
+          "pin": "B1",
+          "pin_name": "GND",
+          "net": "GND"
+        },
+        {
+          "pin": "B12",
+          "pin_name": "GND",
+          "net": "GND"
+        },
+        {
+          "pin": "A5",
+          "pin_name": "CC1",
+          "net": "CC1_USBC"
+        },
+        {
+          "pin": "B5",
+          "pin_name": "CC2",
+          "net": "CC2_USBC"
+        }
+      ]
+    },
+    {
+      "ref": "U1",
+      "part": "Regulator_Switching:TPS62170DSG",
+      "sheet": "Buck_Converter_5V",
+      "note": "500mA Synchronous Step-Down Converter",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "EN",
+          "net": "VBUS_USBC"
+        },
+        {
+          "pin": "2",
+          "pin_name": "FB",
+          "net": "FB_NODE"
+        },
+        {
+          "pin": "3",
+          "pin_name": "VOUT",
+          "net": "VOUT_5V"
+        },
+        {
+          "pin": "4",
+          "pin_name": "PGND",
+          "net": "GND"
+        },
+        {
+          "pin": "5",
+          "pin_name": "VIN",
+          "net": "VBUS_USBC"
+        },
+        {
+          "pin": "6",
+          "pin_name": "SW",
+          "net": "SW_NODE"
+        },
+        {
+          "pin": "7",
+          "pin_name": "AGND",
+          "net": "GND"
+        },
+        {
+          "pin": "8",
+          "pin_name": "VCC",
+          "net": "VBUS_USBC"
+        },
+        {
+          "pin": "EP",
+          "pin_name": "PGND",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "J2",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "5V_Output",
+      "note": "2-pin header for 5V regulated output",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "Pin_1",
+          "net": "VOUT_5V"
+        },
+        {
+          "pin": "2",
+          "pin_name": "Pin_2",
+          "net": "GND"
+        }
+      ]
+    }
+  ],
+  "passives": [
+    {
+      "ref": "C1",
+      "type": "C",
+      "value": "10uF",
+      "sheet": "USB_C_Input",
+      "purpose": "Input bulk capacitance for VBUS",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VBUS_USBC"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C2",
+      "type": "C",
+      "value": "10uF",
+      "sheet": "USB_C_Input",
+      "purpose": "Input bulk capacitance for VBUS",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VBUS_USBC"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "R1",
+      "type": "R",
+      "value": "5.1k",
+      "sheet": "USB_C_Input",
+      "purpose": "CC1 pull-down for USB-C sink detection",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "CC1_USBC"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "R2",
+      "type": "R",
+      "value": "5.1k",
+      "sheet": "USB_C_Input",
+      "purpose": "CC2 pull-down for USB-C sink detection",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "CC2_USBC"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C3",
+      "type": "C",
+      "value": "4.7uF",
+      "sheet": "Buck_Converter_5V",
+      "purpose": "VIN decoupling capacitor for U1",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VBUS_USBC"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C4",
+      "type": "C",
+      "value": "4.7uF",
+      "sheet": "Buck_Converter_5V",
+      "purpose": "VIN decoupling capacitor for U1",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VBUS_USBC"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "L1",
+      "type": "L",
+      "value": "4.7uH",
+      "sheet": "Buck_Converter_5V",
+      "purpose": "Buck converter inductor",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "SW_NODE"
+        },
+        {
+          "pin": "2",
+          "net": "VOUT_5V"
+        }
+      ]
+    },
+    {
+      "ref": "C5",
+      "type": "C",
+      "value": "10uF",
+      "sheet": "Buck_Converter_5V",
+      "purpose": "VOUT filter capacitor for U1",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VOUT_5V"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "R3",
+      "type": "R",
+      "value": "52.3k",
+      "sheet": "Buck_Converter_5V",
+      "purpose": "Feedback resistor for 5V output",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VOUT_5V"
+        },
+        {
+          "pin": "2",
+          "net": "FB_NODE"
+        }
+      ]
+    },
+    {
+      "ref": "R4",
+      "type": "R",
+      "value": "10k",
+      "sheet": "Buck_Converter_5V",
+      "purpose": "Feedback resistor for 5V output",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "FB_NODE"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C6",
+      "type": "C",
+      "value": "100pF",
+      "sheet": "Buck_Converter_5V",
+      "purpose": "Feed-forward capacitor for improved transient response",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VOUT_5V"
+        },
+        {
+          "pin": "2",
+          "net": "FB_NODE"
+        }
+      ]
+    },
+    {
+      "ref": "C7",
+      "type": "C",
+      "value": "10uF",
+      "sheet": "5V_Output",
+      "purpose": "Output bulk capacitance for 5V rail",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VOUT_5V"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    }
+  ],
+  "nets": [
+    {
+      "name": "VBUS_USBC",
+      "type": "local",
+      "sheet": "USB_C_Input",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "A4",
+          "pin_name": "VBUS"
+        },
+        {
+          "ref": "J1",
+          "pin": "A9",
+          "pin_name": "VBUS"
+        },
+        {
+          "ref": "J1",
+          "pin": "B4",
+          "pin_name": "VBUS"
+        },
+        {
+          "ref": "J1",
+          "pin": "B9",
+          "pin_name": "VBUS"
+        },
+        {
+          "ref": "C1",
+          "pin": "1"
+        },
+        {
+          "ref": "C2",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "GND",
+      "type": "power",
+      "sheet": "USB_C_Input",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "A1",
+          "pin_name": "GND"
+        },
+        {
+          "ref": "J1",
+          "pin": "A12",
+          "pin_name": "GND"
+        },
+        {
+          "ref": "J1",
+          "pin": "B1",
+          "pin_name": "GND"
+        },
+        {
+          "ref": "J1",
+          "pin": "B12",
+          "pin_name": "GND"
+        },
+        {
+          "ref": "C1",
+          "pin": "2"
+        },
+        {
+          "ref": "C2",
+          "pin": "2"
+        },
+        {
+          "ref": "R1",
+          "pin": "2"
+        },
+        {
+          "ref": "R2",
+          "pin": "2"
+        }
+      ]
+    },
+    {
+      "name": "CC1_USBC",
+      "type": "local",
+      "sheet": "USB_C_Input",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "A5",
+          "pin_name": "CC1"
+        },
+        {
+          "ref": "R1",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "CC2_USBC",
+      "type": "local",
+      "sheet": "USB_C_Input",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "B5",
+          "pin_name": "CC2"
+        },
+        {
+          "ref": "R2",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "VBUS_USBC",
+      "type": "local",
+      "sheet": "Buck_Converter_5V",
+      "connections": [
+        {
+          "ref": "U1",
+          "pin": "1",
+          "pin_name": "EN"
+        },
+        {
+          "ref": "U1",
+          "pin": "5",
+          "pin_name": "VIN"
+        },
+        {
+          "ref": "U1",
+          "pin": "8",
+          "pin_name": "VCC"
+        },
+        {
+          "ref": "C3",
+          "pin": "1"
+        },
+        {
+          "ref": "C4",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "GND",
+      "type": "power",
+      "sheet": "Buck_Converter_5V",
+      "connections": [
+        {
+          "ref": "U1",
+          "pin": "4",
+          "pin_name": "PGND"
+        },
+        {
+          "ref": "U1",
+          "pin": "7",
+          "pin_name": "AGND"
+        },
+        {
+          "ref": "U1",
+          "pin": "EP",
+          "pin_name": "PGND"
+        },
+        {
+          "ref": "C3",
+          "pin": "2"
+        },
+        {
+          "ref": "C4",
+          "pin": "2"
+        },
+        {
+          "ref": "C5",
+          "pin": "2"
+        },
+        {
+          "ref": "R4",
+          "pin": "2"
+        }
+      ]
+    },
+    {
+      "name": "FB_NODE",
+      "type": "local",
+      "sheet": "Buck_Converter_5V",
+      "connections": [
+        {
+          "ref": "U1",
+          "pin": "2",
+          "pin_name": "FB"
+        },
+        {
+          "ref": "R3",
+          "pin": "2"
+        },
+        {
+          "ref": "R4",
+          "pin": "1"
+        },
+        {
+          "ref": "C6",
+          "pin": "2"
+        }
+      ]
+    },
+    {
+      "name": "VOUT_5V",
+      "type": "local",
+      "sheet": "Buck_Converter_5V",
+      "connections": [
+        {
+          "ref": "U1",
+          "pin": "3",
+          "pin_name": "VOUT"
+        },
+        {
+          "ref": "L1",
+          "pin": "2"
+        },
+        {
+          "ref": "C5",
+          "pin": "1"
+        },
+        {
+          "ref": "R3",
+          "pin": "1"
+        },
+        {
+          "ref": "C6",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "SW_NODE",
+      "type": "local",
+      "sheet": "Buck_Converter_5V",
+      "connections": [
+        {
+          "ref": "U1",
+          "pin": "6",
+          "pin_name": "SW"
+        },
+        {
+          "ref": "L1",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "VOUT_5V",
+      "type": "local",
+      "sheet": "5V_Output",
+      "connections": [
+        {
+          "ref": "J2",
+          "pin": "1",
+          "pin_name": "Pin_1"
+        },
+        {
+          "ref": "C7",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "GND",
+      "type": "power",
+      "sheet": "5V_Output",
+      "connections": [
+        {
+          "ref": "J2",
+          "pin": "2",
+          "pin_name": "Pin_2"
+        },
+        {
+          "ref": "C7",
+          "pin": "2"
+        }
+      ]
+    },
+    {
+      "name": "VBUS_USBC",
+      "type": "hierarchical",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin_name": "VBUS",
+          "sheet": "USB_C_Input"
+        },
+        {
+          "ref": "C1",
+          "pin": "1",
+          "sheet": "USB_C_Input"
+        },
+        {
+          "ref": "C2",
+          "pin": "1",
+          "sheet": "USB_C_Input"
+        },
+        {
+          "ref": "U1",
+          "pin_name": "VIN",
+          "sheet": "Buck_Converter_5V"
+        },
+        {
+          "ref": "U1",
+          "pin_name": "EN",
+          "sheet": "Buck_Converter_5V"
+        },
+        {
+          "ref": "U1",
+          "pin_name": "VCC",
+          "sheet": "Buck_Converter_5V"
+        },
+        {
+          "ref": "C3",
+          "pin": "1",
+          "sheet": "Buck_Converter_5V"
+        },
+        {
+          "ref": "C4",
+          "pin": "1",
+          "sheet": "Buck_Converter_5V"
+        }
+      ]
+    },
+    {
+      "name": "VOUT_5V",
+      "type": "hierarchical",
+      "connections": [
+        {
+          "ref": "U1",
+          "pin_name": "VOUT",
+          "sheet": "Buck_Converter_5V"
+        },
+        {
+          "ref": "L1",
+          "pin": "2",
+          "sheet": "Buck_Converter_5V"
+        },
+        {
+          "ref": "C5",
+          "pin": "1",
+          "sheet": "Buck_Converter_5V"
+        },
+        {
+          "ref": "R3",
+          "pin": "1",
+          "sheet": "Buck_Converter_5V"
+        },
+        {
+          "ref": "C6",
+          "pin": "1",
+          "sheet": "Buck_Converter_5V"
+        },
+        {
+          "ref": "J2",
+          "pin": "1",
+          "pin_name": "Pin_1",
+          "sheet": "5V_Output"
+        },
+        {
+          "ref": "C7",
+          "pin": "1",
+          "sheet": "5V_Output"
+        }
+      ]
+    },
+    {
+      "name": "GND",
+      "type": "global",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin_name": "GND",
+          "sheet": "USB_C_Input"
+        },
+        {
+          "ref": "C1",
+          "pin": "2",
+          "sheet": "USB_C_Input"
+        },
+        {
+          "ref": "C2",
+          "pin": "2",
+          "sheet": "USB_C_Input"
+        },
+        {
+          "ref": "R1",
+          "pin": "2",
+          "sheet": "USB_C_Input"
+        },
+        {
+          "ref": "R2",
+          "pin": "2",
+          "sheet": "USB_C_Input"
+        },
+        {
+          "ref": "U1",
+          "pin_name": "PGND",
+          "sheet": "Buck_Converter_5V"
+        },
+        {
+          "ref": "U1",
+          "pin_name": "AGND",
+          "sheet": "Buck_Converter_5V"
+        },
+        {
+          "ref": "U1",
+          "pin_name": "PGND",
+          "sheet": "Buck_Converter_5V",
+          "pin": "EP"
+        },
+        {
+          "ref": "C3",
+          "pin": "2",
+          "sheet": "Buck_Converter_5V"
+        },
+        {
+          "ref": "C4",
+          "pin": "2",
+          "sheet": "Buck_Converter_5V"
+        },
+        {
+          "ref": "C5",
+          "pin": "2",
+          "sheet": "Buck_Converter_5V"
+        },
+        {
+          "ref": "R4",
+          "pin": "2",
+          "sheet": "Buck_Converter_5V"
+        },
+        {
+          "ref": "J2",
+          "pin": "2",
+          "pin_name": "Pin_2",
+          "sheet": "5V_Output"
+        },
+        {
+          "ref": "C7",
+          "pin": "2",
+          "sheet": "5V_Output"
+        }
+      ]
+    }
+  ]
+}

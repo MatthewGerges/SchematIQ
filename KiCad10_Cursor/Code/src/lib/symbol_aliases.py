@@ -56,6 +56,12 @@ def normalize_symbol_lookup(part_after_alias):
         return "Device:LED"
     if p.startswith("Transistor_FET:"):
         return "Transistor_FET:Q_NMOS_GDS"
+    if p.startswith("Transistor_NPN_BJT:"):
+        return "Transistor_BJT:" + p.split(":", 1)[1]
+    if p.startswith("Transistor_PNP_BJT:"):
+        return "Transistor_BJT:" + p.split(":", 1)[1]
+    if p.startswith("Diode:D_"):
+        return "Device:" + p.split(":", 1)[1]
     if p == "Connector:1x01":
         return "Connector_Generic:Conn_01x01"
     if p == "Connector:1x02":

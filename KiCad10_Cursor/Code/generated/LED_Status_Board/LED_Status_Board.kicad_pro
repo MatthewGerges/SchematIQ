@@ -1,0 +1,29 @@
+{
+  "meta": {
+    "filename": "LED_Status_Board.kicad_pro",
+    "version": 2
+  },
+  "schematic": {
+    "annotate_start_num": 0,
+    "bom_fmt_settings": {
+      "field_delimiter": ",",
+      "name": "CSV",
+      "ref_delimiter": ",",
+      "string_delimiter": "\""
+    },
+    "connection_grid_size": 50.0,
+    "drawing": {},
+    "page_layout_descr_file": ""
+  },
+  "sheets": [
+    [
+      "c6000b51-2688-43c6-820c-018eab0d0bf9",
+      "Root"
+    ],
+    [
+      "dc4c66bf-ef51-4d39-a61a-4d246c16eb8a",
+      "LED_Status_Board"
+    ]
+  ],
+  "text_variables": {}
+}

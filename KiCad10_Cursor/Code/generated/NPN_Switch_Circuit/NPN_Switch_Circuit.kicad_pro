@@ -1,0 +1,29 @@
+{
+  "meta": {
+    "filename": "NPN_Switch_Circuit.kicad_pro",
+    "version": 2
+  },
+  "schematic": {
+    "annotate_start_num": 0,
+    "bom_fmt_settings": {
+      "field_delimiter": ",",
+      "name": "CSV",
+      "ref_delimiter": ",",
+      "string_delimiter": "\""
+    },
+    "connection_grid_size": 50.0,
+    "drawing": {},
+    "page_layout_descr_file": ""
+  },
+  "sheets": [
+    [
+      "5f3ef3c1-9bcd-4eeb-a830-1f414113c7fb",
+      "Root"
+    ],
+    [
+      "1bec98bb-4bf6-40ff-bfe0-ef8ccfd09211",
+      "Simple_NPN_Switch"
+    ]
+  ],
+  "text_variables": {}
+}

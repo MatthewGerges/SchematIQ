@@ -1,0 +1,29 @@
+{
+  "meta": {
+    "filename": "USB_C_Input.kicad_pro",
+    "version": 2
+  },
+  "schematic": {
+    "annotate_start_num": 0,
+    "bom_fmt_settings": {
+      "field_delimiter": ",",
+      "name": "CSV",
+      "ref_delimiter": ",",
+      "string_delimiter": "\""
+    },
+    "connection_grid_size": 50.0,
+    "drawing": {},
+    "page_layout_descr_file": ""
+  },
+  "sheets": [
+    [
+      "8e80fcc4-b4c4-4444-97a4-dc39c0d7a616",
+      "Root"
+    ],
+    [
+      "649a47dc-24a9-43eb-a763-797588736919",
+      "USB_C_Input"
+    ]
+  ],
+  "text_variables": {}
+}

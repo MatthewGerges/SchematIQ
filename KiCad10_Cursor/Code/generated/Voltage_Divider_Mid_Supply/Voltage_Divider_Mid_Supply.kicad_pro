@@ -1,0 +1,29 @@
+{
+  "meta": {
+    "filename": "Voltage_Divider_Mid_Supply.kicad_pro",
+    "version": 2
+  },
+  "schematic": {
+    "annotate_start_num": 0,
+    "bom_fmt_settings": {
+      "field_delimiter": ",",
+      "name": "CSV",
+      "ref_delimiter": ",",
+      "string_delimiter": "\""
+    },
+    "connection_grid_size": 50.0,
+    "drawing": {},
+    "page_layout_descr_file": ""
+  },
+  "sheets": [
+    [
+      "dae9425d-9af4-4895-b12d-7e54135579e8",
+      "Root"
+    ],
+    [
+      "0f304486-560c-427e-9938-819738d056c7",
+      "Voltage_Divider"
+    ]
+  ],
+  "text_variables": {}
+}

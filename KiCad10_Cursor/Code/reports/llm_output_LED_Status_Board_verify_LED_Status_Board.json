@@ -1,0 +1,14 @@
+{
+  "missing_components": [],
+  "extra_components": [],
+  "missing_nets": [],
+  "pin_errors": [],
+  "summary": {
+    "components_expected": 8,
+    "components_placed": 8,
+    "missing_components": 0,
+    "missing_nets": 0,
+    "pin_errors": 0
+  },
+  "ok": true
+}

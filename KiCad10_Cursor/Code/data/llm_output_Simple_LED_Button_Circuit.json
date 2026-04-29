@@ -1,0 +1,179 @@
+{
+  "project_name": "Simple_LED_Button_Circuit",
+  "description": "A basic 3.3V LED indicator circuit with one pushbutton input.",
+  "sheets": [
+    {
+      "name": "Simple_LED_Button",
+      "file": "Simple_LED_Button.kicad_sch",
+      "page": 1
+    }
+  ],
+  "components": [
+    {
+      "ref": "D1",
+      "part": "Device:LED",
+      "sheet": "Simple_LED_Button",
+      "note": "Red LED indicator",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "K",
+          "net": "LED_OUT"
+        },
+        {
+          "pin": "2",
+          "pin_name": "A",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "SW1",
+      "part": "SW_Push",
+      "sheet": "Simple_LED_Button",
+      "note": "Normally-open pushbutton",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "1",
+          "net": "BTN_IN"
+        },
+        {
+          "pin": "2",
+          "pin_name": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "J1",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "Simple_LED_Button",
+      "note": "3.3V Power Input",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "Pin_1",
+          "net": "3V3"
+        },
+        {
+          "pin": "2",
+          "pin_name": "Pin_2",
+          "net": "GND"
+        }
+      ]
+    }
+  ],
+  "passives": [
+    {
+      "ref": "R1",
+      "type": "R",
+      "value": "330",
+      "sheet": "Simple_LED_Button",
+      "purpose": "LED current-limiting resistor",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "3V3"
+        },
+        {
+          "pin": "2",
+          "net": "LED_OUT"
+        }
+      ]
+    },
+    {
+      "ref": "R2",
+      "type": "R",
+      "value": "10K",
+      "sheet": "Simple_LED_Button",
+      "purpose": "Pushbutton pull-up resistor",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "3V3"
+        },
+        {
+          "pin": "2",
+          "net": "BTN_IN"
+        }
+      ]
+    }
+  ],
+  "nets": [
+    {
+      "name": "3V3",
+      "type": "power",
+      "sheet": "Simple_LED_Button",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "1",
+          "pin_name": "Pin_1"
+        },
+        {
+          "ref": "R1",
+          "pin": "1"
+        },
+        {
+          "ref": "R2",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "GND",
+      "type": "power",
+      "sheet": "Simple_LED_Button",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "2",
+          "pin_name": "Pin_2"
+        },
+        {
+          "ref": "D1",
+          "pin": "2",
+          "pin_name": "A"
+        },
+        {
+          "ref": "SW1",
+          "pin": "2",
+          "pin_name": "2"
+        }
+      ]
+    },
+    {
+      "name": "LED_OUT",
+      "type": "local",
+      "sheet": "Simple_LED_Button",
+      "connections": [
+        {
+          "ref": "R1",
+          "pin": "2"
+        },
+        {
+          "ref": "D1",
+          "pin": "1",
+          "pin_name": "K"
+        }
+      ]
+    },
+    {
+      "name": "BTN_IN",
+      "type": "local",
+      "sheet": "Simple_LED_Button",
+      "connections": [
+        {
+          "ref": "R2",
+          "pin": "2"
+        },
+        {
+          "ref": "SW1",
+          "pin": "1",
+          "pin_name": "1"
+        }
+      ]
+    }
+  ]
+}

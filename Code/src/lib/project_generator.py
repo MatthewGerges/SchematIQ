@@ -2,8 +2,10 @@
 
 import json
 import math
-import uuid
 import os
+import re
+import uuid
+from pathlib import Path
 
 
 # ─── Layout constants for root schematic ─────────────────────────────────────
@@ -201,3 +203,86 @@ def _write_sym_lib_table(output_dir: str) -> None:
 
     with open(table_path, "w", encoding="utf-8") as f:
         f.writelines(lines)
+
+
+def collect_footprint_library_nicks_from_schematics(output_dir: str) -> set[str]:
+    """Scan ``*.kicad_sch`` under *output_dir* for ``Footprint`` / ``(footprint ...)`` ``Lib:Name`` prefixes."""
+    nicks: set[str] = set()
+    root = Path(output_dir)
+    if not root.is_dir():
+        return nicks
+    for path in root.rglob("*.kicad_sch"):
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        for m in re.finditer(r'\(property\s+"Footprint"\s+"([^"]*)"', text):
+            fp = (m.group(1) or "").strip()
+            if ":" in fp:
+                nicks.add(fp.split(":", 1)[0].strip())
+        for m in re.finditer(r'\(footprint\s+"([^"]*)"', text):
+            fp = (m.group(1) or "").strip()
+            if ":" in fp:
+                nicks.add(fp.split(":", 1)[0].strip())
+    return nicks
+
+
+def _footprint_default_passive_libs() -> set[str]:
+    """Nicknames referenced by ``config/footprint_defaults.json``."""
+    nicks: set[str] = set()
+    code_root = Path(__file__).resolve().parents[2]
+    cfg_path = code_root / "config" / "footprint_defaults.json"
+    try:
+        data = json.loads(cfg_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return nicks
+    for v in (data.get("passive_footprints") or {}).values():
+        s = str(v).strip()
+        if ":" in s:
+            nicks.add(s.split(":", 1)[0].strip())
+    return nicks
+
+
+def write_fp_lib_table(output_dir: str) -> None:
+    """Write project-local ``fp-lib-table`` with ``${KIPRJMOD}/...`` URIs to ``.pretty`` dirs."""
+    from src.lib.kicad_library_paths import (
+        official_kicad_footprints_root,
+        fp_lib_uri_base_for_generated_project,
+    )
+
+    fp_root = official_kicad_footprints_root()
+    if not fp_root:
+        print("  (fp-lib-table) No kicad-footprints clone found; skipping fp-lib-table.")
+        return
+
+    os.makedirs(output_dir, exist_ok=True)
+    nicks = collect_footprint_library_nicks_from_schematics(output_dir) | _footprint_default_passive_libs()
+    if not nicks:
+        print("  (fp-lib-table) No footprint libraries referenced; skipping fp-lib-table.")
+        return
+
+    base = fp_lib_uri_base_for_generated_project(output_dir)
+    rows: list[tuple[str, str]] = []
+    for nick in sorted(nicks):
+        if not nick:
+            continue
+        pretty_fs = os.path.join(fp_root, f"{nick}.pretty")
+        if not os.path.isdir(pretty_fs):
+            continue
+        uri = f"{base}/{nick}.pretty"
+        rows.append((nick, uri))
+
+    if not rows:
+        print("  (fp-lib-table) No matching .pretty directories on disk; skipping fp-lib-table.")
+        return
+
+    table_path = os.path.join(output_dir, "fp-lib-table")
+    lines = ["(fp_lib_table\n"]
+    for name, uri in rows:
+        lines.append(
+            f'  (lib (name "{name}") (type "KiCad") (uri "{uri}") (options "") (descr ""))\n'
+        )
+    lines.append(")\n")
+    with open(table_path, "w", encoding="utf-8") as f:
+        f.writelines(lines)
+    print(f"  (fp-lib-table) Wrote {table_path} ({len(rows)} libraries)")

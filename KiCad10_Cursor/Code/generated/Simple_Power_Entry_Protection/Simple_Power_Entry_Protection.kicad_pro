@@ -1,0 +1,29 @@
+{
+  "meta": {
+    "filename": "Simple_Power_Entry_Protection.kicad_pro",
+    "version": 2
+  },
+  "schematic": {
+    "annotate_start_num": 0,
+    "bom_fmt_settings": {
+      "field_delimiter": ",",
+      "name": "CSV",
+      "ref_delimiter": ",",
+      "string_delimiter": "\""
+    },
+    "connection_grid_size": 50.0,
+    "drawing": {},
+    "page_layout_descr_file": ""
+  },
+  "sheets": [
+    [
+      "d7503de0-da4a-4de9-94a5-3dd26b29d344",
+      "Root"
+    ],
+    [
+      "fabc8469-cf29-4754-8e4f-4caec5e0894b",
+      "Power_Entry_Protection"
+    ]
+  ],
+  "text_variables": {}
+}

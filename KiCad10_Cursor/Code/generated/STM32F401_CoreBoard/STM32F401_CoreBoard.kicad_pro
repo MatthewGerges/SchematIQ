@@ -1,0 +1,41 @@
+{
+  "meta": {
+    "filename": "STM32F401_CoreBoard.kicad_pro",
+    "version": 2
+  },
+  "schematic": {
+    "annotate_start_num": 0,
+    "bom_fmt_settings": {
+      "field_delimiter": ",",
+      "name": "CSV",
+      "ref_delimiter": ",",
+      "string_delimiter": "\""
+    },
+    "connection_grid_size": 50.0,
+    "drawing": {},
+    "page_layout_descr_file": ""
+  },
+  "sheets": [
+    [
+      "ea485d08-7742-408b-a5ce-3f12c68439a0",
+      "Root"
+    ],
+    [
+      "24fb41b0-e591-4560-9dff-75e7eb9564a2",
+      "Power_Input"
+    ],
+    [
+      "8b06b5ca-8ec4-498f-b332-d56ebd48eb56",
+      "MCU_Core"
+    ],
+    [
+      "36909af5-c9cb-440b-bfab-45fe10eee616",
+      "Connectivity"
+    ],
+    [
+      "d7e42238-da34-4ac3-899f-a4348ffbdad0",
+      "Peripherals"
+    ]
+  ],
+  "text_variables": {}
+}

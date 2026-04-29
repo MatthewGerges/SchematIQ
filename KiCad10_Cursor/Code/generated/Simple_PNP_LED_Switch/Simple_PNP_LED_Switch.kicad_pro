@@ -1,0 +1,29 @@
+{
+  "meta": {
+    "filename": "Simple_PNP_LED_Switch.kicad_pro",
+    "version": 2
+  },
+  "schematic": {
+    "annotate_start_num": 0,
+    "bom_fmt_settings": {
+      "field_delimiter": ",",
+      "name": "CSV",
+      "ref_delimiter": ",",
+      "string_delimiter": "\""
+    },
+    "connection_grid_size": 50.0,
+    "drawing": {},
+    "page_layout_descr_file": ""
+  },
+  "sheets": [
+    [
+      "be8dd6ed-0a16-4f5b-8629-0ed3b09c7934",
+      "Root"
+    ],
+    [
+      "3b49b36f-b90c-4588-a776-2d28e27530be",
+      "Simple_PNP_LED_Switch"
+    ]
+  ],
+  "text_variables": {}
+}

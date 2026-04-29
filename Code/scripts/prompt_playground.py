@@ -123,9 +123,11 @@ circuits, and verify every pin connection before committing a design.
 ## Your Workflow
 
 1. Greet the user.
-2. Ask: "Would you like me to walk you through each design decision, or should \
-I make the decisions myself and present my reasoning for you to approve?"
-3. Based on their answer, gather requirements:
+   - If they may want to continue an existing schematic, ask which project they want to modify before proceeding.
+2. If the user already gave a clear circuit request, proceed directly with reasonable defaults.
+   - Do NOT ask for permission to proceed.
+   - Ask follow-up questions only when required information is truly missing.
+3. Gather requirements only as needed:
    - What is the board for? What does it need to do?
    - Key constraints: cost, size, power, interfaces?
    - Any specific ICs or parts they want to use?
@@ -142,8 +144,15 @@ you MUST follow the Per-IC Design Checklist below BEFORE outputting any JSON.
    - The GND power net with all ground connections across all sheets
    - Output these as a final JSON code block
 7. After the design is captured, remind them they can type **gen** (or **done**) to rebuild \
-KiCad/tscircuit, and **check** to run symbol validation plus electrical review (report JSON \
+KiCad, and **check** to run symbol validation plus electrical review (report JSON \
 under `reports/`), without leaving the chat.
+
+## Response style (very important)
+
+- Keep responses compact and easy to scan.
+- By default, use at most one short paragraph plus 3-6 bullets before JSON.
+- Do not dump long step-by-step IC theory unless the user explicitly asks for deep explanation.
+- Prefer concrete decisions and valid JSON over long narration.
 
 ## Schematic iteration & debugging (anytime)
 
@@ -218,6 +227,8 @@ array listing **every** hierarchical sheet; (2) one **`sheet_design`** block per
 sheet (including the main converter sheet, not only power input); (3) \
 **`cross_sheet_nets`** for nets that cross sheets. If you only output one sheet, \
 the generator will only build that one sheet.
+
+If the user asks for **gen / done / build** too early, do **not** fail: explain exactly what is still missing and continue guiding them. If the design is already sufficient, explicitly confirm it is safe to generate.
 
 ## JSON Output Format
 
@@ -325,8 +336,9 @@ L=inductor, D=diode, FB=ferrite bead
 restarting per sheet)
 - Use your own electronics knowledge for design decisions — do not ask the user \
 for technical details you should know as an EE
-- If the user wants a walkthrough, explain your reasoning before outputting JSON
-- Keep conversational responses concise but informative
+- If the user wants a walkthrough, explain your reasoning briefly before outputting JSON
+- Keep conversational responses concise and practical.
+- For straightforward requests, avoid long design essays; emit JSON blocks quickly.
 - NEVER skip the Per-IC Design Checklist. If you skip it, the design WILL have \
 errors. Walk through Steps A–F for every IC before emitting JSON.
 - When "design_notes" gives a specific value (e.g. 249K for 3.3V), use THAT \
@@ -336,6 +348,13 @@ datasheet pin function (e.g. **OUT**, **IN+**, **IN-**, **VDD**, **VSS**, **SW**
 **GND**). The schematic generator maps nets to KiCad symbols by **name** when \
 possible (especially op-amps), because package pin **numbers** often differ \
 between the datasheet and the KiCad library.
+- For a simple momentary pushbutton, default to **`Switch:SW_Push`** (2-pin logical symbol).
+  Do **not** use 4-pin tactile footprint symbols unless the user explicitly asks for a specific footprint/package.
+- For LED indicators, default to **`Device:LED`** with **pin 1 = K (cathode)** and **pin 2 = A (anode)**.
+  Ensure net assignment matches this polarity.
+- For standalone single-sheet demos, include explicit connector symbols for external interfaces
+  (power rails and control I/O), e.g. `Connector_Generic:Conn_01x02` for 5V/GND and
+  `Connector_Generic:Conn_01x01` for single logic input nets.
 - Double-check voltage rails: if two power pins exist on an IC (e.g. VDD and \
 VUSB), verify they connect to the correct voltage. Read "critical_notes" \
 carefully.
@@ -655,6 +674,7 @@ def _compact_check_json_for_chat(
         "full_report_file": str(report_path),
         "source_project_json": consolidated["source_project_json"],
         "symbol_validation": consolidated["symbol_validation"],
+        "footprint_validation": consolidated.get("footprint_validation"),
         "electrical": {
             "finding_counts": merged.get("finding_counts"),
             "human_summary": merged.get("human_summary"),
@@ -668,19 +688,24 @@ def _compact_check_json_for_chat(
 
 
 def cmd_schematic_check(console: Console, state: ProjectState) -> None:
-    """Symbol preflight + 2-LLM review; one JSON file + Rich summary + JSON snippet in chat."""
+    """Symbol + footprint preflight + 2-LLM review; one JSON file + Rich summary + JSON snippet in chat."""
     from src.lib.electrical_review_llm import run_two_llm_review
+    from src.lib.footprint_preflight import validate_footprints_in_llm_data
     from src.lib.symbol_preflight import validate_components_in_llm_data
 
     json_path = save_project(state)
     with open(json_path, encoding="utf-8") as f:
         data = json.load(f)
 
-    console.print("[dim]1/2 KiCad symbol resolution (local)…[/]")
+    console.print("[dim]1/3 KiCad symbol resolution (local)…[/]")
     sym_errors = validate_components_in_llm_data(data, print_ok=False)
     sym_ok = len(sym_errors) == 0
 
-    console.print("[dim]2/2 2-LLM electrical review (Gemini)…[/]")
+    console.print("[dim]2/3 Footprint resolution (kicad-footprints clone)…[/]")
+    fp_errors = validate_footprints_in_llm_data(data, print_ok=False) if sym_ok else []
+    fp_ok = len(fp_errors) == 0
+
+    console.print("[dim]3/3 2-LLM electrical review (Gemini)…[/]")
     er_report = run_two_llm_review(data)
 
     report_dir = ROOT / "reports"
@@ -694,6 +719,12 @@ def cmd_schematic_check(console: Console, state: ProjectState) -> None:
             "ok": sym_ok,
             "error_count": len(sym_errors),
             "errors": sym_errors,
+        },
+        "footprint_validation": {
+            "ok": fp_ok,
+            "skipped": not sym_ok,
+            "error_count": len(fp_errors),
+            "errors": fp_errors,
         },
         "electrical_review": er_report,
     }
@@ -712,6 +743,24 @@ def cmd_schematic_check(console: Console, state: ProjectState) -> None:
         else "[yellow]" + "\n".join(sym_errors[:20]) + ("[/]\n[dim]…[/]" if len(sym_errors) > 20 else "[/]")
     )
     console.print(Panel(sym_panel, title="Symbol validation", border_style="green" if sym_ok else "yellow"))
+
+    if sym_ok:
+        fp_panel = (
+            "[green]All resolved footprints exist under kicad-footprints.[/]"
+            if fp_ok
+            else "[yellow]"
+            + "\n".join(fp_errors[:20])
+            + ("[/]\n[dim]…[/]" if len(fp_errors) > 20 else "[/]")
+        )
+        console.print(
+            Panel(
+                fp_panel,
+                title="Footprint validation",
+                border_style="green" if fp_ok else "yellow",
+            )
+        )
+    else:
+        console.print(Panel("[dim]Skipped (fix symbols first).[/]", title="Footprint validation", border_style="dim"))
 
     el_lines = [
         f"[accent]{report_path}[/]",
@@ -739,7 +788,8 @@ def cmd_schematic_check(console: Console, state: ProjectState) -> None:
 
 
 def cmd_validate_symbols(console: Console, state: ProjectState) -> None:
-    """Fast symbol resolution only; small JSON under reports/."""
+    """Fast symbol + footprint resolution; small JSON under reports/."""
+    from src.lib.footprint_preflight import validate_footprints_in_llm_data
     from src.lib.symbol_preflight import validate_components_in_llm_data
 
     json_path = save_project(state)
@@ -747,6 +797,8 @@ def cmd_validate_symbols(console: Console, state: ProjectState) -> None:
         data = json.load(f)
     sym_errors = validate_components_in_llm_data(data, print_ok=False)
     sym_ok = len(sym_errors) == 0
+    fp_errors = validate_footprints_in_llm_data(data, print_ok=False) if sym_ok else []
+    fp_ok = len(fp_errors) == 0
 
     report_dir = ROOT / "reports"
     report_dir.mkdir(parents=True, exist_ok=True)
@@ -754,17 +806,28 @@ def cmd_validate_symbols(console: Console, state: ProjectState) -> None:
     payload = {
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "source_project_json": str(json_path.resolve()),
-        "ok": sym_ok,
-        "error_count": len(sym_errors),
-        "errors": sym_errors,
+        "ok": sym_ok and fp_ok,
+        "symbol_ok": sym_ok,
+        "footprint_ok": fp_ok,
+        "error_count": len(sym_errors) + len(fp_errors),
+        "symbol_errors": sym_errors,
+        "footprint_errors": fp_errors,
+        "errors": sym_errors + fp_errors,
     }
     with open(report_path, "w", encoding="utf-8") as wf:
         json.dump(payload, wf, indent=2)
         wf.write("\n")
 
     body = f"[accent]{report_path}[/]\n\n"
-    body += "[green]OK — all symbols resolve.[/]" if sym_ok else "[yellow]" + "\n".join(sym_errors) + "[/]"
-    console.print(Panel(body, title="Symbol validation", border_style="green" if sym_ok else "yellow"))
+    if sym_ok and fp_ok:
+        body += "[green]OK — symbols and footprints resolve.[/]"
+    elif not sym_ok:
+        body += "[yellow]" + "\n".join(sym_errors) + "[/]"
+    else:
+        body += "[green]Symbols OK.[/]\n[yellow]" + "\n".join(fp_errors) + "[/]"
+    console.print(
+        Panel(body, title="Validation", border_style="green" if sym_ok and fp_ok else "yellow")
+    )
     console.print(
         Panel(
             Syntax(json.dumps(payload, indent=2), "json", theme="monokai", word_wrap=True),

@@ -1,13 +1,17 @@
 """
-Locate official KiCad symbol libraries inside the repo (clone).
+Locate official KiCad symbol and footprint libraries inside the repo (clones).
 
-Prefer ``<repo>/component_database/kicad-symbols`` (see README clone instructions),
-then fall back to ``<repo>/KICAD_Library/kicad-symbols``.
+Symbols: prefer ``<repo>/component_database/kicad-symbols``, then
+``<repo>/KICAD_Library/kicad-symbols``.
 
-KiCad upstream ships either:
-  - legacy **packed** libraries: ``Device.kicad_sym`` (many symbols per file), or
-  - **unpacked** git layout: ``Device.kicad_symdir/*.kicad_sym`` (matches KiCad’s
-    library names in the symbol chooser).
+Footprints: prefer ``<repo>/component_database/kicad-footprints``, then
+``<repo>/KICAD_Library/kicad-footprints`` (``.pretty`` trees from GitLab).
+
+Optional 3D models: ``component_database/kicad-packages3d`` or
+``KICAD_Library/kicad-packages3d``.
+
+KiCad symbols ship either as packed ``Device.kicad_sym`` or unpacked
+``Device.kicad_symdir/*.kicad_sym``.
 """
 
 from __future__ import annotations
@@ -21,7 +25,8 @@ _CODE_ROOT = os.path.dirname(os.path.dirname(_SCRIPT_DIR))
 
 def _discover_repo_root() -> str:
     """
-    Directory that contains ``component_database/kicad-symbols`` or ``KICAD_Library/kicad-symbols``.
+    Directory that contains official KiCad library clones under ``component_database/`` or
+    ``KICAD_Library/`` (symbols, footprints, or 3D packages).
 
     Supports both ``<repo>/Code/`` and ``<repo>/KiCad10_Cursor/Code/`` layouts by walking parents
     of *Code* until a marker path exists, then defaulting to the parent of *Code*.
@@ -31,6 +36,10 @@ def _discover_repo_root() -> str:
         for rel in (
             ("component_database", "kicad-symbols"),
             ("KICAD_Library", "kicad-symbols"),
+            ("component_database", "kicad-footprints"),
+            ("KICAD_Library", "kicad-footprints"),
+            ("component_database", "kicad-packages3d"),
+            ("KICAD_Library", "kicad-packages3d"),
         ):
             root = os.path.join(p, *rel)
             if not os.path.isdir(root):
@@ -134,6 +143,71 @@ def sym_lib_uri_base_for_generated_project(output_dir: str) -> str:
         return "${KIPRJMOD}/" + rel.replace(os.sep, "/")
     # Legacy layout string if nothing cloned yet
     return "${KIPRJMOD}/../../KICAD_Library/kicad-symbols"
+
+
+def official_kicad_footprints_root() -> str | None:
+    """Return the first existing official footprint tree (``.pretty`` parents), or None."""
+    for rel in (
+        ("component_database", "kicad-footprints"),
+        ("KICAD_Library", "kicad-footprints"),
+    ):
+        p = os.path.join(_REPO_ROOT, *rel)
+        if os.path.isdir(p):
+            try:
+                if os.listdir(p):
+                    return p
+            except OSError:
+                continue
+    return None
+
+
+def official_kicad_packages3d_root() -> str | None:
+    """Optional KiCad 3D model library root (large clone)."""
+    for rel in (
+        ("component_database", "kicad-packages3d"),
+        ("KICAD_Library", "kicad-packages3d"),
+    ):
+        p = os.path.join(_REPO_ROOT, *rel)
+        if os.path.isdir(p):
+            try:
+                if os.listdir(p):
+                    return p
+            except OSError:
+                continue
+    return None
+
+
+def fp_lib_uri_base_for_generated_project(output_dir: str) -> str:
+    """``${KIPRJMOD}/...`` path to official footprints for ``fp-lib-table``."""
+    fp_root = official_kicad_footprints_root()
+    if fp_root:
+        rel = os.path.relpath(fp_root, os.path.abspath(output_dir))
+        return "${KIPRJMOD}/" + rel.replace(os.sep, "/")
+    return "${KIPRJMOD}/../../KICAD_Library/kicad-footprints"
+
+
+def footprint_mod_path(lib_nick: str, footprint_name: str) -> str | None:
+    """Path to ``Lib.pretty/Footprint.kicad_mod`` if it exists."""
+    root = official_kicad_footprints_root()
+    if not root:
+        return None
+    pretty = os.path.join(root, f"{lib_nick}.pretty")
+    if not os.path.isdir(pretty):
+        return None
+    mod = os.path.join(pretty, f"{footprint_name}.kicad_mod")
+    return mod if os.path.isfile(mod) else None
+
+
+def footprint_string_resolves(fp: str) -> bool:
+    """Return True if ``Lib:Name`` maps to an existing ``.kicad_mod``."""
+    fp = (fp or "").strip()
+    if not fp or ":" not in fp:
+        return False
+    lib, name = fp.split(":", 1)
+    lib, name = lib.strip(), name.strip()
+    if not lib or not name:
+        return False
+    return footprint_mod_path(lib, name) is not None
 
 
 def official_symbol_uri_for_table(lib_nick: str, kiprjmod_base: str) -> tuple[str, bool]:

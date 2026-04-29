@@ -29,6 +29,23 @@ npm run dev
 
 Open the URL printed by Vite.
 
+## Deploy frontend to Vercel (Phase 1)
+
+Set `VITE_API_BASE_URL` to your hosted backend URL.
+
+Example:
+
+```bash
+VITE_API_BASE_URL=https://api.your-domain.com npm run build
+```
+
+In Vercel project settings for this frontend:
+
+- Root Directory: `Code/webui`
+- Build Command: `npm run build`
+- Output Directory: `dist`
+- Environment Variable: `VITE_API_BASE_URL=https://api.your-domain.com`
+
 ## Common error
 
 If the page shows `500` / `ECONNREFUSED 127.0.0.1:5179`, the API server is not running.

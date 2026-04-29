@@ -1,0 +1,144 @@
+{
+  "project_name": "Voltage_Divider_Mid_Supply",
+  "description": "A simple voltage divider circuit to produce a mid-supply analog sense node from a 5V input.",
+  "sheets": [
+    {
+      "name": "Voltage_Divider",
+      "file": "Voltage_Divider.kicad_sch",
+      "page": 1
+    }
+  ],
+  "components": [
+    {
+      "ref": "J1",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "Voltage_Divider",
+      "note": "Power input connector for 5V and GND",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "Pin_1",
+          "net": "5V"
+        },
+        {
+          "pin": "2",
+          "pin_name": "Pin_2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "J2",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "Voltage_Divider",
+      "note": "Output header for DIV_OUT and GND",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "Pin_1",
+          "net": "DIV_OUT"
+        },
+        {
+          "pin": "2",
+          "pin_name": "Pin_2",
+          "net": "GND"
+        }
+      ]
+    }
+  ],
+  "passives": [
+    {
+      "ref": "R1",
+      "type": "R",
+      "value": "10k",
+      "sheet": "Voltage_Divider",
+      "purpose": "Top resistor of voltage divider",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "5V"
+        },
+        {
+          "pin": "2",
+          "net": "DIV_OUT"
+        }
+      ]
+    },
+    {
+      "ref": "R2",
+      "type": "R",
+      "value": "10k",
+      "sheet": "Voltage_Divider",
+      "purpose": "Bottom resistor of voltage divider",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "DIV_OUT"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    }
+  ],
+  "nets": [
+    {
+      "name": "5V",
+      "type": "local",
+      "sheet": "Voltage_Divider",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "1",
+          "pin_name": "Pin_1"
+        },
+        {
+          "ref": "R1",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "GND",
+      "type": "local",
+      "sheet": "Voltage_Divider",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "2",
+          "pin_name": "Pin_2"
+        },
+        {
+          "ref": "R2",
+          "pin": "2"
+        },
+        {
+          "ref": "J2",
+          "pin": "2",
+          "pin_name": "Pin_2"
+        }
+      ]
+    },
+    {
+      "name": "DIV_OUT",
+      "type": "local",
+      "sheet": "Voltage_Divider",
+      "connections": [
+        {
+          "ref": "R1",
+          "pin": "2"
+        },
+        {
+          "ref": "R2",
+          "pin": "1"
+        },
+        {
+          "ref": "J2",
+          "pin": "1",
+          "pin_name": "Pin_1"
+        }
+      ]
+    }
+  ]
+}

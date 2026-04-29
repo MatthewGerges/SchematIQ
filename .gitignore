@@ -28,6 +28,9 @@ node_modules/
 KICAD_Library/kicad-symbols/
 KICAD_Library/kicad-footprints/
 component_database/kicad-symbols/
+component_database/kicad-footprints/
+component_database/kicad-packages3d/
+KICAD_Library/kicad-packages3d/
 
 # External projects (cloned for experimentation; not part of this repo)
 tscircuit/

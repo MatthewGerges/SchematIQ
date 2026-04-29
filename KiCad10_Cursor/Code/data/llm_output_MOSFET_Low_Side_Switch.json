@@ -1,0 +1,218 @@
+{
+  "project_name": "MOSFET_Low_Side_Switch",
+  "description": "A low-side N-channel MOSFET switch for a resistive load, with gate drive and pull-down resistors.",
+  "sheets": [
+    {
+      "name": "MOSFET_Switch",
+      "file": "MOSFET_Switch.kicad_sch",
+      "page": 1
+    }
+  ],
+  "components": [
+    {
+      "ref": "J1",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "MOSFET_Switch",
+      "note": "Power Input Connector",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "5V"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "J2",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "MOSFET_Switch",
+      "note": "Control Input Connector",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "CTRL_IN"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "J3",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "MOSFET_Switch",
+      "note": "Load Connection Connector",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "5V"
+        },
+        {
+          "pin": "2",
+          "net": "LOAD_OUT"
+        }
+      ]
+    },
+    {
+      "ref": "U1",
+      "part": "Transistor_FET:IRLZ44N",
+      "sheet": "MOSFET_Switch",
+      "note": "N-channel Logic-Level MOSFET for low-side switching",
+      "connections": [
+        {
+          "pin": "G",
+          "pin_name": "G",
+          "net": "GATE_DRIVE"
+        },
+        {
+          "pin": "D",
+          "pin_name": "D",
+          "net": "LOAD_OUT"
+        },
+        {
+          "pin": "S",
+          "pin_name": "S",
+          "net": "GND"
+        }
+      ]
+    }
+  ],
+  "passives": [
+    {
+      "ref": "R1",
+      "type": "R",
+      "value": "100R",
+      "sheet": "MOSFET_Switch",
+      "purpose": "Gate current limiting resistor",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "CTRL_IN"
+        },
+        {
+          "pin": "2",
+          "net": "GATE_DRIVE"
+        }
+      ]
+    },
+    {
+      "ref": "R2",
+      "type": "R",
+      "value": "10K",
+      "sheet": "MOSFET_Switch",
+      "purpose": "Gate pull-down resistor",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "GATE_DRIVE"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    }
+  ],
+  "nets": [
+    {
+      "name": "GATE_DRIVE",
+      "type": "local",
+      "sheet": "MOSFET_Switch",
+      "connections": [
+        {
+          "ref": "U1",
+          "pin": "G",
+          "pin_name": "G"
+        },
+        {
+          "ref": "R1",
+          "pin": "2"
+        },
+        {
+          "ref": "R2",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "5V",
+      "type": "hierarchical",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "1",
+          "sheet": "MOSFET_Switch"
+        },
+        {
+          "ref": "J3",
+          "pin": "1",
+          "sheet": "MOSFET_Switch"
+        }
+      ]
+    },
+    {
+      "name": "GND",
+      "type": "hierarchical",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "2",
+          "sheet": "MOSFET_Switch"
+        },
+        {
+          "ref": "J2",
+          "pin": "2",
+          "sheet": "MOSFET_Switch"
+        },
+        {
+          "ref": "R2",
+          "pin": "2",
+          "sheet": "MOSFET_Switch"
+        },
+        {
+          "ref": "U1",
+          "pin": "S",
+          "pin_name": "S",
+          "sheet": "MOSFET_Switch"
+        }
+      ]
+    },
+    {
+      "name": "CTRL_IN",
+      "type": "hierarchical",
+      "connections": [
+        {
+          "ref": "J2",
+          "pin": "1",
+          "sheet": "MOSFET_Switch"
+        },
+        {
+          "ref": "R1",
+          "pin": "1",
+          "sheet": "MOSFET_Switch"
+        }
+      ]
+    },
+    {
+      "name": "LOAD_OUT",
+      "type": "hierarchical",
+      "connections": [
+        {
+          "ref": "J3",
+          "pin": "2",
+          "sheet": "MOSFET_Switch"
+        },
+        {
+          "ref": "U1",
+          "pin": "D",
+          "pin_name": "D",
+          "sheet": "MOSFET_Switch"
+        }
+      ]
+    }
+  ]
+}

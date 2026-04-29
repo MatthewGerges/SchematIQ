@@ -1,0 +1,53 @@
+(kicad_sch
+	(version 20250114)
+	(generator "SchematIQ")
+	(generator_version "9.0")
+	(uuid "5f3ef3c1-9bcd-4eeb-a830-1f414113c7fb")
+	(paper "A4")
+	(lib_symbols)
+
+	(sheet
+		(at 25.0 25.0)
+		(size 45.0 15.0)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(stroke
+			(width 0)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "1bec98bb-4bf6-40ff-bfe0-ef8ccfd09211")
+		(property "Sheetname" "Simple_NPN_Switch"
+			(at 25.0 24.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "Simple_NPN_Switch.kicad_sch"
+			(at 25.0 40.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+	)
+
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+		(path "/1bec98bb-4bf6-40ff-bfe0-ef8ccfd09211"
+			(page "1")
+		)
+	)
+	(embedded_fonts no)
+)

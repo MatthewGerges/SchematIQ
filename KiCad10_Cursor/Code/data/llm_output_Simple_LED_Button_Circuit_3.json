@@ -1,0 +1,179 @@
+{
+  "project_name": "Simple_LED_Button_Circuit",
+  "description": "A basic 5V circuit with a momentary button controlling an LED.",
+  "sheets": [
+    {
+      "name": "Main_Circuit",
+      "file": "Main_Circuit.kicad_sch",
+      "page": 1
+    }
+  ],
+  "components": [
+    {
+      "ref": "J1",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "Main_Circuit",
+      "note": "2-pin connector for 5V power input",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "Pin_1",
+          "net": "VCC_5V"
+        },
+        {
+          "pin": "2",
+          "pin_name": "Pin_2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "S1",
+      "part": "SW_Push",
+      "sheet": "Main_Circuit",
+      "note": "Momentary pushbutton switch",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "1",
+          "net": "VCC_5V"
+        },
+        {
+          "pin": "2",
+          "pin_name": "2",
+          "net": "LED_SIGNAL"
+        }
+      ]
+    },
+    {
+      "ref": "D1",
+      "part": "Device:LED",
+      "sheet": "Main_Circuit",
+      "note": "LED indicator",
+      "connections": [
+        {
+          "pin": "A",
+          "pin_name": "A",
+          "net": "LED_R1_CATHODE"
+        },
+        {
+          "pin": "K",
+          "pin_name": "K",
+          "net": "GND"
+        }
+      ]
+    }
+  ],
+  "passives": [
+    {
+      "ref": "C1",
+      "type": "C",
+      "value": "100nF",
+      "sheet": "Main_Circuit",
+      "purpose": "Input decoupling capacitor",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VCC_5V"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "R1",
+      "type": "R",
+      "value": "330",
+      "sheet": "Main_Circuit",
+      "purpose": "LED current-limiting resistor",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "LED_SIGNAL"
+        },
+        {
+          "pin": "2",
+          "net": "LED_R1_CATHODE"
+        }
+      ]
+    }
+  ],
+  "nets": [
+    {
+      "name": "VCC_5V",
+      "type": "power",
+      "sheet": "Main_Circuit",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "1",
+          "pin_name": "Pin_1"
+        },
+        {
+          "ref": "C1",
+          "pin": "1"
+        },
+        {
+          "ref": "S1",
+          "pin": "1",
+          "pin_name": "1"
+        }
+      ]
+    },
+    {
+      "name": "GND",
+      "type": "power",
+      "sheet": "Main_Circuit",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "2",
+          "pin_name": "Pin_2"
+        },
+        {
+          "ref": "C1",
+          "pin": "2"
+        },
+        {
+          "ref": "D1",
+          "pin": "K",
+          "pin_name": "K"
+        }
+      ]
+    },
+    {
+      "name": "LED_SIGNAL",
+      "type": "local",
+      "sheet": "Main_Circuit",
+      "connections": [
+        {
+          "ref": "S1",
+          "pin": "2",
+          "pin_name": "2"
+        },
+        {
+          "ref": "R1",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "LED_R1_CATHODE",
+      "type": "local",
+      "sheet": "Main_Circuit",
+      "connections": [
+        {
+          "ref": "R1",
+          "pin": "2"
+        },
+        {
+          "ref": "D1",
+          "pin": "A",
+          "pin_name": "A"
+        }
+      ]
+    }
+  ]
+}

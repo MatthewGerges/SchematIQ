@@ -124,6 +124,12 @@ def embed_symbol_from_file(schematic_data, symbol_name, library_path=None, *, li
         print(f"Error: Symbol file not found at {symbol_filepath}")
         return None
     lib_id, symbol_definition = _extract_symbol_from_lib(content)
+    # Unpacked official symbols may use cross-file `(extends "Parent")` in
+    # `.kicad_symdir`; flatten from sibling files so KiCad renders correctly.
+    if lib_id and symbol_definition and '(extends "' in symbol_definition:
+        flat = _resolve_full_symbol_from_symdir(library_path, lib_id)
+        if flat:
+            symbol_definition = flat
     if lib_id and symbol_definition:
         symbol_definition = _sanitize_v10_symbol(symbol_definition)
         # Use Lib:Sym form so KiCad doesn't treat this as library "" (ERC warning).
@@ -207,6 +213,65 @@ def _resolve_full_symbol(content, symbol_name):
         sub_text = '\n\t\t'.join([''] + renamed_subs) + '\n\t'
         result = result[:close] + sub_text + result[close:]
 
+    return result
+
+
+def _resolve_full_symbol_from_symdir(symdir: str, symbol_name: str, _seen: set[str] | None = None):
+    """Resolve one symbol from an unpacked ``*.kicad_symdir`` tree.
+
+    KiCad-10 libraries often store one symbol per file where children use
+    ``(extends "Parent")`` across files. Flatten those parent graphics/pins.
+    """
+    if _seen is None:
+        _seen = set()
+    if symbol_name in _seen:
+        return None
+    _seen.add(symbol_name)
+
+    fp = os.path.join(symdir, f"{symbol_name}.kicad_sym")
+    if not os.path.isfile(fp):
+        return None
+    try:
+        with open(fp, "r", encoding="utf-8") as f:
+            content = f.read()
+    except OSError:
+        return None
+
+    _, child_def = _extract_symbol_from_lib(content)
+    if not child_def:
+        return None
+
+    extends_m = re.search(r'\(extends\s+"([^"]+)"\)', child_def)
+    if not extends_m:
+        return child_def
+
+    parent_name = extends_m.group(1)
+    parent_def = _resolve_full_symbol_from_symdir(symdir, parent_name, _seen)
+    if not parent_def:
+        return child_def
+
+    result = re.sub(r'\n?\s*\(extends\s+"[^"]+"\)', '', child_def, count=1)
+    if '(exclude_from_sim' not in result:
+        result = re.sub(
+            rf'(\(symbol\s+"{re.escape(symbol_name)}")',
+            r'\1\n\t\t(exclude_from_sim no)\n\t\t(in_bom yes)\n\t\t(on_board yes)',
+            result,
+            count=1,
+        )
+    if '(embedded_fonts' not in result and '(embedded_fonts' in parent_def:
+        ef_m = re.search(r'\(embedded_fonts\s+\w+\)', parent_def)
+        if ef_m:
+            close = result.rfind(')')
+            result = result[:close] + f'\t\t{ef_m.group(0)}\n\t' + result[close:]
+
+    sub_blocks = _extract_sub_symbols(parent_def, parent_name)
+    renamed_subs = []
+    for sub in sub_blocks:
+        renamed_subs.append(sub.replace(f'"{parent_name}_', f'"{symbol_name}_'))
+    if renamed_subs:
+        close = result.rfind(')')
+        sub_text = '\n\t\t'.join([''] + renamed_subs) + '\n\t'
+        result = result[:close] + sub_text + result[close:]
     return result
 
 

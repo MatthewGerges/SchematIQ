@@ -10,7 +10,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from src.lib import kicad_api, symbol_resolver
+from src.lib import footprint_resolver, kicad_api, symbol_resolver
 from src.lib.kicad_library_paths import (
     find_unpacked_symbol_file,
     official_kicad_symbols_root,
@@ -39,10 +39,11 @@ def _snap(v: float) -> float:
 def _snap_pt(x: float, y: float) -> tuple[float, float]:
     return (_snap(x), _snap(y))
 
+
 # Algorithmic layout grid (all passives placed horizontally)
 PASSIVE_X_START = 80.01       # x center of first column (snapped by _snap anyway)
 PASSIVE_Y_START = 34.29       # y of first row (27 * 1.27 mm)
-PASSIVE_Y_SPACING = 15.24    # mm between rows
+PASSIVE_Y_SPACING = 17.78    # mm between rows (extra grid vs. dense overlap)
 PASSIVE_MAX_ROWS = 10        # rows per column before wrapping
 PASSIVE_COL_SPACING = 80.0   # mm between columns
 
@@ -51,6 +52,13 @@ MAIN_COMP_X = 199.39         # 157 * 1.27 mm
 MAIN_COMP_Y = 99.06          # 78 * 1.27 mm
 # Horizontal spacing between main components when there are several
 MAIN_COMP_X_SPACING = 40.0
+
+_CONNECTOR_FOOTPRINT_DEFAULTS = {
+    "Connector_Generic:Conn_01x01": "Connector_PinHeader_2.54mm:PinHeader_1x01_P2.54mm_Vertical",
+    "Connector_Generic:Conn_01x02": "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical",
+    "Connector_Generic:Conn_01x03": "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical",
+    "Connector_Generic:Conn_01x04": "Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical",
+}
 
 
 # =============================================================================
@@ -344,6 +352,59 @@ def _add_hierarchical_label(schematic_data, text, position,
     })
 
 
+def _label_dy_nudge(ref: str) -> float:
+    """Small vertical offset so adjacent net labels are less likely to overlap."""
+    if not ref:
+        return 0.0
+    h = sum(ord(c) for c in ref) % 3
+    return float(h - 1) * GRID_MM
+
+
+def _ensure_power_gnd_lib_id(schematic_data: dict) -> str | None:
+    """Embed ``power:GND`` once; return lib_id or None if unavailable."""
+    key = "__schematiq_power_gnd_lib_id"
+    if schematic_data.get(key):
+        return schematic_data[key]
+    gid = None
+    power_lib = official_library_packed_path("power")
+    if power_lib and os.path.exists(power_lib):
+        gid = kicad_api.embed_symbol_from_packed_lib(schematic_data, "GND", power_lib)
+    else:
+        pdir = official_library_symdir_path("power")
+        if pdir and find_unpacked_symbol_file(pdir, "GND"):
+            gid = kicad_api.embed_symbol_from_file(
+                schematic_data, "GND", library_path=pdir, lib_prefix="power"
+            )
+    schematic_data[key] = gid
+    return gid
+
+
+def _place_gnd_power_at_stub(
+    schematic_data: dict, end_x: float, end_y: float, *, justify_fallback: str = "left bottom"
+) -> None:
+    """Attach local GND using ``power:GND`` when the library is available."""
+    gid = _ensure_power_gnd_lib_id(schematic_data)
+    if not gid:
+        _add_label(schematic_data, "GND", (end_x, end_y), justify=justify_fallback)
+        return
+    n = int(schematic_data.setdefault("__gnd_power_seq", 0))
+    schematic_data["__gnd_power_seq"] = n + 1
+    ref = f"#GND{n + 1}"
+    ex, ey = _snap_pt(end_x, end_y)
+    kicad_api.place_component(
+        schematic_data,
+        gid,
+        ref,
+        "GND",
+        (ex, ey),
+        angle=0,
+        footprint="",
+        pins=["1"],
+        datasheet="~",
+        description="",
+    )
+
+
 # =============================================================================
 # KiCad formatters — convert data items to .kicad_sch text
 # =============================================================================
@@ -610,12 +671,19 @@ def _wire_horizontal_passive(schematic_data, cx, cy, passive, net_types):
     _add_wire(schematic_data, pin1_x, cy, right_end, cy)
 
     pin1_net = passive["pin1_net"]
+    dy = _label_dy_nudge(passive["ref"])
     if net_types.get(pin1_net) == "hierarchical":
-        # angle 0 → flag points LEFT, text extends RIGHT (wire comes from left)
+        # Hierarchical flag must sit on the wire stub end (same point as wire) for connectivity.
         _add_hierarchical_label(schematic_data, pin1_net,
                                 (right_end, cy), shape="bidirectional", angle=0)
+    elif pin1_net == "GND":
+        # Keep GND symbol on the wire stub (same Y as stub); nudge is for text labels only.
+        _place_gnd_power_at_stub(schematic_data, right_end, cy)
     else:
-        _add_label(schematic_data, pin1_net, (right_end, cy),
+        rlx, rly = right_end, cy + dy
+        if dy != 0:
+            _add_wire(schematic_data, right_end, cy, rlx, rly)
+        _add_label(schematic_data, pin1_net, (rlx, rly),
                    justify="left bottom")
 
     # --- LEFT side (pin 2) ---
@@ -624,11 +692,17 @@ def _wire_horizontal_passive(schematic_data, cx, cy, passive, net_types):
 
     pin2_net = passive["pin2_net"]
     if net_types.get(pin2_net) == "hierarchical":
-        # angle 180 → flag points RIGHT, text extends LEFT (wire comes from right)
         _add_hierarchical_label(schematic_data, pin2_net,
                                 (left_end, cy), shape="bidirectional", angle=180)
+    elif pin2_net == "GND":
+        _place_gnd_power_at_stub(
+            schematic_data, left_end, cy, justify_fallback="right bottom"
+        )
     else:
-        _add_label(schematic_data, pin2_net, (left_end, cy),
+        llx, lly = left_end, cy + dy
+        if dy != 0:
+            _add_wire(schematic_data, left_end, cy, llx, lly)
+        _add_label(schematic_data, pin2_net, (llx, lly),
                    justify="right bottom")
 
 
@@ -646,6 +720,36 @@ def _parse_symbol_pins(symbol_file_path):
     with open(symbol_file_path, "r", encoding="utf-8") as f:
         content = f.read()
     return _parse_symbol_pins_from_content(content)
+
+
+def _parse_symbol_pins_with_extends(symbol_file_path):
+    """Parse pins from a symbol file, following cross-file ``(extends ...)`` in a symdir."""
+    pins = _parse_symbol_pins(symbol_file_path)
+    if pins:
+        return pins
+    try:
+        with open(symbol_file_path, "r", encoding="utf-8") as f:
+            content = f.read()
+    except OSError:
+        return pins
+    m = re.search(r'\(extends\s+"([^"]+)"\)', content)
+    if not m:
+        return pins
+    parent_name = m.group(1).strip()
+    if not parent_name:
+        return pins
+    parent_path = os.path.join(os.path.dirname(symbol_file_path), f"{parent_name}.kicad_sym")
+    if os.path.isfile(parent_path):
+        try:
+            return _parse_symbol_pins(parent_path)
+        except OSError:
+            return pins
+    return pins
+
+
+def _fallback_footprint_for_symbol(lib_id: str) -> str:
+    """Deterministic footprint fallback for common connector symbols."""
+    return _CONNECTOR_FOOTPRINT_DEFAULTS.get((lib_id or "").strip(), "")
 
 
 def _parse_symbol_pins_from_content(content):
@@ -1032,8 +1136,12 @@ def _wire_component_pins(schematic_data, comp_x, comp_y,
             end_x = _snap(abs_x + dx)
             end_y = _snap(abs_y + dy)
             _add_wire(schematic_data, abs_x, abs_y, end_x, end_y)
-            _add_label(schematic_data, "GND", (end_x, end_y),
-                       justify="left bottom" if dx >= 0 else "right bottom")
+            _place_gnd_power_at_stub(
+                schematic_data,
+                end_x,
+                end_y,
+                justify_fallback="left bottom" if dx >= 0 else "right bottom",
+            )
             wired_positions.add(pos_key)
             print(f"    Auto-wired pin {pin_num} ({pname}) → GND")
 
@@ -1186,7 +1294,7 @@ def generate_from_json(output_path, json_path, sheet_name="BME280_Sensor", *, pl
             # (b) pass every pin number to KiCad (JSON may only list letter pin refs).
             symbol_pins = None
             if sym_file_for_pins and os.path.exists(sym_file_for_pins):
-                symbol_pins = _parse_symbol_pins(sym_file_for_pins)
+                symbol_pins = _parse_symbol_pins_with_extends(sym_file_for_pins)
             elif packed_file_and_name:
                 with open(packed_file_and_name[0], "r", encoding="utf-8") as f:
                     lib_content = f.read()
@@ -1215,7 +1323,14 @@ def generate_from_json(output_path, json_path, sheet_name="BME280_Sensor", *, pl
 
             # Extract properties from the embedded symbol definition.
             sym_props = kicad_api.extract_symbol_properties(schematic_data, lib_id)
-            footprint = sym_props.get("Footprint", "")
+            footprint = footprint_resolver.resolve_footprint_for_instance(
+                lib_id=lib_id,
+                sym_props_footprint=sym_props.get("Footprint", ""),
+                schematic_data=schematic_data,
+                passive_type=None,
+            )
+            if not (footprint or "").strip():
+                footprint = _fallback_footprint_for_symbol(lib_id)
             datasheet = sym_props.get("Datasheet", "~")
             description = sym_props.get("Description", "")
 
@@ -1294,9 +1409,17 @@ def generate_from_json(output_path, json_path, sheet_name="BME280_Sensor", *, pl
             py = _snap(PASSIVE_Y_START + row * PASSIVE_Y_SPACING)
             angle = PASSIVE_CONFIG.get(ptype, {}).get("angle", 90)
 
+        ptype_key = _normalize_passive_type(ptype)
+        sym_fp = kicad_api.extract_symbol_properties(schematic_data, lib_id).get("Footprint", "")
+        fp_passive = footprint_resolver.resolve_footprint_for_instance(
+            lib_id=lib_id,
+            sym_props_footprint=sym_fp,
+            schematic_data=schematic_data,
+            passive_type=ptype_key or ptype,
+        )
         kicad_api.place_component(
             schematic_data, lib_id, p["ref"], p["value"],
-            (px, py), angle=angle, pins=["1", "2"]
+            (px, py), angle=angle, footprint=fp_passive, pins=["1", "2"]
         )
         _wire_horizontal_passive(schematic_data, px, py, p, net_types)
         if p.get("pin1_net"):

@@ -1,0 +1,31 @@
+{
+  "missing_components": [],
+  "extra_components": [],
+  "missing_nets": [],
+  "pin_errors": [
+    {
+      "ref": "D1",
+      "pin": "1",
+      "expected_net": "BUZZ_OUT",
+      "actual_nets": [
+        "5V"
+      ]
+    },
+    {
+      "ref": "D1",
+      "pin": "2",
+      "expected_net": "5V",
+      "actual_nets": [
+        "BUZZ_OUT"
+      ]
+    }
+  ],
+  "summary": {
+    "components_expected": 6,
+    "components_placed": 6,
+    "missing_components": 0,
+    "missing_nets": 0,
+    "pin_errors": 2
+  },
+  "ok": false
+}

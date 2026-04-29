@@ -1,0 +1,150 @@
+{
+  "project_name": "Simple_Power_Entry_Protection",
+  "description": "Basic power entry with reverse polarity protection and power-good indicator",
+  "sheets": [
+    {
+      "name": "Power_Entry_Protection",
+      "file": "Power_Entry_Protection.kicad_sch",
+      "page": 1
+    }
+  ],
+  "components": [
+    {
+      "ref": "J1",
+      "part": "Connector_Generic:Conn_01x02",
+      "sheet": "Power_Entry_Protection",
+      "note": "Power Input Connector",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VIN"
+        },
+        {
+          "pin": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "D1",
+      "part": "Device:D_Schottky",
+      "sheet": "Power_Entry_Protection",
+      "note": "Reverse Polarity Protection Diode",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "A",
+          "net": "VIN"
+        },
+        {
+          "pin": "2",
+          "pin_name": "K",
+          "net": "VPROT"
+        }
+      ]
+    },
+    {
+      "ref": "LED1",
+      "part": "Device:LED",
+      "sheet": "Power_Entry_Protection",
+      "note": "Power Good Indicator LED",
+      "connections": [
+        {
+          "pin": "1",
+          "pin_name": "A",
+          "net": "LED_DRIVE"
+        },
+        {
+          "pin": "2",
+          "pin_name": "K",
+          "net": "GND"
+        }
+      ]
+    }
+  ],
+  "passives": [
+    {
+      "ref": "R1",
+      "type": "R",
+      "value": "330",
+      "sheet": "Power_Entry_Protection",
+      "purpose": "LED Current Limiting Resistor (assuming 5V VPROT)",
+      "connections": [
+        {
+          "pin": "1",
+          "net": "VPROT"
+        },
+        {
+          "pin": "2",
+          "net": "LED_DRIVE"
+        }
+      ]
+    }
+  ],
+  "nets": [
+    {
+      "name": "VIN",
+      "type": "local",
+      "sheet": "Power_Entry_Protection",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "1"
+        },
+        {
+          "ref": "D1",
+          "pin": "1",
+          "pin_name": "A"
+        }
+      ]
+    },
+    {
+      "name": "VPROT",
+      "type": "local",
+      "sheet": "Power_Entry_Protection",
+      "connections": [
+        {
+          "ref": "D1",
+          "pin": "2",
+          "pin_name": "K"
+        },
+        {
+          "ref": "R1",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "GND",
+      "type": "local",
+      "sheet": "Power_Entry_Protection",
+      "connections": [
+        {
+          "ref": "J1",
+          "pin": "2"
+        },
+        {
+          "ref": "LED1",
+          "pin": "2",
+          "pin_name": "K"
+        }
+      ]
+    },
+    {
+      "name": "LED_DRIVE",
+      "type": "local",
+      "sheet": "Power_Entry_Protection",
+      "connections": [
+        {
+          "ref": "R1",
+          "pin": "2"
+        },
+        {
+          "ref": "LED1",
+          "pin": "1",
+          "pin_name": "A"
+        }
+      ]
+    }
+  ]
+}

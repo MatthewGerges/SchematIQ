@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import subprocess
 import sys
 import uuid
@@ -142,6 +143,90 @@ class _ProjectState:
         self._passive_keys: set[tuple[str, str]] = set()
         self._net_keys: set[tuple[str, str]] = set()
 
+    @staticmethod
+    def _normalize_component(comp: dict[str, Any]) -> dict[str, Any]:
+        """Apply deterministic sanity fixes for common LLM wiring mistakes."""
+        part = str(comp.get("part", "")).strip()
+        conns = comp.get("connections")
+        if not isinstance(conns, list):
+            return comp
+
+        part_u = part.upper()
+        if part_u.startswith("LED:") or "LED_STANDARD" in part_u:
+            part = "Device:LED"
+            comp["part"] = part
+        if part_u.startswith("TRANSISTOR_NPN_BJT:"):
+            part = "Transistor_BJT:" + part.split(":", 1)[1].strip()
+            comp["part"] = part
+        if part_u.startswith("BUTTON:") or "SW_PUSH" in part_u or "BUTTON_SWITCH" in part_u:
+            # Default to 2-pin logical pushbutton unless user explicitly asks for footprint details.
+            part = "Switch:SW_Push"
+            comp["part"] = part
+
+        # Device:LED has pin 1=K, pin 2=A. If model assigns A->GND and K->signal,
+        # the diode is reversed for the common indicator topology; swap the nets.
+        if part == "Device:LED":
+            k_idx = None
+            a_idx = None
+            for i, c in enumerate(conns):
+                pin_name = str(c.get("pin_name", "")).strip().upper()
+                pin_num = str(c.get("pin", "")).strip()
+                if pin_num.upper() == "K":
+                    c["pin"] = "1"
+                    pin_num = "1"
+                elif pin_num.upper() == "A":
+                    c["pin"] = "2"
+                    pin_num = "2"
+                if pin_name == "K" or pin_num == "1":
+                    k_idx = i
+                if pin_name == "A" or pin_num == "2":
+                    a_idx = i
+            if k_idx is not None and a_idx is not None:
+                k_net = str(conns[k_idx].get("net", "")).strip().upper()
+                a_net = str(conns[a_idx].get("net", "")).strip().upper()
+                if a_net == "GND" and k_net != "GND":
+                    conns[k_idx]["net"], conns[a_idx]["net"] = conns[a_idx].get("net"), conns[k_idx].get("net")
+                # Heuristic for explicit net naming (e.g. *_ANODE / *_K) with swapped pin numbers.
+                if ("ANODE" in k_net or k_net.endswith("_A")) and ("_K" in a_net or "CATHODE" in a_net):
+                    conns[k_idx]["net"], conns[a_idx]["net"] = conns[a_idx].get("net"), conns[k_idx].get("net")
+
+            # Canonicalize LED pin metadata for downstream mapping-by-name.
+            for c in conns:
+                pin_num = str(c.get("pin", "")).strip()
+                if pin_num == "1":
+                    c["pin_name"] = "K"
+                elif pin_num == "2":
+                    c["pin_name"] = "A"
+
+        if part == "Switch:SW_Push":
+            # Collapse 4-pin tactile-style descriptions into two electrical terminals.
+            pnet: dict[str, str] = {}
+            for c in conns:
+                p = str(c.get("pin", "")).strip()
+                n = str(c.get("net", "")).strip()
+                if p and n:
+                    pnet[p] = n
+
+            n1 = pnet.get("1") or pnet.get("2")
+            n2 = pnet.get("3") or pnet.get("4")
+
+            # Fallback: first two distinct nets in order of appearance.
+            if not n1 or not n2 or n1 == n2:
+                distinct: list[str] = []
+                for c in conns:
+                    n = str(c.get("net", "")).strip()
+                    if n and n not in distinct:
+                        distinct.append(n)
+                if len(distinct) >= 2:
+                    n1, n2 = distinct[0], distinct[1]
+
+            if n1 and n2:
+                comp["connections"] = [
+                    {"pin": "1", "pin_name": "1", "net": n1},
+                    {"pin": "2", "pin_name": "2", "net": n2},
+                ]
+        return comp
+
     def ingest(self, data: dict[str, Any]) -> str | None:
         if "project_name" in data and "sheets" in data:
             self.project_name = data.get("project_name")
@@ -183,6 +268,7 @@ class _ProjectState:
             }
 
             for comp in data.get("components", []):
+                comp = self._normalize_component(comp)
                 key = (comp.get("sheet", sheet), comp.get("ref"))
                 self._component_keys.add(key)
                 self.components.append(comp)
@@ -246,6 +332,34 @@ def _save_state(state: _ProjectState) -> Path:
         json.dump(state.to_dict(), f, indent=2)
         f.write("\n")
     return out
+
+
+def _recent_project_jsons(limit: int = 5) -> list[Path]:
+    data_dir = _ROOT / "data"
+    if not data_dir.is_dir():
+        return []
+    paths = list(data_dir.glob("llm_output*.json"))
+    paths.sort(key=lambda p: p.stat().st_mtime, reverse=True)
+    return paths[:limit]
+
+
+def _unresolved_symbol_lines(design: dict[str, Any]) -> list[str]:
+    """Return human-readable unresolved symbol lines under strict mode."""
+    try:
+        from src.lib.symbol_preflight import find_unresolved_components
+    except Exception:
+        return []
+    unresolved = find_unresolved_components(design)
+    if not unresolved:
+        return []
+    lines = [f"Strict symbol mode: {len(unresolved)} unresolved symbol(s)."]
+    for u in unresolved[:12]:
+        lines.append(
+            f"- {u.get('ref', '?')}: {u.get('part', '')} (lookup: {u.get('lookup', '')})"
+        )
+    if len(unresolved) > 12:
+        lines.append(f"- ... and {len(unresolved) - 12} more")
+    return lines
 
 
 def _system_prompt() -> str:
@@ -337,7 +451,17 @@ def start_chat(req: ChatStartRequest) -> dict[str, Any]:
             "I loaded an existing board. Ask me what should be changed and I will continue from it."
         )
     else:
-        opener = chat.send_message("Hello, I'd like to design a board.")
+        recent = _recent_project_jsons(limit=4)
+        if recent:
+            recent_list = "\n".join(f"- {p.name}" for p in recent)
+            opener = chat.send_message(
+                "Start by asking whether I want to continue from an existing project or start new.\n"
+                "If I want to continue, confirm which one from this list by filename:\n"
+                f"{recent_list}\n"
+                "Do not assume; ask first."
+            )
+        else:
+            opener = chat.send_message("Hello, I'd like to design a board.")
     text = opener.text or ""
     captured: list[str] = []
     for b in _extract_json_blocks(text):
@@ -377,27 +501,10 @@ def send_chat(req: ChatSendRequest) -> dict[str, Any]:
         state.ingest_new_component(b)
         captured.append(f"new_component:{b.get('name', 'unknown')}")
 
-    # Tighten feedback loop: if current in-memory JSON has unresolved symbols,
-    # append a deterministic warning so the user notices before pressing Generate.
-    try:
-        from src.lib.symbol_preflight import find_unresolved_components
-
-        unresolved = find_unresolved_components(state.to_dict())
-        if unresolved:
-            lines = [
-                "",
-                "---",
-                f"**Heads-up:** {len(unresolved)} symbol(s) don't match an exact KiCad library name yet.",
-                "**This is usually fine** — just type **gen** (or **done**) and auto-repair will resolve them for you.",
-                "You can also type **repair** to fix them first, then **gen**.",
-            ]
-            for u in unresolved[:8]:
-                lines.append(f"- `{u.get('ref', '?')}`: `{u.get('part', '')}` (lookup: `{u.get('lookup', '')}`)")
-            if len(unresolved) > 8:
-                lines.append(f"- ... and {len(unresolved) - 8} more")
-            text = text + "\n" + "\n".join(lines)
-    except Exception:
-        pass
+    unresolved_lines = _unresolved_symbol_lines(state.to_dict())
+    if unresolved_lines:
+        lines = ["", "---", "**Strict symbol mode:** generation is blocked.", *unresolved_lines]
+        text = text + "\n" + "\n".join(lines)
 
     return {"assistant": text, "captured": captured, "state": state.to_dict()}
 
@@ -415,10 +522,28 @@ def save_chat(req: ChatSessionRequest) -> dict[str, Any]:
 @app.post("/api/run")
 def run_action(req: RunRequest) -> dict[str, Any]:
     json_path = _resolve_json_path(req.json_path)
+    # Hard gate: no generation/review/check with unresolved symbol names.
+    try:
+        with open(json_path, encoding="utf-8") as f:
+            design = json.load(f)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Failed reading JSON: {e}") from e
 
     action = req.action.strip().lower()
     if action not in ("generate", "check", "review", "repair", "validate"):
         raise HTTPException(status_code=400, detail="invalid action")
+
+    if action in ("generate", "check", "review", "validate"):
+        lines = _unresolved_symbol_lines(design)
+        if lines:
+            return {
+                "command": [],
+                "cwd": str(_ROOT),
+                "exit_code": 2,
+                "stdout": "",
+                "stderr": "Symbol resolution failed.\n" + "\n".join(lines),
+                "kicad_pro_path": None,
+            }
 
     if action == "generate":
         target = (req.target or "both").strip().lower()
@@ -428,6 +553,7 @@ def run_action(req: RunRequest) -> dict[str, Any]:
             sys.executable,
             "scripts/generate_from_llm.py",
             "--repair",
+            "--validate",
             *(
                 ["--llm-place"]
                 if (req.placement or "").strip().lower() in ("llm", "llm_place", "llm-place")
@@ -457,12 +583,18 @@ def run_action(req: RunRequest) -> dict[str, Any]:
         cmd = [sys.executable, "scripts/generate_from_llm.py", "--validate", "--target", "kicad", str(json_path)]
 
     proc = subprocess.run(cmd, cwd=_ROOT, capture_output=True, text=True)
+    kicad_pro_path = None
+    if action == "generate":
+        m = re.search(r'(/[^\s\'"]+\.kicad_pro)\b', f"{proc.stdout}\n{proc.stderr}")
+        if m:
+            kicad_pro_path = m.group(1)
     return {
         "command": cmd,
         "cwd": str(_ROOT),
         "exit_code": proc.returncode,
         "stdout": proc.stdout,
         "stderr": proc.stderr,
+        "kicad_pro_path": kicad_pro_path,
     }
 
 

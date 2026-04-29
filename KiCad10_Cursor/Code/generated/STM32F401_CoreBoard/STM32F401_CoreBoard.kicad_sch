@@ -1,0 +1,167 @@
+(kicad_sch
+	(version 20250114)
+	(generator "SchematIQ")
+	(generator_version "9.0")
+	(uuid "ea485d08-7742-408b-a5ce-3f12c68439a0")
+	(paper "A4")
+	(lib_symbols)
+
+	(sheet
+		(at 25.0 25.0)
+		(size 45.0 15.0)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(stroke
+			(width 0)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "24fb41b0-e591-4560-9dff-75e7eb9564a2")
+		(property "Sheetname" "Power_Input"
+			(at 25.0 24.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "Power_Input.kicad_sch"
+			(at 25.0 40.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+	)
+
+	(sheet
+		(at 85.0 25.0)
+		(size 45.0 15.0)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(stroke
+			(width 0)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "8b06b5ca-8ec4-498f-b332-d56ebd48eb56")
+		(property "Sheetname" "MCU_Core"
+			(at 85.0 24.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "MCU_Core.kicad_sch"
+			(at 85.0 40.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+	)
+
+	(sheet
+		(at 145.0 25.0)
+		(size 45.0 15.0)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(stroke
+			(width 0)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "36909af5-c9cb-440b-bfab-45fe10eee616")
+		(property "Sheetname" "Connectivity"
+			(at 145.0 24.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "Connectivity.kicad_sch"
+			(at 145.0 40.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+	)
+
+	(sheet
+		(at 205.0 25.0)
+		(size 45.0 15.0)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(stroke
+			(width 0)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "d7e42238-da34-4ac3-899f-a4348ffbdad0")
+		(property "Sheetname" "Peripherals"
+			(at 205.0 24.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "Peripherals.kicad_sch"
+			(at 205.0 40.2 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+	)
+
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+		(path "/24fb41b0-e591-4560-9dff-75e7eb9564a2"
+			(page "2")
+		)
+		(path "/8b06b5ca-8ec4-498f-b332-d56ebd48eb56"
+			(page "3")
+		)
+		(path "/36909af5-c9cb-440b-bfab-45fe10eee616"
+			(page "4")
+		)
+		(path "/d7e42238-da34-4ac3-899f-a4348ffbdad0"
+			(page "5")
+		)
+	)
+	(embedded_fonts no)
+)

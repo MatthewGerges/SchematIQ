@@ -1,0 +1,29 @@
+{
+  "meta": {
+    "filename": "MOSFET_Low_Side_Switch.kicad_pro",
+    "version": 2
+  },
+  "schematic": {
+    "annotate_start_num": 0,
+    "bom_fmt_settings": {
+      "field_delimiter": ",",
+      "name": "CSV",
+      "ref_delimiter": ",",
+      "string_delimiter": "\""
+    },
+    "connection_grid_size": 50.0,
+    "drawing": {},
+    "page_layout_descr_file": ""
+  },
+  "sheets": [
+    [
+      "83093cb1-6763-43b1-ac28-0e1874637f69",
+      "Root"
+    ],
+    [
+      "d0786654-16b0-458d-a079-0f7d425b2893",
+      "MOSFET_Switch"
+    ]
+  ],
+  "text_variables": {}
+}

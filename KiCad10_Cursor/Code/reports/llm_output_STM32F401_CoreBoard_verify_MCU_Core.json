@@ -1,0 +1,87 @@
+{
+  "missing_components": [],
+  "extra_components": [],
+  "missing_nets": [],
+  "pin_errors": [
+    {
+      "ref": "U2",
+      "pin": "9",
+      "expected_net": "VDD_3V3",
+      "actual_nets": []
+    },
+    {
+      "ref": "U2",
+      "pin": "15",
+      "expected_net": "VDD_3V3",
+      "actual_nets": []
+    },
+    {
+      "ref": "U2",
+      "pin": "16",
+      "expected_net": "GND",
+      "actual_nets": []
+    },
+    {
+      "ref": "U2",
+      "pin": "17",
+      "expected_net": "VCAP1_U2",
+      "actual_nets": []
+    },
+    {
+      "ref": "U2",
+      "pin": "18",
+      "expected_net": "VCAP2_U2",
+      "actual_nets": [
+        "GND"
+      ]
+    },
+    {
+      "ref": "U2",
+      "pin": "46",
+      "expected_net": "GND",
+      "actual_nets": []
+    },
+    {
+      "ref": "U2",
+      "pin": "47",
+      "expected_net": "VDD_3V3",
+      "actual_nets": [
+        "GND"
+      ]
+    },
+    {
+      "ref": "U2",
+      "pin": "49",
+      "expected_net": "GND",
+      "actual_nets": []
+    },
+    {
+      "ref": "U2",
+      "pin": "63",
+      "expected_net": "VDD_3V3",
+      "actual_nets": [
+        "GND"
+      ]
+    },
+    {
+      "ref": "U2",
+      "pin": "64",
+      "expected_net": "GND",
+      "actual_nets": []
+    },
+    {
+      "ref": "U2",
+      "pin": "59",
+      "expected_net": "BOOT1_PB2",
+      "actual_nets": []
+    }
+  ],
+  "summary": {
+    "components_expected": 19,
+    "components_placed": 19,
+    "missing_components": 0,
+    "missing_nets": 0,
+    "pin_errors": 11
+  },
+  "ok": false
+}

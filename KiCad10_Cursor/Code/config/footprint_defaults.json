@@ -1,0 +1,10 @@
+{
+  "passive_footprints": {
+    "R": "Resistor_SMD:R_0603_1608Metric",
+    "C": "Capacitor_SMD:C_0603_1608Metric",
+    "L": "Inductor_SMD:L_0603_1608Metric",
+    "FB": "Inductor_SMD:L_0603_1608Metric",
+    "Diode": "Diode_SMD:D_SOD-123",
+    "D": "Diode_SMD:D_SMA"
+  }
+}

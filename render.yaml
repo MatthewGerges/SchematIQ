@@ -1,0 +1,19 @@
+# Render Blueprint: SchematIQ API (Flask) from KiCad10_Cursor/Code
+# https://render.com/docs/blueprint-spec
+#
+# After deploy, set Vercel env VITE_API_BASE_URL to your Render service URL (https://…).
+
+services:
+  - type: web
+    name: schematiq-api
+    runtime: python
+    region: oregon
+    plan: free
+    rootDir: KiCad10_Cursor/Code
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn 'scripts.webui_server_flask:app' --bind 0.0.0.0:$PORT --workers 1 --threads 8 --timeout 300
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.11"
+      - key: GEMINI_API_KEY
+        sync: false

@@ -560,6 +560,14 @@ def run_action():
 
 # ═══════════════════════════════════════════════════════════════════════════
 if __name__ == "__main__":
-    port = int(os.getenv("SCHEMATIQ_WEBUI_PORT", "5179"))
-    print(f"SchematIQ Flask API on http://127.0.0.1:{port}  (health: /api/health)", flush=True)
-    app.run(host="127.0.0.1", port=port, debug=False, threaded=True)
+    # Local dev: 127.0.0.1 + SCHEMATIQ_WEBUI_PORT (default 5179).
+    # On Render, use gunicorn (see render.yaml); this branch is for local `python scripts/...` only.
+    on_render = bool(os.getenv("RENDER"))
+    if on_render:
+        port = int(os.getenv("PORT", "10000"))
+        host = os.getenv("SCHEMATIQ_HOST", "0.0.0.0")
+    else:
+        port = int(os.getenv("SCHEMATIQ_WEBUI_PORT", os.getenv("PORT", "5179")))
+        host = os.getenv("SCHEMATIQ_HOST", "127.0.0.1")
+    print(f"SchematIQ Flask API on http://{host}:{port}  (health: /api/health)", flush=True)
+    app.run(host=host, port=port, debug=False, threaded=True)

@@ -10,6 +10,9 @@ type RunResponse = {
   stdout: string;
   stderr: string;
   kicad_pro_path?: string | null;
+  preprocess_s?: number;
+  subprocess_s?: number;
+  elapsed_s?: number;
 };
 
 type ChatStartResponse = {
@@ -26,6 +29,14 @@ type ChatSendResponse = {
   state: ProjectState;
 };
 
+type ChatActivityResponse = {
+  session_id: string;
+  phase: string;
+  detail: string;
+  updated_at?: number;
+  elapsed_s?: number;
+};
+
 type ProjectState = {
   project_name?: string;
   sheets?: unknown[];
@@ -34,8 +45,18 @@ type ProjectState = {
   nets?: unknown[];
 };
 
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL ?? "").trim().replace(/\/+$/, "");
+
+function apiUrl(path: string): string {
+  if (/^https?:\/\//i.test(path)) return path;
+  if (!path.startsWith("/")) {
+    throw new Error(`API path must start with '/': ${path}`);
+  }
+  return API_BASE_URL ? `${API_BASE_URL}${path}` : path;
+}
+
 async function apiPost<T>(path: string, body: unknown): Promise<T> {
-  const res = await fetch(path, {
+  const res = await fetch(apiUrl(path), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
@@ -60,6 +81,7 @@ function extractKicadProjectPath(stdout: string, stderr: string): string | null 
 }
 
 export function App() {
+  const initStartedRef = useRef(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string>("");
   const [apiOnline, setApiOnline] = useState<boolean>(true);
@@ -71,13 +93,16 @@ export function App() {
   const [lastJsonPath, setLastJsonPath] = useState<string>("");
   const [lastKicadProPath, setLastKicadProPath] = useState<string>("");
   const [loadingDots, setLoadingDots] = useState(".");
+  const [chatActivity, setChatActivity] = useState<ChatActivityResponse | null>(null);
   const chatLogRef = useRef<HTMLDivElement | null>(null);
   const chatInputRef = useRef<HTMLTextAreaElement | null>(null);
 
   useEffect(() => {
+    if (initStartedRef.current) return;
+    initStartedRef.current = true;
     (async () => {
       try {
-        const health = await fetch("/api/health");
+        const health = await fetch(apiUrl("/api/health"));
         if (!health.ok) throw new Error(`${health.status} ${health.statusText}`);
         setApiOnline(true);
         await startChat();
@@ -100,6 +125,37 @@ export function App() {
   }, [busy, chatBusy]);
 
   useEffect(() => {
+    if (!chatSession || !(chatBusy || busy)) {
+      setChatActivity(null);
+      return;
+    }
+    let cancelled = false;
+    const tick = async () => {
+      try {
+        const res = await apiPost<ChatActivityResponse>("/api/chat/activity", { session_id: chatSession });
+        if (!cancelled) {
+          setChatActivity(res);
+          // Safety valve: if backend reports idle, clear any stuck loading UI state.
+          if (res.phase === "idle") {
+            setBusy(false);
+            setChatBusy(false);
+          }
+        }
+      } catch {
+        // ignore polling errors; main request error path already shown
+      }
+    };
+    void tick();
+    const id = window.setInterval(() => {
+      void tick();
+    }, 1200);
+    return () => {
+      cancelled = true;
+      window.clearInterval(id);
+    };
+  }, [chatSession, chatBusy, busy]);
+
+  useEffect(() => {
     const el = chatLogRef.current;
     if (!el) return;
     el.scrollTop = el.scrollHeight;
@@ -120,13 +176,23 @@ export function App() {
     try {
       const payload = action === "generate" ? { action, json_path: jsonPath, target: "kicad" } : { action, json_path: jsonPath };
       const res = await apiPost<RunResponse>("/api/run", payload);
+      const timing =
+        typeof res.elapsed_s === "number"
+          ? ` (total ${res.elapsed_s.toFixed(1)}s` +
+            (typeof res.preprocess_s === "number" ? `, pre ${res.preprocess_s.toFixed(1)}s` : "") +
+            (typeof res.subprocess_s === "number" ? `, gen ${res.subprocess_s.toFixed(1)}s` : "") +
+            ")"
+          : "";
       if (action === "generate") {
         const proPath = res.kicad_pro_path || extractKicadProjectPath(res.stdout || "", res.stderr || "");
         if (proPath) {
           setLastKicadProPath(proPath);
-          setChatMessages((m) => [...m, { role: "assistant", text: `Saved KiCad project: \`${proPath}\`` }]);
+          setChatMessages((m) => [...m, { role: "assistant", text: `Saved KiCad project: \`${proPath}\`${timing}` }]);
         } else {
-          setChatMessages((m) => [...m, { role: "assistant", text: "Generation finished, but I couldn't parse the `.kicad_pro` path from output." }]);
+          setChatMessages((m) => [
+            ...m,
+            { role: "assistant", text: `Generation finished, but I couldn't parse the \`.kicad_pro\` path from output.${timing}` },
+          ]);
         }
       }
       if (res.exit_code !== 0) throw new Error(res.stderr || `Command failed with exit ${res.exit_code}`);
@@ -142,11 +208,31 @@ export function App() {
     setChatBusy(true);
     setError("");
     try {
-      const res = await apiPost<ChatStartResponse>("/api/chat/start", { json_path: null });
-      setChatSession(res.session_id);
-      setChatMessages([{ role: "assistant", text: res.assistant }]);
-      setStateSnapshot(res.state ?? null);
-      if (res.json_path) setLastJsonPath(res.json_path);
+      const res = await fetch(apiUrl("/api/chat/start"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ json_path: null }),
+      });
+      if (res.status === 503) {
+        // Gemini SDK is still loading (~10 min on first startup)
+        const body = await res.json().catch(() => ({}));
+        const msg = body.detail || "Gemini SDK is loading. This can take up to 10 minutes on the first startup.";
+        setChatMessages([{ role: "assistant", text: `⏳ ${msg}\n\nI'll retry automatically every 10 seconds...` }]);
+        setChatBusy(false);
+        // Auto-retry after 10 seconds
+        setTimeout(() => {
+          initStartedRef.current = false;
+          startChat();
+        }, 10_000);
+        return;
+      }
+      const text = await res.text();
+      if (!res.ok) throw new Error(`${res.status} ${res.statusText}\n${text}`);
+      const data = JSON.parse(text) as ChatStartResponse;
+      setChatSession(data.session_id);
+      setChatMessages([{ role: "assistant", text: data.assistant }]);
+      setStateSnapshot(data.state ?? null);
+      if (data.json_path) setLastJsonPath(data.json_path);
     } catch (e) {
       setError(String(e));
     } finally {
@@ -167,7 +253,8 @@ export function App() {
     if (match) {
       const cmd = match[1] as "gen" | "generate" | "build" | "done" | "check" | "review" | "repair" | "validate";
 
-      if ((cmd === "gen" || cmd === "generate" || cmd === "build" || cmd === "done") && !isGenerateReady(stateSnapshot)) {
+      const isGenerateCmd = cmd === "gen" || cmd === "generate" || cmd === "build" || cmd === "done";
+      if (cmd === "done" && !isGenerateReady(stateSnapshot)) {
         setChatBusy(true);
         try {
           const guidance = await apiPost<ChatSendResponse>("/api/chat/send", {
@@ -184,6 +271,15 @@ export function App() {
         }
         return;
       }
+      if (isGenerateCmd && !isGenerateReady(stateSnapshot)) {
+        setChatMessages((m) => [
+          ...m,
+          {
+            role: "assistant",
+            text: "Proceeding with generation even though chat state looks incomplete (diagnostic mode).",
+          },
+        ]);
+      }
 
       const savedPath = await saveChat();
       const effectivePath = savedPath ?? lastJsonPath;
@@ -197,8 +293,7 @@ export function App() {
         ]);
         return;
       }
-      const action: RunAction =
-        cmd === "gen" || cmd === "generate" || cmd === "build" || cmd === "done" ? "generate" : (cmd as RunAction);
+      const action: RunAction = isGenerateCmd ? "generate" : (cmd as RunAction);
       setChatMessages((m) => [
         ...m,
         {
@@ -286,7 +381,10 @@ export function App() {
             </span>
           </span>
           {(busy || chatBusy) ? (
-            <span style={{ color: "var(--warn)", fontWeight: 700, fontSize: 13 }}>loading{loadingDots}</span>
+            <span style={{ color: "var(--warn)", fontWeight: 700, fontSize: 13 }}>
+              loading{loadingDots}
+              {chatActivity?.phase ? ` (${chatActivity.phase.replaceAll("_", " ")})` : ""}
+            </span>
           ) : null}
         </div>
       </div>
@@ -425,6 +523,12 @@ export function App() {
             <div style={{ color: "var(--muted)", fontSize: 12 }}>
               Commands: <code>gen</code>, <code>done</code>, <code>check</code>, <code>review</code>, <code>repair</code>, <code>validate</code>
             </div>
+            {(busy || chatBusy) && chatActivity?.detail ? (
+              <div style={{ color: "var(--muted)", fontSize: 12 }}>
+                Status: {chatActivity.detail}
+                {typeof chatActivity.elapsed_s === "number" ? ` (${Math.round(chatActivity.elapsed_s)}s)` : ""}
+              </div>
+            ) : null}
           </div>
         </div>
 

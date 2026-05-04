@@ -19,10 +19,11 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from dotenv import load_dotenv
-from src.lib import project_generator, schematic_generator, tscircuit_generator
-from src.lib.electrical_review_llm import run_two_llm_review, severity_meets_or_exceeds
-from src.lib.footprint_preflight import validate_footprints_in_llm_data
-from src.lib.symbol_preflight import find_unresolved_components, validate_components_in_llm_data
+from src.lib import project_generator, schematic_generator
+
+# Lazy imports — avoid loading google-genai/pydantic just to generate KiCad files.
+# tscircuit_generator, electrical_review_llm, footprint_preflight, symbol_preflight
+# are imported on-demand inside the functions that need them.
 
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEFAULT_JSON_PATH = os.path.join(PROJECT_DIR, "data", "llm_output.json")
@@ -30,7 +31,7 @@ GEN_DIR = os.path.join(PROJECT_DIR, "generated")
 REPORT_DIR = os.path.join(PROJECT_DIR, "reports")
 
 
-def _run_kicad_generation(data: dict, json_path: str, output_dir: str) -> int:
+def _run_kicad_generation(data: dict, json_path: str, output_dir: str, *, skip_post_verify: bool = False) -> int:
     project_name = data.get("project_name", "LLM_Project")
     sheets = data.get("sheets", [])
 
@@ -107,36 +108,37 @@ def _run_kicad_generation(data: dict, json_path: str, output_dir: str) -> int:
     os.makedirs(REPORT_DIR, exist_ok=True)
     base = os.path.splitext(os.path.basename(json_path))[0]
 
-    for sheet_def in sheets:
-        sheet_name = sheet_def["name"]
-        sch_path = os.path.join(output_dir, sheet_def["file"])
-        if not os.path.exists(sch_path):
-            continue
+    if not skip_post_verify:
+        for sheet_def in sheets:
+            sheet_name = sheet_def["name"]
+            sch_path = os.path.join(output_dir, sheet_def["file"])
+            if not os.path.exists(sch_path):
+                continue
 
-        # Always save the KiCad→JSON round-trip parse
-        parsed = parse_kicad_sch(sch_path)
-        rt_path = os.path.join(REPORT_DIR, f"{base}_roundtrip_{sheet_name}.json")
-        with open(rt_path, "w", encoding="utf-8") as rf:
-            json.dump(parsed, rf, indent=2)
-            rf.write("\n")
-        print(f"\n  KiCad→JSON: {rt_path}")
+            parsed = parse_kicad_sch(sch_path)
+            rt_path = os.path.join(REPORT_DIR, f"{base}_roundtrip_{sheet_name}.json")
+            with open(rt_path, "w", encoding="utf-8") as rf:
+                json.dump(parsed, rf, indent=2)
+                rf.write("\n")
+            print(f"\n  KiCad→JSON: {rt_path}")
 
-        # Run the comparison
-        report = verify_schematic(json_path, sch_path, sheet_name=sheet_name)
-        print(format_report(report))
+            report = verify_schematic(json_path, sch_path, sheet_name=sheet_name)
+            print(format_report(report))
 
-        # Always save the verification report too
-        rpt_path = os.path.join(REPORT_DIR, f"{base}_verify_{sheet_name}.json")
-        with open(rpt_path, "w", encoding="utf-8") as rf:
-            json.dump(report, rf, indent=2)
-            rf.write("\n")
-        if not report["ok"]:
-            print(f"  Verification report: {rpt_path}")
+            rpt_path = os.path.join(REPORT_DIR, f"{base}_verify_{sheet_name}.json")
+            with open(rpt_path, "w", encoding="utf-8") as rf:
+                json.dump(report, rf, indent=2)
+                rf.write("\n")
+            if not report["ok"]:
+                print(f"  Verification report: {rpt_path}")
+    else:
+        print("\n(skip-post-verify) Skipping KiCad round-trip verifier for speed.")
 
     return 0
 
 
 def _run_tscircuit_generation(data: dict, output_dir: str) -> int:
+    from src.lib import tscircuit_generator
     project_name = data.get("project_name", "LLM_Project")
     tsci_dir = os.path.join(output_dir, "tscircuit")
     files = tscircuit_generator.write_tscircuit_project(data, tsci_dir)
@@ -160,6 +162,19 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Generate KiCad and/or tscircuit from LLM JSON.")
     parser.add_argument("json_path", nargs="?", default=DEFAULT_JSON_PATH)
     parser.add_argument("--validate", action="store_true")
+    parser.add_argument(
+        "--quick",
+        action="store_true",
+        help=(
+            "Fast path: skip redundant JSON symbol validation (uses footprint check only when kicad-footprints exists) "
+            "and skip post-gen round-trip verifier; intended after API/server already validated symbols."
+        ),
+    )
+    parser.add_argument(
+        "--no-post-verify",
+        action="store_true",
+        help="Skip schematic round-trip verifier ( KiCad→JSON compare ) after generation.",
+    )
     parser.add_argument("--repair", action="store_true")
     parser.add_argument("--llm-place", action="store_true", help="Use LLM for symbol placement (positions only)")
     parser.add_argument("--review", action="store_true", help="Run 2-LLM electrical review before generation")
@@ -180,6 +195,8 @@ def main() -> int:
     args = parser.parse_args()
     if args.llm_place:
         os.environ["SCHEMATIQ_LLM_PLACE"] = "1"
+    if args.quick and args.validate:
+        parser.error("use either --quick or --validate, not both")
 
     json_path = os.path.abspath(args.json_path)
     if not os.path.exists(json_path):
@@ -190,6 +207,7 @@ def main() -> int:
         data = json.load(f)
 
     if args.review:
+        from src.lib.electrical_review_llm import run_two_llm_review, severity_meets_or_exceeds
         print("--- Running 2-LLM electrical review ---")
         report = run_two_llm_review(
             data,
@@ -222,6 +240,7 @@ def main() -> int:
             return 1
 
     if args.repair:
+        from src.lib.symbol_preflight import find_unresolved_components
         failures = find_unresolved_components(data)
         if failures:
             print(
@@ -242,6 +261,8 @@ def main() -> int:
             print("(repair) All components already resolve; skipping LLM.")
 
     if args.validate:
+        from src.lib.symbol_preflight import validate_components_in_llm_data
+        from src.lib.footprint_preflight import validate_footprints_in_llm_data
         v_errs = validate_components_in_llm_data(data, print_ok=False)
         if v_errs:
             print("Symbol validation failed (--validate). Fix before generating:\n")
@@ -268,14 +289,17 @@ def main() -> int:
             print("(validate) Footprints resolve against kicad-footprints.\n")
         else:
             print("(validate) No kicad-footprints clone; footprint checks skipped.\n")
+    elif args.quick:
+        print("(quick) Skipping symbol + footprint re-validation (server preflight already validated).")
 
     project_name = data.get("project_name", "LLM_Project")
     output_dir = os.path.join(GEN_DIR, project_name)
     os.makedirs(output_dir, exist_ok=True)
 
     rc = 0
+    skip_pv = bool(args.quick or args.no_post_verify)
     if args.target in ("kicad", "both"):
-        rc = max(rc, _run_kicad_generation(data, json_path, output_dir))
+        rc = max(rc, _run_kicad_generation(data, json_path, output_dir, skip_post_verify=skip_pv))
     if args.target in ("tscircuit", "both"):
         rc = max(rc, _run_tscircuit_generation(data, output_dir))
     return rc

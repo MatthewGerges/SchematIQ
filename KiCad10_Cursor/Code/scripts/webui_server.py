@@ -12,11 +12,7 @@ import uuid
 from pathlib import Path
 from typing import Any
 
-from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse
-from pydantic import BaseModel
-from dotenv import load_dotenv
+#from dotenv import load_dotenv
 
 # google-genai is imported lazily on first use via _ensure_genai().
 # Do NOT import at module level or in startup events — it hangs in both
@@ -56,19 +52,10 @@ if str(_ROOT) not in sys.path:
     sys.path.insert(0, str(_ROOT))
 
 
-app = FastAPI(title="SchematIQ Web UI API")
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 load_dotenv(_ROOT / ".env")
 
 
-@app.get("/", response_class=HTMLResponse)
 def root_hint() -> str:
     """This process is JSON API only; the React UI is served by Vite on port 5173."""
     return (
@@ -102,7 +89,7 @@ def _get_genai_client() -> Any:
     _ensure_genai()
     api_key = os.getenv("GEMINI_API_KEY")
     if not api_key:
-        raise HTTPException(status_code=500, detail="GEMINI_API_KEY not set in Code/.env")
+        raise Exception("GEMINI_API_KEY not set in Code/.env")
     _GENAI_CLIENT = genai.Client(api_key=api_key)
     return _GENAI_CLIENT
 
@@ -125,40 +112,6 @@ _configure_schematiq_logging()
 # NOTE: Do NOT add @app.on_event("startup") handlers that import google-genai
 # or create genai.Client — they hang. All heavy resources are loaded lazily
 # on first request instead.
-
-
-class RunRequest(BaseModel):
-    action: str  # generate|check|review|repair|validate
-    json_path: str
-    target: str | None = None  # kicad|tscircuit|both (generate only)
-    placement: str | None = None  # "deterministic" | "llm"
-
-class ChatStartRequest(BaseModel):
-    json_path: str | None = None
-
-
-class ChatSendRequest(BaseModel):
-    session_id: str
-    message: str
-
-
-class ChatSessionRequest(BaseModel):
-    session_id: str
-
-
-class ChatActivityRequest(BaseModel):
-    session_id: str
-
-
-class SymbolSearchRequest(BaseModel):
-    query: str
-    limit: int | None = 12
-    lib: str | None = None
-
-
-class SymbolBatchSearchRequest(BaseModel):
-    parts: list[str]
-    top_k: int | None = 3
 
 
 def _extract_json_blocks(text: str) -> list[dict[str, Any]]:
@@ -783,7 +736,7 @@ def _resolve_json_path(raw: str) -> Path:
                 ),
             ) from e
     if not rp.exists():
-        raise HTTPException(status_code=404, detail=f"json_path not found: {rp}")
+        raise Exception(f"json_path not found: {rp}")
     return rp
 
 
@@ -801,19 +754,16 @@ def _set_activity(session_id: str, phase: str, detail: str = "") -> None:
         _LOG.info("[session %s] phase=%s elapsed=%.2fs detail=%s", session_id[:8], phase, elapsed, detail)
 
 
-@app.get("/api/projects")
 def list_projects() -> dict[str, Any]:
     data_dir = _ROOT / "data"
     paths = sorted(data_dir.glob("llm_output*.json"))
     return {"projects": [str(p) for p in paths]}
 
 
-@app.get("/api/health")
 def health() -> dict[str, str]:
     return {"ok": "true"}
 
 
-@app.post("/api/chat/activity")
 def chat_activity(req: ChatActivityRequest) -> dict[str, Any]:
     rec = _SESSION_ACTIVITY.get(req.session_id)
     if not rec:
@@ -824,7 +774,6 @@ def chat_activity(req: ChatActivityRequest) -> dict[str, Any]:
     return out
 
 
-@app.post("/api/symbols/search")
 def search_symbols(req: SymbolSearchRequest) -> dict[str, Any]:
     return _symbol_candidates_payload(
         query=req.query,
@@ -833,12 +782,10 @@ def search_symbols(req: SymbolSearchRequest) -> dict[str, Any]:
     )
 
 
-@app.post("/api/symbols/batch_search")
 def batch_search_symbols(req: SymbolBatchSearchRequest) -> dict[str, Any]:
     return _batch_symbol_candidates_payload(req.parts, top_k=req.top_k or 3)
 
 
-@app.post("/api/chat/start")
 def start_chat(req: ChatStartRequest) -> dict[str, Any]:
     _LOG.info("[chat/start] ── request received ──")
     t_total = time.perf_counter()
@@ -942,11 +889,10 @@ def start_chat(req: ChatStartRequest) -> dict[str, Any]:
     }
 
 
-@app.post("/api/chat/send")
 def send_chat(req: ChatSendRequest) -> dict[str, Any]:
     sess = _SESSIONS.get(req.session_id)
     if not sess:
-        raise HTTPException(status_code=404, detail="chat session not found")
+        raise Exception("chat session not found")
     chat = sess["chat"]
     state: _ProjectState = sess["state"]
     loaded = _try_load_project_from_message(state, req.message)
@@ -1061,11 +1007,10 @@ def send_chat(req: ChatSendRequest) -> dict[str, Any]:
     return {"assistant": text, "captured": captured, "state": state.to_dict()}
 
 
-@app.post("/api/chat/save")
 def save_chat(req: ChatSessionRequest) -> dict[str, Any]:
     sess = _SESSIONS.get(req.session_id)
     if not sess:
-        raise HTTPException(status_code=404, detail="chat session not found")
+        raise Exception("chat session not found")
     state: _ProjectState = sess["state"]
     t0 = time.time()
     path = _save_state(state)
@@ -1078,7 +1023,6 @@ def _api_slow_full_kicad_gen() -> bool:
     return os.getenv("SCHEMATIQ_SLOW_GEN", "").strip().lower() in ("1", "true", "yes")
 
 
-@app.post("/api/run")
 def run_action(req: RunRequest) -> dict[str, Any]:
     t0 = time.time()
     _LOG.info("[run] start action=%s json_path=%s target=%s placement=%s", req.action, req.json_path, req.target, req.placement)
@@ -1089,7 +1033,7 @@ def run_action(req: RunRequest) -> dict[str, Any]:
         with open(json_path, encoding="utf-8") as f:
             design = json.load(f)
     except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Failed reading JSON: {e}") from e
+        raise Exception(f"Failed reading JSON: {e}") from e
 
     # Pre-resolution: repair from local cache before strict gate.
     fix_notes = _autofix_unresolved_symbols_in_design(design)
@@ -1099,11 +1043,11 @@ def run_action(req: RunRequest) -> dict[str, Any]:
                 json.dump(design, wf, indent=2)
                 wf.write("\n")
         except Exception as e:
-            raise HTTPException(status_code=500, detail=f"Failed writing symbol-fixed JSON: {e}") from e
+            raise Exception(f"Failed writing symbol-fixed JSON: {e}") from e
 
     action = req.action.strip().lower()
     if action not in ("generate", "check", "review", "repair", "validate"):
-        raise HTTPException(status_code=400, detail="invalid action")
+        raise Exception("invalid action")
 
     if action in ("generate", "check", "review", "validate"):
         lines = _unresolved_symbol_lines(design)
@@ -1121,7 +1065,7 @@ def run_action(req: RunRequest) -> dict[str, Any]:
     if action == "generate":
         target = (req.target or "both").strip().lower()
         if target not in ("kicad", "tscircuit", "both"):
-            raise HTTPException(status_code=400, detail="invalid target")
+            raise Exception("invalid target")
         cmd = [
             sys.executable,
             "scripts/generate_from_llm.py",

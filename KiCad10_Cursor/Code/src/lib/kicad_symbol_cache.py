@@ -198,6 +198,15 @@ def suggest_symbol_from_cache(lookup: str, cache: dict[str, Any] | None) -> str 
                 csym = str(c.get("symbol", ""))
                 if csym.upper().startswith(stripped.upper()):
                     return str(c.get("lookup", ""))
+        
+        # 5) Strip internal package letters before a voltage suffix (e.g. LP2985AIM5-3.3 -> LP2985-3.3)
+        stripped_mid = re.sub(r'^([A-Za-z]+[0-9]+)[A-Za-z0-9]*(-[0-9.]+)$', r'\1\2', sym)
+        if stripped_mid != sym and len(stripped_mid) >= 3:
+            for c in candidates:
+                csym = str(c.get("symbol", ""))
+                if csym.upper() == stripped_mid.upper() or csym.upper().startswith(stripped_mid.upper()):
+                    return str(c.get("lookup", ""))
+        
         return None
 
     # Bare symbols: search only the 4-char bucket (not the full records list).
@@ -259,6 +268,13 @@ def search_symbol_candidates(
                 if tail:
                     query = tail
                     q_u = query.upper()
+            else:
+                # Library hint was totally wrong (e.g. Connector_USB instead of Connector)
+                # Fallback to unscoped query
+                query = tail
+                q_u = query.upper()
+                if len(q_u) >= 4:
+                    source = list((cache.get("__bare_sym_buckets") or {}).get(q_u[:4], []))
     else:
         # Unscoped query: scan one prefix bucket instead of all records.
         if len(q_u) >= 4:

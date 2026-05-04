@@ -157,7 +157,7 @@ def _run_tscircuit_generation(data: dict, output_dir: str) -> int:
 
 
 def main() -> int:
-    load_dotenv(os.path.join(PROJECT_DIR, ".env"))
+    #load_dotenv(os.path.join(PROJECT_DIR, ".env"))
 
     parser = argparse.ArgumentParser(description="Generate KiCad and/or tscircuit from LLM JSON.")
     parser.add_argument("json_path", nargs="?", default=DEFAULT_JSON_PATH)

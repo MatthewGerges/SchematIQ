@@ -55,6 +55,18 @@ function apiUrl(path: string): string {
   return API_BASE_URL ? `${API_BASE_URL}${path}` : path;
 }
 
+function apiTargetLabel(apiOnline: boolean): string {
+  if (!apiOnline) return "offline";
+  if (API_BASE_URL) {
+    try {
+      return new URL(API_BASE_URL).host;
+    } catch {
+      return "remote API";
+    }
+  }
+  return "local dev";
+}
+
 async function apiPost<T>(path: string, body: unknown): Promise<T> {
   const res = await fetch(apiUrl(path), {
     method: "POST",
@@ -214,16 +226,16 @@ export function App() {
         body: JSON.stringify({ json_path: null }),
       });
       if (res.status === 503) {
-        // Gemini SDK is still loading (~10 min on first startup)
         const body = await res.json().catch(() => ({}));
-        const msg = body.detail || "Gemini SDK is loading. This can take up to 10 minutes on the first startup.";
-        setChatMessages([{ role: "assistant", text: `⏳ ${msg}\n\nI'll retry automatically every 10 seconds...` }]);
+        const msg =
+          body.detail ||
+          "API is warming up or the model client is loading (normally under a minute on Render cold start).";
+        setChatMessages([{ role: "assistant", text: `⏳ ${msg}\n\nRetrying in a few seconds…` }]);
         setChatBusy(false);
-        // Auto-retry after 10 seconds
         setTimeout(() => {
           initStartedRef.current = false;
           startChat();
-        }, 10_000);
+        }, 4_000);
         return;
       }
       const text = await res.text();
@@ -377,7 +389,7 @@ export function App() {
           <span style={{ color: "var(--muted)", fontSize: 13 }}>API</span>
           <span style={{ padding: "6px 10px", borderRadius: 999, border: "1px solid var(--border)", background: "var(--panel)" }}>
             <span style={{ color: apiOnline ? "var(--accent)" : "var(--danger)", fontWeight: 700 }}>
-              {apiOnline ? "localhost" : "offline"}
+              {apiTargetLabel(apiOnline)}
             </span>
           </span>
           {(busy || chatBusy) ? (

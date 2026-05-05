@@ -282,12 +282,8 @@ def batch_search_symbols():
 @app.route("/api/chat/start", methods=["POST"])
 def start_chat():
     _LOG.info("[chat/start] ── request received ──")
-    # Fail fast if genai is still importing (~10 min on first run)
-    if not _GENAI_READY.is_set():
-        return jsonify({"detail": "Gemini SDK is still loading (~10 min on first startup). Please wait and refresh.", "genai": "loading"}), 503
-    if _GENAI_ERROR:
-        return _err(500, f"google-genai failed: {_GENAI_ERROR}")
-
+    # Do not fail fast here: /api/health can return ok while imports are still finishing.
+    # Blocking on _get_client() is usually seconds; avoids pointless 503 + "10 minute" retries in the UI.
     data = request.get_json(silent=True) or {}
     json_path = data.get("json_path")
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -55,6 +55,29 @@ function apiUrl(path: string): string {
   return API_BASE_URL ? `${API_BASE_URL}${path}` : path;
 }
 
+/** User-facing progress line — backend prefers `detail`; fall back to readable phase keys. */
+function activityHeadline(activity: ChatActivityResponse | null): string {
+  const detail = activity?.detail?.trim();
+  if (detail) return detail;
+  const phase = activity?.phase ?? "";
+  const map: Record<string, string> = {
+    idle: "Working…",
+    starting_chat: "Starting chat session…",
+    waiting_for_model: "Waiting for model response…",
+    processing_response: "Processing assistant output…",
+    autofixing_symbols: "Running symbol lookups…",
+    loaded_project: "Loaded project snapshot…",
+    preparing_gemini: "Preparing Gemini client…",
+    sending_to_model: "Sending prompt to Gemini…",
+    extracting_blocks: "Extracting structured design data…",
+    ingesting_state: "Merging into project state…",
+    checking_unresolved_symbols: "Validating symbols…",
+    error: "Request failed — see error panel",
+  };
+  if (!phase || phase === "idle") return "Working…";
+  return map[phase] ?? phase.replace(/_/g, " ");
+}
+
 function apiTargetLabel(apiOnline: boolean): string {
   if (!apiOnline) return "offline";
   if (API_BASE_URL) {
@@ -104,8 +127,9 @@ export function App() {
   const [stateSnapshot, setStateSnapshot] = useState<ProjectState | null>(null);
   const [lastJsonPath, setLastJsonPath] = useState<string>("");
   const [lastKicadProPath, setLastKicadProPath] = useState<string>("");
-  const [loadingDots, setLoadingDots] = useState(".");
   const [chatActivity, setChatActivity] = useState<ChatActivityResponse | null>(null);
+  const waitStartedAtMs = useRef<number>(0);
+  const [, activityTick] = useState(0);
   const chatLogRef = useRef<HTMLDivElement | null>(null);
   const chatInputRef = useRef<HTMLTextAreaElement | null>(null);
 
@@ -125,14 +149,18 @@ export function App() {
     })();
   }, []);
 
-  useEffect(() => {
-    if (!(busy || chatBusy)) {
-      setLoadingDots(".");
-      return;
+  useLayoutEffect(() => {
+    if (busy || chatBusy) {
+      if (!waitStartedAtMs.current) waitStartedAtMs.current = Date.now();
+    } else {
+      waitStartedAtMs.current = 0;
     }
-    const id = window.setInterval(() => {
-      setLoadingDots((d) => (d.length >= 3 ? "." : d + "."));
-    }, 350);
+    activityTick((n) => n + 1);
+  }, [busy, chatBusy]);
+
+  useEffect(() => {
+    if (!busy && !chatBusy) return;
+    const id = window.setInterval(() => activityTick((n) => n + 1), 250);
     return () => window.clearInterval(id);
   }, [busy, chatBusy]);
 
@@ -147,11 +175,6 @@ export function App() {
         const res = await apiPost<ChatActivityResponse>("/api/chat/activity", { session_id: chatSession });
         if (!cancelled) {
           setChatActivity(res);
-          // Safety valve: if backend reports idle, clear any stuck loading UI state.
-          if (res.phase === "idle") {
-            setBusy(false);
-            setChatBusy(false);
-          }
         }
       } catch {
         // ignore polling errors; main request error path already shown
@@ -160,7 +183,7 @@ export function App() {
     void tick();
     const id = window.setInterval(() => {
       void tick();
-    }, 1200);
+    }, 600);
     return () => {
       cancelled = true;
       window.clearInterval(id);
@@ -344,6 +367,15 @@ export function App() {
     return null;
   }
 
+  const localElapsedS =
+    (busy || chatBusy) && waitStartedAtMs.current > 0
+      ? Math.max(0, (Date.now() - waitStartedAtMs.current) / 1000)
+      : 0;
+  const backendElapsed =
+    typeof chatActivity?.elapsed_s === "number" ? Math.max(0, chatActivity.elapsed_s) : 0;
+  const shownElapsed = Math.max(localElapsedS, backendElapsed);
+  const workingLabel = busy || chatBusy ? activityHeadline(chatActivity) : "";
+
   return (
     <div style={{ maxWidth: 1360, margin: "0 auto", padding: "20px 16px 34px" }}>
       <style>{`
@@ -393,9 +425,8 @@ export function App() {
             </span>
           </span>
           {(busy || chatBusy) ? (
-            <span style={{ color: "var(--warn)", fontWeight: 700, fontSize: 13 }}>
-              loading{loadingDots}
-              {chatActivity?.phase ? ` (${chatActivity.phase.replaceAll("_", " ")})` : ""}
+            <span style={{ color: "var(--warn)", fontWeight: 700, fontSize: 13, maxWidth: 420, textAlign: "right" }} title={workingLabel}>
+              {shownElapsed.toFixed(1)}s · {workingLabel}
             </span>
           ) : null}
         </div>
@@ -478,6 +509,25 @@ export function App() {
                 </div>
               ))}
             </div>
+            {(busy || chatBusy) ? (
+              <div
+                role="status"
+                aria-live="polite"
+                style={{
+                  padding: "10px 12px",
+                  borderRadius: 10,
+                  border: "1px solid rgba(234, 179, 8, 0.4)",
+                  background: "rgba(234, 179, 8, 0.09)",
+                  color: "var(--text)",
+                  fontSize: 13,
+                  lineHeight: 1.45,
+                }}
+              >
+                <span style={{ fontWeight: 800, color: "var(--warn)" }}>{shownElapsed.toFixed(1)}s</span>
+                {" · "}
+                {workingLabel}
+              </div>
+            ) : null}
             <div style={{ display: "flex", gap: 8 }}>
               <textarea
                 ref={chatInputRef}
@@ -535,12 +585,6 @@ export function App() {
             <div style={{ color: "var(--muted)", fontSize: 12 }}>
               Commands: <code>gen</code>, <code>done</code>, <code>check</code>, <code>review</code>, <code>repair</code>, <code>validate</code>
             </div>
-            {(busy || chatBusy) && chatActivity?.detail ? (
-              <div style={{ color: "var(--muted)", fontSize: 12 }}>
-                Status: {chatActivity.detail}
-                {typeof chatActivity.elapsed_s === "number" ? ` (${Math.round(chatActivity.elapsed_s)}s)` : ""}
-              </div>
-            ) : null}
           </div>
         </div>
 

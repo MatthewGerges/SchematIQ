@@ -415,6 +415,7 @@ def send_chat():
     loaded = _try_load_project_from_message(state, message)
     if loaded:
         _set_activity(sid, "loaded_project", f"Loaded {loaded.name}")
+        _set_activity(sid, "preparing_gemini", "Preparing Gemini client…")
         summary = (
             f"Loaded `{loaded.name}`.\n"
             f"- Sheets: {len(state.sheets)}\n"
@@ -441,6 +442,11 @@ def send_chat():
     if goal_hint:
         state.goal_summary = goal_hint
 
+    _set_activity(
+        sid,
+        "preparing_gemini",
+        "Preparing Gemini client (first message can take ~30–90s on a cold free host)…",
+    )
     try:
         chat = _ensure_gemini_chat(sess)
     except Exception as e:

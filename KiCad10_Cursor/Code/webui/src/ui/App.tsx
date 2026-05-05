@@ -10,6 +10,7 @@ type RunResponse = {
   stdout: string;
   stderr: string;
   kicad_pro_path?: string | null;
+  artifact_url?: string | null;
   preprocess_s?: number;
   subprocess_s?: number;
   elapsed_s?: number;
@@ -222,11 +223,17 @@ export function App() {
         const proPath = res.kicad_pro_path || extractKicadProjectPath(res.stdout || "", res.stderr || "");
         if (proPath) {
           setLastKicadProPath(proPath);
-          setChatMessages((m) => [...m, { role: "assistant", text: `Saved KiCad project: \`${proPath}\`${timing}` }]);
+          const download = res.artifact_url ? `\nDownload: ${apiUrl(res.artifact_url)}` : "";
+          setChatMessages((m) => [...m, { role: "assistant", text: `Saved KiCad project: \`${proPath}\`${timing}${download}` }]);
         } else {
           setChatMessages((m) => [
             ...m,
-            { role: "assistant", text: `Generation finished, but I couldn't parse the \`.kicad_pro\` path from output.${timing}` },
+            {
+              role: "assistant",
+              text: res.artifact_url
+                ? `Generation finished. Download: ${apiUrl(res.artifact_url)}${timing}`
+                : `Generation finished, but I couldn't parse the \`.kicad_pro\` path from output.${timing}`,
+            },
           ]);
         }
       }

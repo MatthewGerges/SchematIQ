@@ -10,6 +10,7 @@ import json
 import logging
 import os
 import re
+import shutil
 import subprocess
 import sys
 import threading
@@ -19,7 +20,7 @@ from concurrent.futures import ThreadPoolExecutor, TimeoutError as _FutTimeout
 from pathlib import Path
 from typing import Any
 
-from flask import Flask, request, jsonify, abort
+from flask import Flask, request, jsonify, abort, send_file
 from flask_cors import CORS
 from dotenv import load_dotenv
 
@@ -55,6 +56,7 @@ MODEL = "gemini-2.5-flash"
 _SESSIONS: dict[str, dict[str, Any]] = {}
 _SYSTEM_PROMPT_CACHE: str | None = None
 _SESSION_ACTIVITY: dict[str, dict[str, Any]] = {}
+_ARTIFACTS: dict[str, dict[str, Any]] = {}
 
 genai = None
 types = None
@@ -204,6 +206,16 @@ def _err(status: int, detail: str):
     return jsonify({"detail": detail}), status
 
 
+def _register_artifact(path: Path, download_name: str) -> str:
+    artifact_id = str(uuid.uuid4())
+    _ARTIFACTS[artifact_id] = {
+        "path": str(path),
+        "name": download_name,
+        "created_at": time.time(),
+    }
+    return artifact_id
+
+
 # ── Business logic: lazy-import wrappers ────────────────────────────────────
 # Importing webui_server at module level triggers FastAPI → pydantic, which
 # takes minutes on Python 3.13.  These thin wrappers defer the import to first
@@ -336,6 +348,18 @@ def list_projects():
     data_dir = _ROOT / "data"
     paths = sorted(data_dir.glob("llm_output*.json"))
     return jsonify({"projects": [str(p) for p in paths]})
+
+
+@app.route("/api/artifacts/<artifact_id>")
+def download_artifact(artifact_id: str):
+    rec = _ARTIFACTS.get(artifact_id)
+    if not rec:
+        return _err(404, "artifact not found")
+    p = Path(str(rec.get("path") or ""))
+    if not p.exists():
+        return _err(404, "artifact file missing")
+    name = str(rec.get("name") or p.name)
+    return send_file(p, as_attachment=True, download_name=name, mimetype="application/zip")
 
 
 @app.route("/api/chat/activity", methods=["POST"])
@@ -652,16 +676,37 @@ def run_action():
         cmd = [sys.executable, "scripts/generate_from_llm.py", "--validate", "--target", "kicad", str(json_path)]
 
     proc = subprocess.run(cmd, cwd=_ROOT, capture_output=True, text=True)
-    kicad_pro_path = None
+    kicad_pro_path: str | None = None
+    artifact_url: str | None = None
     if action == "generate":
-        m = re.search(r'(/[^\s\'"]+\.kicad_pro)\b', f"{proc.stdout}\n{proc.stderr}")
+        combined = f"{proc.stdout}\n{proc.stderr}"
+        # Accept both absolute and relative paths.
+        m = re.search(r'((?:/|\.{0,2}/)?[^\s\'"]+\.kicad_pro)\b', combined)
         if m:
-            kicad_pro_path = m.group(1)
+            raw = m.group(1)
+            p = Path(raw)
+            if not p.is_absolute():
+                p = (_ROOT / p).resolve()
+            kicad_pro_path = str(p)
+            try:
+                # Zip the whole project folder so user can download it from cloud.
+                proj_dir = p.parent
+                zip_base = f"{proj_dir.name}"
+                tmp_dir = Path(os.getenv("SCHEMATIQ_ARTIFACT_DIR", "/tmp"))
+                tmp_dir.mkdir(parents=True, exist_ok=True)
+                zip_path = tmp_dir / f"{zip_base}-{uuid.uuid4().hex[:8]}.zip"
+                shutil.make_archive(str(zip_path.with_suffix("")), "zip", root_dir=str(proj_dir))
+                artifact_id = _register_artifact(zip_path, f"{zip_base}.zip")
+                artifact_url = f"/api/artifacts/{artifact_id}"
+            except Exception as e:
+                _LOG.error("[artifact] failed: %s", e)
 
     return jsonify({
         "command": cmd, "cwd": str(_ROOT), "exit_code": proc.returncode,
         "stdout": proc.stdout, "stderr": proc.stderr,
-        "kicad_pro_path": kicad_pro_path, "elapsed_s": time.time() - t0,
+        "kicad_pro_path": kicad_pro_path,
+        "artifact_url": artifact_url,
+        "elapsed_s": time.time() - t0,
     })
 
 

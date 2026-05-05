@@ -15,6 +15,7 @@ import sys
 import threading
 import time
 import uuid
+from concurrent.futures import ThreadPoolExecutor, TimeoutError as _FutTimeout
 from pathlib import Path
 from typing import Any
 
@@ -62,6 +63,26 @@ Tool = None
 _GENAI_READY = threading.Event()
 _GENAI_ERROR: str | None = None
 _GENAI_CLIENT: Any = None
+
+# Network calls to Gemini can hang on cold/free hosts. Run them in a worker thread
+# and enforce a timeout so the UI doesn't spin forever.
+_GEMINI_EXEC = ThreadPoolExecutor(max_workers=2, thread_name_prefix="gemini")
+
+
+def _gemini_timeout_s(default: float = 45.0) -> float:
+    try:
+        return float(os.getenv("SCHEMATIQ_GEMINI_TIMEOUT_S", str(default)) or default)
+    except Exception:
+        return default
+
+
+def _call_with_timeout(fn, *, timeout_s: float, label: str):
+    fut = _GEMINI_EXEC.submit(fn)
+    try:
+        return fut.result(timeout=timeout_s)
+    except _FutTimeout:
+        _LOG.error("[%s] timed out after %.1fs", label, timeout_s)
+        raise
 
 
 def _bg_import_genai():
@@ -126,11 +147,17 @@ def _get_client():
 def _create_gemini_chat(client) -> Any:
     """Create a server-side Gemini chat (network-bound). Caller has waited for GenAI imports."""
     t0 = time.perf_counter()
-    try:
-        chat = client.chats.create(
+
+    def _do_create():
+        return client.chats.create(
             model=MODEL,
             config=types.GenerateContentConfig(system_instruction=_system_prompt()),
         )
+
+    try:
+        chat = _call_with_timeout(_do_create, timeout_s=_gemini_timeout_s(), label="chats.create")
+    except _FutTimeout as e:
+        raise TimeoutError("Gemini chat creation timed out") from e
     except Exception as e:
         _LOG.error("chats.create FAILED: %s", e)
         raise
@@ -241,7 +268,7 @@ def _set_activity(session_id: str, phase: str, detail: str = ""):
 
 
 def _send_with_tools(chat: Any, message: str, max_rounds: int = 4) -> Any:
-    response = chat.send_message(message)
+    response = _call_with_timeout(lambda: chat.send_message(message), timeout_s=_gemini_timeout_s(60.0), label="chat.send_message")
     for _ in range(max_rounds):
         calls = list(getattr(response, "function_calls", None) or [])
         if not calls:
@@ -261,7 +288,11 @@ def _send_with_tools(chat: Any, message: str, max_rounds: int = 4) -> Any:
             followup_parts.append(
                 types.Part.from_function_response(name=name or "unknown_function", response=payload)
             )
-        response = chat.send_message(followup_parts)
+        response = _call_with_timeout(
+            lambda: chat.send_message(followup_parts),
+            timeout_s=_gemini_timeout_s(60.0),
+            label="chat.send_message(tool)",
+        )
     return response
 
 
@@ -449,6 +480,9 @@ def send_chat():
         )
         try:
             chat = _ensure_gemini_chat(sess)
+        except TimeoutError as e:
+            _set_activity(sid, "error", str(e))
+            return _err(504, f"{e}")
         except Exception as e:
             _set_activity(sid, "error", str(e))
             return _err(502, f"Gemini chat creation failed: {e}")
@@ -472,6 +506,9 @@ def send_chat():
     )
     try:
         chat = _ensure_gemini_chat(sess)
+    except TimeoutError as e:
+        _set_activity(sid, "error", str(e))
+        return _err(504, f"{e}")
     except Exception as e:
         _set_activity(sid, "error", str(e))
         return _err(502, f"Gemini chat creation failed: {e}")
@@ -487,7 +524,11 @@ def send_chat():
         if goal_guard:
             user_msg += "\n" + goal_guard
         user_msg += "\n[Style rule: keep response short, max 5 bullets, no mention of JSON/code blocks.]"
-        response = chat.send_message(user_msg)
+        try:
+            response = _send_with_tools(chat, user_msg, max_rounds=4)
+        except TimeoutError as e:
+            _set_activity(sid, "error", str(e))
+            return _err(504, f"{e}")
         _set_activity(sid, "processing_response", "Parsing model response")
     except Exception as e:
         _set_activity(sid, "error", str(e))

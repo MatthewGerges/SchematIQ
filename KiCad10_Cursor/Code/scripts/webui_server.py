@@ -12,7 +12,7 @@ import uuid
 from pathlib import Path
 from typing import Any
 
-#from dotenv import load_dotenv
+from dotenv import load_dotenv
 
 # google-genai is imported lazily on first use via _ensure_genai().
 # Do NOT import at module level or in startup events — it hangs in both

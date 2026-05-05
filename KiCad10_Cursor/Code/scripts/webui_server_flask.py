@@ -115,6 +115,33 @@ def _get_client():
     return _GENAI_CLIENT
 
 
+def _create_gemini_chat(client) -> Any:
+    """Create a server-side Gemini chat (network-bound). Caller has waited for GenAI imports."""
+    t0 = time.perf_counter()
+    try:
+        chat = client.chats.create(
+            model=MODEL,
+            config=types.GenerateContentConfig(system_instruction=_system_prompt()),
+        )
+    except Exception as e:
+        _LOG.error("chats.create FAILED: %s", e)
+        raise
+    _LOG.info("chats.create ok in %.2fs", time.perf_counter() - t0)
+    return chat
+
+
+def _ensure_gemini_chat(sess: dict[str, Any]) -> Any:
+    """Lazily create Gemini chat / wait for imports on first use (new-session path)."""
+    chat = sess.get("chat")
+    if chat is not None:
+        return chat
+    t0 = time.perf_counter()
+    client = _get_client()
+    _LOG.info("[ensure_chat] client ready in %.2fs", time.perf_counter() - t0)
+    sess["chat"] = _create_gemini_chat(client)
+    return sess["chat"]
+
+
 # ── Helper: error JSON ─────────────────────────────────────────────────────
 def _err(status: int, detail: str):
     return jsonify({"detail": detail}), status
@@ -282,25 +309,10 @@ def batch_search_symbols():
 @app.route("/api/chat/start", methods=["POST"])
 def start_chat():
     _LOG.info("[chat/start] ── request received ──")
-    # Do not fail fast here: /api/health can return ok while imports are still finishing.
-    # Blocking on _get_client() is usually seconds; avoids pointless 503 + "10 minute" retries in the UI.
+    # New chats without json_path only need a static welcome: skip _get_client() and chats.create here
+    # so cold Render + slow google-genai import does not block the UI for minutes.
     data = request.get_json(silent=True) or {}
     json_path = data.get("json_path")
-
-    t0 = time.perf_counter()
-    client = _get_client()
-    _LOG.info("[chat/start] client ready in %.2fs", time.perf_counter() - t0)
-
-    t0 = time.perf_counter()
-    try:
-        chat = client.chats.create(
-            model=MODEL,
-            config=types.GenerateContentConfig(system_instruction=_system_prompt()),
-        )
-    except Exception as e:
-        _LOG.error("[chat/start] chats.create FAILED: %s", e)
-        return _err(502, f"Gemini chat creation failed: {e}")
-    _LOG.info("[chat/start] chat created in %.2fs", time.perf_counter() - t0)
 
     state = _ProjectState()
     if json_path:
@@ -316,7 +328,19 @@ def start_chat():
         state.output_json_path = p
 
     sid = str(uuid.uuid4())
-    _SESSIONS[sid] = {"client": client, "chat": chat, "state": state}
+
+    chat = None
+    if json_path:
+        t0 = time.perf_counter()
+        client = _get_client()
+        _LOG.info("[chat/start] client ready in %.2fs", time.perf_counter() - t0)
+        try:
+            chat = _create_gemini_chat(client)
+        except Exception as e:
+            _LOG.error("[chat/start] chats.create FAILED: %s", e)
+            return _err(502, f"Gemini chat creation failed: {e}")
+
+    _SESSIONS[sid] = {"chat": chat, "state": state}
     _set_activity(sid, "starting_chat", "Initializing assistant")
 
     if json_path:
@@ -386,7 +410,6 @@ def send_chat():
     sess = _SESSIONS.get(sid)
     if not sess:
         return _err(404, "chat session not found")
-    chat = sess["chat"]
     state: _ProjectState = sess["state"]
 
     loaded = _try_load_project_from_message(state, message)
@@ -400,6 +423,11 @@ def send_chat():
             f"- Nets: {len(state.nets)}\n"
             "Tell me exactly what to change, and I will keep it concise."
         )
+        try:
+            chat = _ensure_gemini_chat(sess)
+        except Exception as e:
+            _set_activity(sid, "error", str(e))
+            return _err(502, f"Gemini chat creation failed: {e}")
         seed_payload = json.dumps(state.to_dict(), indent=2)
         chat.send_message(
             "This existing project JSON is now the authoritative working state. "
@@ -412,6 +440,12 @@ def send_chat():
     goal_hint = _extract_goal_hint(message)
     if goal_hint:
         state.goal_summary = goal_hint
+
+    try:
+        chat = _ensure_gemini_chat(sess)
+    except Exception as e:
+        _set_activity(sid, "error", str(e))
+        return _err(502, f"Gemini chat creation failed: {e}")
 
     try:
         _set_activity(sid, "sending_to_model", "Submitting prompt to Gemini")

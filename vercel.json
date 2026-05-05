@@ -1,0 +1,6 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "installCommand": "cd KiCad10_Cursor/Code/webui && npm install",
+  "buildCommand": "cd KiCad10_Cursor/Code/webui && npm run build",
+  "outputDirectory": "KiCad10_Cursor/Code/webui/dist"
+}

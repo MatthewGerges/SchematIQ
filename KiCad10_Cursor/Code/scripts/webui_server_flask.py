@@ -95,10 +95,18 @@ _import_thread = threading.Thread(target=_bg_import_genai, daemon=True)
 _import_thread.start()
 
 
-def _wait_genai(timeout: float = 900):
-    """Block until google-genai is ready, or raise."""
+def _wait_genai(timeout: float = 180):
+    """Block until google-genai is ready, or raise.
+
+    Render free instances can cold-start slowly; keep this bounded so the UI
+    doesn't hang indefinitely. Increase via SCHEMATIQ_GENAI_IMPORT_TIMEOUT_S.
+    """
+    try:
+        timeout = float(os.getenv("SCHEMATIQ_GENAI_IMPORT_TIMEOUT_S", str(timeout)) or timeout)
+    except Exception:
+        timeout = timeout
     if not _GENAI_READY.wait(timeout=timeout):
-        abort(503, description="google-genai is still loading. Please wait and retry.")
+        abort(503, description=f"google-genai is still loading after {int(timeout)}s. Please retry.")
     if _GENAI_ERROR:
         abort(500, description=f"google-genai failed to import: {_GENAI_ERROR}")
 
@@ -135,9 +143,24 @@ def _ensure_gemini_chat(sess: dict[str, Any]) -> Any:
     chat = sess.get("chat")
     if chat is not None:
         return chat
+    # Phase 1: wait for imports (may be slow on cold start)
+    sid = str(sess.get("sid") or "")  # optional; used only for activity if present
+    if sid:
+        _set_activity(sid, "preparing_gemini", "Importing google-genai…")
     t0 = time.perf_counter()
+    _wait_genai()
+    _LOG.info("[ensure_chat] genai ready in %.2fs", time.perf_counter() - t0)
+
+    # Phase 2: client init (fast unless key missing / transport issues)
+    if sid:
+        _set_activity(sid, "preparing_gemini", "Creating Gemini client…")
+    t1 = time.perf_counter()
     client = _get_client()
-    _LOG.info("[ensure_chat] client ready in %.2fs", time.perf_counter() - t0)
+    _LOG.info("[ensure_chat] client ready in %.2fs", time.perf_counter() - t1)
+
+    # Phase 3: chat creation (network-bound)
+    if sid:
+        _set_activity(sid, "preparing_gemini", "Creating Gemini chat…")
     sess["chat"] = _create_gemini_chat(client)
     return sess["chat"]
 
@@ -340,7 +363,7 @@ def start_chat():
             _LOG.error("[chat/start] chats.create FAILED: %s", e)
             return _err(502, f"Gemini chat creation failed: {e}")
 
-    _SESSIONS[sid] = {"chat": chat, "state": state}
+    _SESSIONS[sid] = {"sid": sid, "chat": chat, "state": state}
     _set_activity(sid, "starting_chat", "Initializing assistant")
 
     if json_path:

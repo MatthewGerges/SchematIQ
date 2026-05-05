@@ -111,9 +111,16 @@ def _bg_import_genai():
     finally:
         _GENAI_READY.set()
 
-# Start background import immediately
-_import_thread = threading.Thread(target=_bg_import_genai, daemon=True)
-_import_thread.start()
+# Import strategy:
+# - On Render (production), do a synchronous import + client init at boot so requests
+#   never block on a background thread/event.
+# - Locally, keep the background import to keep startup instant.
+if os.getenv("RENDER"):
+    _bg_import_genai()
+    _import_thread = None
+else:
+    _import_thread = threading.Thread(target=_bg_import_genai, daemon=True)
+    _import_thread.start()
 
 
 def _wait_genai(timeout: float = 180):
